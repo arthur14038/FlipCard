@@ -1,0 +1,46 @@
+﻿[
+   {
+     "Level": 0, 
+     "EdgeLength": 400.0, 
+     "Column": 2, 
+     "Row": 3, 
+     "CardGap": 50.0, 
+     "FirstPosition": [-225.0, 400.0], 
+     "GameTime": 8.0, 
+     "ShowCardTime": 0.3, 
+     "AwardTime": 1.0
+ },
+   {
+     "Level": 1, 
+     "EdgeLength": 250.0, 
+     "Column": 3, 
+     "Row": 4, 
+     "CardGap": 50.0, 
+     "FirstPosition": [-300.0, 400.0], 
+     "GameTime": 24.0, 
+     "ShowCardTime": 1.0, 
+     "AwardTime": 4.0
+ },
+   {
+     "Level": 2, 
+     "EdgeLength": 200.0, 
+     "Column": 4, 
+     "Row": 5, 
+     "CardGap": 50.0, 
+     "FirstPosition": [-375.0, 450.0], 
+     "GameTime": 60.0, 
+     "ShowCardTime": 2.0, 
+     "AwardTime": 10.0
+ },
+   {
+     "Level": 3, 
+     "EdgeLength": 175.0, 
+     "Column": 5, 
+     "Row": 6, 
+     "CardGap": 25.0, 
+     "FirstPosition": [-400.0, 450.0], 
+     "GameTime": 90.0, 
+     "ShowCardTime": 3.0, 
+     "AwardTime": 15.0
+ }
+]
