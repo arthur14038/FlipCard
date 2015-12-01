@@ -63,13 +63,10 @@ namespace Soomla.Store {
 
 		public delegate void RunLaterDelegate();
 		public void RunLater(RunLaterDelegate runLaterDelegate) {
-			StartCoroutine(RunLaterPriv(0.1f, runLaterDelegate));
+			StartCoroutine(RunLaterPriv(runLaterDelegate));
 		}
-		private System.Collections.IEnumerator RunLaterPriv(float delay, RunLaterDelegate runLaterDelegate) {
-            float pauseEndTime = Time.realtimeSinceStartup + delay;
-            while (Time.realtimeSinceStartup < pauseEndTime){
-                yield return null;
-            }
+		private System.Collections.IEnumerator RunLaterPriv(RunLaterDelegate runLaterDelegate) {
+			yield return new WaitForSeconds(0.1f);
 			runLaterDelegate();
 		}
 

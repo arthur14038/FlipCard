@@ -12,9 +12,8 @@
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
 
-using System;
-using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace Soomla {
 	
@@ -44,24 +43,6 @@ namespace Soomla {
 			AndroidJNI.PushLocalFrame(100);
 			using(AndroidJavaClass jniRewardStorage = new AndroidJavaClass("com.soomla.data.KeyValueStorage")) {
 				jniRewardStorage.CallStatic("deleteKeyValue", key);
-			}
-			AndroidJNI.PopLocalFrame(IntPtr.Zero);
-		}
-
-		override protected List<string> _getEncryptedKeys() {
-            string val = null;
-			AndroidJNI.PushLocalFrame(100);
-			using(AndroidJavaClass jniRewardStorage = new AndroidJavaClass("com.soomla.core.unity.SoomlaBridge")) {
-                val = jniRewardStorage.CallStatic<string>("keyValStorage_GetEncryptedKeys");
-			}
-			AndroidJNI.PopLocalFrame(IntPtr.Zero);
-            return new List<string>(val.Split(','));
-		}
-
-		override protected void _purge() {
-			AndroidJNI.PushLocalFrame(100);
-			using (AndroidJavaClass jniRewardStorage = new AndroidJavaClass("com.soomla.data.KeyValueStorage")) {
-				jniRewardStorage.CallStatic("purge");
 			}
 			AndroidJNI.PopLocalFrame(IntPtr.Zero);
 		}

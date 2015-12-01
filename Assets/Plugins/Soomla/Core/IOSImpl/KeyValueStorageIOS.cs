@@ -12,10 +12,9 @@
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using UnityEngine;
+using System;
+using System.Runtime.InteropServices;
 
 namespace Soomla {
 	
@@ -28,10 +27,6 @@ namespace Soomla {
 		private static extern void keyValStorage_SetValue(string key, string val);
 		[DllImport ("__Internal")]
 		private static extern void keyValStorage_DeleteKeyValue(string key);
-		[DllImport ("__Internal")]
-		private static extern void keyValStorage_GetEncryptedKeys(out IntPtr outResult);
-		[DllImport ("__Internal")]
-		private static extern void keyValStorage_Purge();
 
 		override protected string _getValue(string key) {
 			IntPtr p = IntPtr.Zero;
@@ -47,18 +42,6 @@ namespace Soomla {
 		
 		override protected void _deleteKeyValue(string key) {
 			keyValStorage_DeleteKeyValue(key);
-		}
-
-		override protected List<string> _getEncryptedKeys() {
-            IntPtr p = IntPtr.Zero;
-            keyValStorage_GetEncryptedKeys(out p);
-            string val = Marshal.PtrToStringAnsi(p);
-            Marshal.FreeHGlobal(p);
-            return new List<string>(val.Split(','));
-		}
-
-		override protected void _purge () {
-			keyValStorage_Purge();
 		}
 #endif
 	}
