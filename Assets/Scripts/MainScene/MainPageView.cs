@@ -12,6 +12,7 @@ public class MainPageView : AbstractView {
 	public CanvasGroup image_Mask;
 	public RectTransform image_SettingWindow;
 	public RectTransform image_LeaveWindow;
+	public Image[] levelMask;
 
 	public override IEnumerator Init ()
 	{
@@ -23,6 +24,18 @@ public class MainPageView : AbstractView {
 		image_Mask.gameObject.SetActive(false);
 		image_SettingWindow.gameObject.SetActive(false);
 		image_LeaveWindow.gameObject.SetActive(false);
+		for(int i = 0 ; i < levelMask.Length ; ++i)
+		{
+			if(i > PlayerPrefsManager.OnePlayerProgress)
+			{
+				levelMask[i].gameObject.SetActive(true);
+			}else
+			{
+				levelMask[i].gameObject.SetActive(false);
+			}
+		}
+		backEvent = OnClickBack;
+		currentState = (ViewState)view;
 		switch(view)
 		{
 		case 0:
@@ -60,9 +73,9 @@ public class MainPageView : AbstractView {
 	public void OnClickSetting()
 	{
 		image_Mask.gameObject.SetActive(true);
-		image_SettingWindow.gameObject.SetActive(true);
 		image_Mask.alpha = 0f;
 		image_Mask.DOFade(1f, 0.3f);		
+		image_SettingWindow.gameObject.SetActive(true);
 		image_SettingWindow.localScale = Vector3.zero;
 		image_SettingWindow.DOScale(1f, 0.3f).SetEase(Ease.OutBack);
 	}
@@ -78,10 +91,40 @@ public class MainPageView : AbstractView {
 		);
 	}
 
+	public void OnClickExitLeaveWindow()
+	{
+		image_Mask.DOFade(0f, 0.3f);
+		image_LeaveWindow.DOScale(0f, 0.3f).SetEase(Ease.InBack).OnComplete(
+			delegate(){
+			image_Mask.gameObject.SetActive(false);
+			image_LeaveWindow.gameObject.SetActive(false);
+		}
+		);
+	}
+
 	public void OnClickBackMain()
 	{
 		group_Main.gameObject.SetActive(true);
 		group_1P.gameObject.SetActive(false);
+	}
+
+	public void OnClickLeaveGame()
+	{
+	}
+
+	void OnClickBack()
+	{
+		switch(currentState)
+		{
+		case ViewState.Main:
+			image_Mask.gameObject.SetActive(true);
+			image_Mask.alpha = 0f;
+			image_Mask.DOFade(1f, 0.3f);	
+			image_LeaveWindow.gameObject.SetActive(true);
+			image_LeaveWindow.localScale = Vector3.zero;
+			image_LeaveWindow.DOScale(1f, 0.3f).SetEase(Ease.OutBack);
+			break;
+		}
 	}
 
 	protected override IEnumerator HideUIAnimation ()

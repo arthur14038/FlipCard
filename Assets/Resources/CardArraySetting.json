@@ -28,7 +28,7 @@
      "Row": 5, 
      "CardGap": 50.0, 
      "FirstPosition": [-375.0, 450.0], 
-     "GameTime": 60.0, 
+     "GameTime": 40.0, 
      "ShowCardTime": 2.0, 
      "AwardTime": 10.0
  },
@@ -39,7 +39,7 @@
      "Row": 6, 
      "CardGap": 25.0, 
      "FirstPosition": [-400.0, 450.0], 
-     "GameTime": 90.0, 
+     "GameTime": 60.0, 
      "ShowCardTime": 3.0, 
      "AwardTime": 15.0
  }

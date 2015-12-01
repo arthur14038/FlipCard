@@ -54,7 +54,6 @@ public class GameSceneController : AbstractController {
 
 	void NextRound()
 	{
-		Debug.Log(gamePassTime);
 		gameTime += currentSetting.awardTime;
 		gameMenuView.AddTimeEffect(1f - gamePassTime/gameTime);
 		StartCoroutine(NextRoundRoutine());
@@ -62,6 +61,8 @@ public class GameSceneController : AbstractController {
 
 	void GameOver()
 	{
+		if(PlayerPrefsManager.OnePlayerProgress == (int)currentSetting.level)
+			PlayerPrefsManager.OnePlayerProgress += 1;
 		currentState = GameState.GameOver;
 		gameMenuView.SetTimeBar(0f);
 		gameMenuView.ShowGameOverWindow(score);
