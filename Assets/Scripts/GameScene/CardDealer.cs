@@ -9,6 +9,7 @@ public class CardDealer : MonoBehaviour {
 	public Transform cardParent;
 	public Sprite[] cardBack;
 	public Sprite[] cardFace;
+	public Sprite[] cardImage;
 	Card[] cards;
 	Vector2[] pos;
 	Vector2 shiftAmount = new Vector2(-100, 50);
@@ -46,11 +47,11 @@ public class CardDealer : MonoBehaviour {
 
 	public IEnumerator DealCard()
 	{		
-		Sprite[] thisTimeCardFace = GetCardFace(cards.Length);
+		Sprite[] thisTimeCardImage = GetCardImage(cards.Length);
 		float delayDuration = dealTime/cards.Length;
 		for(int i = 0 ; i < cards.Length ; ++i)
 		{
-			cards[i].SetCard(cardBack[0], thisTimeCardFace[i], Card.CardState.Back, thisTimeCardFace[i].name);
+			cards[i].SetCard(cardBack[0], cardFace[0], thisTimeCardImage[i], Card.CardState.Back, thisTimeCardImage[i].name);
 			cards[i].Appear(pos[i], shiftAmount, delayDuration*i, appearDuration);
 			cardsOnTheTable.Add(cards[i]);
 		}
@@ -102,14 +103,14 @@ public class CardDealer : MonoBehaviour {
 		}
 	}
 
-	Sprite[] GetCardFace(int count)
+	Sprite[] GetCardImage(int count)
 	{
 		Sprite[] choosenCardFace = new Sprite[count];
-		if(cardFace.Length > count/2)
+		if(cardImage.Length > count/2)
 		{
 			int[] chooseCardIndex = new int[count/2];
 			List<int> tickets = new List<int>();
-			for(int i = 0 ; i < cardFace.Length ; ++i)
+			for(int i = 0 ; i < cardImage.Length ; ++i)
 				tickets.Add(i);
 			
 			for(int i = 0 ; i < chooseCardIndex.Length ; ++i)
@@ -121,13 +122,13 @@ public class CardDealer : MonoBehaviour {
 			
 			for(int i = 0 ; i < choosenCardFace.Length ; ++i)
 			{
-				choosenCardFace[i] = cardFace[chooseCardIndex[i/2]];
+				choosenCardFace[i] = cardImage[chooseCardIndex[i/2]];
 			}
-		}else if(cardFace.Length == count/2)
+		}else if(cardImage.Length == count/2)
 		{
 			for(int i = 0 ; i < count ; ++i)
 			{
-				choosenCardFace[i] = cardFace[i/2];
+				choosenCardFace[i] = cardImage[i/2];
 			}
 		}else
 		{

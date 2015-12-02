@@ -4,11 +4,12 @@ using DG.Tweening;
 using UnityEngine.UI;
 
 public class MainPageView : AbstractView {
-	enum ViewState{Main, OnePlayer, TwoPlayer, Setting, Shop}
+	enum ViewState{Main, OnePlayer, TwoPlayer, SettingWindow, Shop, LeaveWindow}
 	ViewState currentState;
 	public VoidCardArrayLevel onClickPlay;
 	public CanvasGroup group_Main;
 	public CanvasGroup group_1P;
+	public CanvasGroup group_2P;
 	public CanvasGroup image_Mask;
 	public RectTransform image_SettingWindow;
 	public RectTransform image_LeaveWindow;
@@ -41,10 +42,17 @@ public class MainPageView : AbstractView {
 		case 0:
 			group_Main.gameObject.SetActive(true);
 			group_1P.gameObject.SetActive(false);
+			group_2P.gameObject.SetActive(false);
 			break;
 		case 1:
 			group_Main.gameObject.SetActive(false);
 			group_1P.gameObject.SetActive(true);
+			group_2P.gameObject.SetActive(false);
+			break;
+		case 2:
+			group_Main.gameObject.SetActive(false);
+			group_1P.gameObject.SetActive(false);
+			group_2P.gameObject.SetActive(true);
 			break;
 		}
 		yield return 0;
@@ -58,6 +66,7 @@ public class MainPageView : AbstractView {
 
 	public void OnClick1P()
 	{
+		currentState = ViewState.OnePlayer;
 		group_Main.gameObject.SetActive(false);
 		group_1P.gameObject.SetActive(true);
 	}
@@ -72,6 +81,7 @@ public class MainPageView : AbstractView {
 
 	public void OnClickSetting()
 	{
+		currentState = ViewState.SettingWindow;
 		image_Mask.gameObject.SetActive(true);
 		image_Mask.alpha = 0f;
 		image_Mask.DOFade(1f, 0.3f);		
@@ -82,6 +92,7 @@ public class MainPageView : AbstractView {
 
 	public void OnClickExitSetting()
 	{
+		currentState = ViewState.Main;
 		image_Mask.DOFade(0f, 0.3f);
 		image_SettingWindow.DOScale(0f, 0.3f).SetEase(Ease.InBack).OnComplete(
 			delegate(){
@@ -93,6 +104,7 @@ public class MainPageView : AbstractView {
 
 	public void OnClickExitLeaveWindow()
 	{
+		currentState = ViewState.Main;
 		image_Mask.DOFade(0f, 0.3f);
 		image_LeaveWindow.DOScale(0f, 0.3f).SetEase(Ease.InBack).OnComplete(
 			delegate(){
@@ -104,8 +116,10 @@ public class MainPageView : AbstractView {
 
 	public void OnClickBackMain()
 	{
+		currentState = ViewState.Main;
 		group_Main.gameObject.SetActive(true);
 		group_1P.gameObject.SetActive(false);
+		group_2P.gameObject.SetActive(false);
 	}
 
 	public void OnClickLeaveGame()
@@ -117,12 +131,28 @@ public class MainPageView : AbstractView {
 		switch(currentState)
 		{
 		case ViewState.Main:
+			currentState = ViewState.LeaveWindow;
 			image_Mask.gameObject.SetActive(true);
 			image_Mask.alpha = 0f;
 			image_Mask.DOFade(1f, 0.3f);	
 			image_LeaveWindow.gameObject.SetActive(true);
 			image_LeaveWindow.localScale = Vector3.zero;
 			image_LeaveWindow.DOScale(1f, 0.3f).SetEase(Ease.OutBack);
+			break;
+		case ViewState.OnePlayer:
+			OnClickBackMain();
+			break;
+		case ViewState.TwoPlayer:
+			OnClickBackMain();
+			break;
+		case ViewState.SettingWindow:
+			OnClickExitSetting();
+			break;
+		case ViewState.LeaveWindow:
+			OnClickExitLeaveWindow();
+			break;
+		case ViewState.Shop:
+			OnClickBackMain();
 			break;
 		}
 	}

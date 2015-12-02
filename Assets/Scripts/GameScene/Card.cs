@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class Card : MonoBehaviour {
 	public Image card;
+	public Image cardImage;
 	public Text text;
 	public enum CardState{Face, Back, None}
 	CardState currentState = CardState.None;
@@ -26,15 +27,17 @@ public class Card : MonoBehaviour {
 
 	public void SetSize(float edgeLength)
 	{
-		card.rectTransform.sizeDelta = new Vector2(edgeLength, edgeLength);
+		card.rectTransform.sizeDelta = Vector2.one*edgeLength;
 	}
 
-	public void SetCard(Sprite cardBack, Sprite cardFace, CardState defaultState, string cardId)
+	public void SetCard(Sprite cardBack, Sprite cardFace, Sprite cardImageSprite, CardState defaultState, string cardId)
 	{
 		text.text = cardId;
 		this.cardId = cardId;
 		this.cardBack = cardBack;
 		this.cardFace = cardFace;
+		cardImage.sprite = cardImageSprite;
+		cardImage.rectTransform.sizeDelta = (new Vector2(cardImageSprite.rect.width, cardImageSprite.rect.height))*card.rectTransform.sizeDelta.x/192f;
 		SetImageAndState(defaultState);
 	}
 
@@ -124,10 +127,12 @@ public class Card : MonoBehaviour {
 		switch(currentState)
 		{
 		case CardState.Back:
+			cardImage.gameObject.SetActive(false);
 			thisButton.interactable = true;
 			card.sprite = cardBack;
 			break;
 		case CardState.Face:
+			cardImage.gameObject.SetActive(true);
 			thisButton.interactable = false;
 			card.sprite = cardFace;
 			break;
