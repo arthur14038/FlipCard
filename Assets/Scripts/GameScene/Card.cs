@@ -18,6 +18,7 @@ public class Card : MonoBehaviour {
 	string cardId;
 	Button thisButton;
 	VoidCard flipToFace;
+	Vector3 flipDown = new Vector3(0f, 0.9f, 1f);
 
 	public void Init(VoidCard flipToFace)
 	{
@@ -81,7 +82,7 @@ public class Card : MonoBehaviour {
 	IEnumerator FlipCard()
 	{
 		card.DOColor(Color.gray, 0.2f).SetEase(Ease.OutQuad);
-		yield return card.rectTransform.DOScale(new Vector3(0f, 0.9f, 1f), 0.2f).SetEase(Ease.OutQuad).WaitForCompletion();
+		yield return card.rectTransform.DOScale(flipDown, 0.2f).SetEase(Ease.OutQuad).WaitForCompletion();
 
 		switch(currentState)
 		{

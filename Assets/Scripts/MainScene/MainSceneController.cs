@@ -11,6 +11,8 @@ public class MainSceneController : AbstractController {
 		mainPageView.onClickPlay = GoToGameScene;
 		mainPageView.ShowUI(false);
 
+		mainPageView.SetOnePlayerProgress(PlayerPrefsManager.OnePlayerProgress);
+
 		AdBanner.Instance.ShowBanner();
 	}
 

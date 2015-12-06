@@ -44,6 +44,8 @@ public class GameSceneController : AbstractController {
 
 	void ExitGame()
 	{
+		if(currentState == GameState.GameOver)
+			SaveGameRecord();
 		GameMainLoop.Instance.ChangeScene(SceneName.MainScene, 1);
 	}
 
@@ -63,6 +65,7 @@ public class GameSceneController : AbstractController {
 	{
 		if(PlayerPrefsManager.OnePlayerProgress == (int)currentSetting.level)
 			PlayerPrefsManager.OnePlayerProgress += 1;
+
 		currentState = GameState.GameOver;
 		gameMenuView.SetTimeBar(0f);
 		gameMenuView.ShowGameOverWindow(score);
@@ -94,6 +97,16 @@ public class GameSceneController : AbstractController {
 		yield return StartCoroutine(dealer.DealCard());
 		yield return new WaitForSeconds(0.3f);
 		yield return StartCoroutine(DealCardRoutine());
+	}
+
+	void SaveGameRecord()
+	{		
+		GameRecord record = ModelManager.Instance.GetGameRecord(currentSetting.level);
+		if(score > record.highScore)
+			record.highScore = score;
+		record.playTimes += 1;
+
+		ModelManager.Instance.SaveGameRecord(record);
 	}
 
 	void Update()

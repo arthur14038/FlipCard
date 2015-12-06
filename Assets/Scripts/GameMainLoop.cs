@@ -47,7 +47,8 @@ public class GameMainLoop : SingletonMonoBehavior<GameMainLoop> {
 	// Use this for initialization
 	IEnumerator Start () {
 		DontDestroyOnLoad(this.gameObject);
-		loadingPage.Init();		
+		loadingPage.Init();
+		ModelManager.Instance.Init();
 		CardArrayManager.LoadData();
 		yield return new WaitForSeconds(0.5f);
 		if(controller != null)

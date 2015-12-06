@@ -13,7 +13,7 @@ public class MainPageView : AbstractView {
 	public CanvasGroup image_Mask;
 	public RectTransform image_SettingWindow;
 	public RectTransform image_LeaveWindow;
-	public Image[] levelMask;
+	public LevelUI[] levelUIs;
 
 	public override IEnumerator Init ()
 	{
@@ -25,16 +25,6 @@ public class MainPageView : AbstractView {
 		image_Mask.gameObject.SetActive(false);
 		image_SettingWindow.gameObject.SetActive(false);
 		image_LeaveWindow.gameObject.SetActive(false);
-		for(int i = 0 ; i < levelMask.Length ; ++i)
-		{
-			if(i > PlayerPrefsManager.OnePlayerProgress)
-			{
-				levelMask[i].gameObject.SetActive(true);
-			}else
-			{
-				levelMask[i].gameObject.SetActive(false);
-			}
-		}
 		backEvent = OnClickBack;
 		currentState = (ViewState)view;
 		switch(view)
@@ -56,6 +46,21 @@ public class MainPageView : AbstractView {
 			break;
 		}
 		yield return 0;
+	}
+
+	public void SetOnePlayerProgress(int currentProgress)
+	{
+		for(int i = 0 ; i < levelUIs.Length ; ++i)
+		{
+			if(i > currentProgress)
+			{
+				levelUIs[i].SetLockState(false);
+			}else
+			{
+				levelUIs[i].SetLockState(true);
+				levelUIs[i].SetGameRecord(ModelManager.Instance.GetGameRecord((CardArrayLevel)i));
+			}
+		}
 	}
 
 	public void OnClickPlay(int level)
