@@ -68,7 +68,7 @@ public class GameSceneController : AbstractController {
 
 		currentState = GameState.GameOver;
 		gameMenuView.SetTimeBar(0f);
-		gameMenuView.ShowGameOverWindow(score);
+		gameMenuView.ShowGameOverWindow(score, dealer.GetMaxCombo());
 	}
 
 	void ScoreChange(int changeAmount)

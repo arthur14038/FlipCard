@@ -8,6 +8,7 @@ public class GameMenuView : AbstractView {
 	public Button button_Ready;
 	public Text text_Score;
 	public Text text_GameOverScore;
+	public Text text_MaxCombo;
 	public GameObject image_Mask;
 	public VoidNoneParameter onClickPause;
 	public VoidNoneParameter onClickResume;
@@ -44,9 +45,10 @@ public class GameMenuView : AbstractView {
 		text_Score.text = string.Format("Score: {0}", score);
 	}
 
-	public void ShowGameOverWindow(int score)
+	public void ShowGameOverWindow(int score, int maxCombo)
 	{
-		text_GameOverScore.text = string.Format("Score: {0}", score);
+		text_GameOverScore.text = score.ToString();
+		text_MaxCombo.text = maxCombo.ToString();
 		group_GameOver.gameObject.SetActive(true);
 		group_GameOver.alpha = 0f;
 		group_GameOver.DOFade(1f, 0.3f);		

@@ -20,6 +20,8 @@ public class CardDealer : MonoBehaviour {
 	VoidInt changeScore;
 	VoidNoneParameter completeOneRound;
 	bool lastTimeMatch;
+	int currentMaxCombo;
+	int currentCombo;
 
 	public void Init(CardArraySetting setting, VoidNoneParameter completeOneRound, VoidInt changeScore)
 	{
@@ -43,6 +45,13 @@ public class CardDealer : MonoBehaviour {
 			pos[i] = new Vector2(x, y);
 		}
 		lastTimeMatch = false;
+		currentMaxCombo = 0;
+		currentCombo = 0;
+	}
+
+	public int GetMaxCombo()
+	{
+		return currentMaxCombo;
 	}
 
 	public IEnumerator DealCard()
@@ -79,6 +88,8 @@ public class CardDealer : MonoBehaviour {
 				{
 					if(lastTimeMatch)
 					{
+						++currentCombo;
+						currentMaxCombo = Mathf.Max(currentCombo, currentMaxCombo);
 						changeScore(6);
 					}else
 					{
@@ -91,6 +102,7 @@ public class CardDealer : MonoBehaviour {
 					cardsOnTheTable.Remove(cardB);
 				}else
 				{
+					currentCombo = 0;
 					if(lastTimeMatch)
 						lastTimeMatch = false;
 					cardA.MisMatch();
