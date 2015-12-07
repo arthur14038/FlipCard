@@ -4,84 +4,57 @@ using DG.Tweening;
 using UnityEngine.UI;
 
 public class MainPageView : AbstractView {
-	enum ViewState{Main, OnePlayer, TwoPlayer, SettingWindow, Shop, LeaveWindow}
+	enum ViewState{Main, SettingWindow, LeaveWindow, Close}
 	ViewState currentState;
-	public VoidCardArrayLevel onClickPlay;
-	public CanvasGroup group_Main;
-	public CanvasGroup group_1P;
-	public CanvasGroup group_2P;
+	public RectTransform group_Main;
 	public CanvasGroup image_Mask;
 	public RectTransform image_SettingWindow;
 	public RectTransform image_LeaveWindow;
-	public LevelUI[] levelUIs;
+	public VoidNoneParameter onClick1P;
+	public VoidNoneParameter onClick2P;
+	public VoidNoneParameter onClickRate;
+	public VoidNoneParameter onClickMail;
+	public VoidNoneParameter onClickShop;
+	public VoidNoneParameter onClickLeaveGame;
 
 	public override IEnumerator Init ()
-	{
-		yield return 0;
-	}
-
-	public IEnumerator Init(int view)
 	{
 		image_Mask.gameObject.SetActive(false);
 		image_SettingWindow.gameObject.SetActive(false);
 		image_LeaveWindow.gameObject.SetActive(false);
+		group_Main.gameObject.SetActive(true);
 		backEvent = OnClickBack;
-		currentState = (ViewState)view;
-		switch(view)
-		{
-		case 0:
-			group_Main.gameObject.SetActive(true);
-			group_1P.gameObject.SetActive(false);
-			group_2P.gameObject.SetActive(false);
-			break;
-		case 1:
-			group_Main.gameObject.SetActive(false);
-			group_1P.gameObject.SetActive(true);
-			group_2P.gameObject.SetActive(false);
-			break;
-		case 2:
-			group_Main.gameObject.SetActive(false);
-			group_1P.gameObject.SetActive(false);
-			group_2P.gameObject.SetActive(true);
-			break;
-		}
 		yield return 0;
-	}
-
-	public void SetOnePlayerProgress(int currentProgress)
-	{
-		for(int i = 0 ; i < levelUIs.Length ; ++i)
-		{
-			if(i > currentProgress)
-			{
-				levelUIs[i].SetLockState(false);
-			}else
-			{
-				levelUIs[i].SetLockState(true);
-				levelUIs[i].SetGameRecord(ModelManager.Instance.GetGameRecord((CardArrayLevel)i));
-			}
-		}
-	}
-
-	public void OnClickPlay(int level)
-	{
-		if(onClickPlay != null)
-			onClickPlay((CardArrayLevel)level);
 	}
 
 	public void OnClick1P()
 	{
-		currentState = ViewState.OnePlayer;
-		group_Main.gameObject.SetActive(false);
-		group_1P.gameObject.SetActive(true);
+		if(onClick1P != null)
+			onClick1P();
 	}
 	
 	public void OnClick2P()
 	{
+		if(onClick2P != null)
+			onClick2P();
 	}
 
 	public void OnClickShop()
 	{
+		if(onClickShop != null)
+			onClickShop();
+	}
+
+	public void OnClickRate()
+	{
+		if(onClickRate != null)
+			onClickRate();
+	}
+
+	public void OnClickMail()
+	{
+		if(onClickMail != null)
+			onClickMail();
 	}
 
 	public void OnClickSetting()
@@ -119,16 +92,10 @@ public class MainPageView : AbstractView {
 		);
 	}
 
-	public void OnClickBackMain()
-	{
-		currentState = ViewState.Main;
-		group_Main.gameObject.SetActive(true);
-		group_1P.gameObject.SetActive(false);
-		group_2P.gameObject.SetActive(false);
-	}
-
 	public void OnClickLeaveGame()
 	{
+		if(onClickLeaveGame != null)
+			onClickLeaveGame();
 	}
 
 	void OnClickBack()
@@ -136,19 +103,7 @@ public class MainPageView : AbstractView {
 		switch(currentState)
 		{
 		case ViewState.Main:
-			currentState = ViewState.LeaveWindow;
-			image_Mask.gameObject.SetActive(true);
-			image_Mask.alpha = 0f;
-			image_Mask.DOFade(1f, 0.3f);	
-			image_LeaveWindow.gameObject.SetActive(true);
-			image_LeaveWindow.localScale = Vector3.zero;
-			image_LeaveWindow.DOScale(1f, 0.3f).SetEase(Ease.OutBack);
-			break;
-		case ViewState.OnePlayer:
-			OnClickBackMain();
-			break;
-		case ViewState.TwoPlayer:
-			OnClickBackMain();
+			ShowLeaveWindow();
 			break;
 		case ViewState.SettingWindow:
 			OnClickExitSetting();
@@ -156,19 +111,39 @@ public class MainPageView : AbstractView {
 		case ViewState.LeaveWindow:
 			OnClickExitLeaveWindow();
 			break;
-		case ViewState.Shop:
-			OnClickBackMain();
-			break;
 		}
+	}
+
+	void ShowLeaveWindow()
+	{
+		currentState = ViewState.LeaveWindow;
+		image_Mask.gameObject.SetActive(true);
+		image_Mask.alpha = 0f;
+		image_Mask.DOFade(1f, 0.3f);	
+		image_LeaveWindow.gameObject.SetActive(true);
+		image_LeaveWindow.localScale = Vector3.zero;
+		image_LeaveWindow.DOScale(1f, 0.3f).SetEase(Ease.OutBack);
 	}
 
 	protected override IEnumerator HideUIAnimation ()
 	{
-		yield return 0;
+		currentState = ViewState.Close;
+		group_Main.anchoredPosition = Vector2.zero;
+		yield return group_Main.DOAnchorPos(hideLeft, 0.5f).SetEase(Ease.OutCubic).WaitForCompletion();
+		base.HideUI(false);
 	}
 
 	protected override IEnumerator ShowUIAnimation ()
 	{
-		yield return 0;
+		currentState = ViewState.Close;
+		group_Main.anchoredPosition = hideLeft;
+		group_Main.gameObject.SetActive(true);
+		image_Mask.gameObject.SetActive(false);
+		image_SettingWindow.gameObject.SetActive(false);
+		image_LeaveWindow.gameObject.SetActive(false);
+
+		yield return group_Main.DOAnchorPos(Vector2.zero, 0.5f).SetEase(Ease.OutCubic).WaitForCompletion();
+
+		currentState = ViewState.Main;
 	}
 }
