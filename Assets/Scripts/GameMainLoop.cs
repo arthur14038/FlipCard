@@ -49,6 +49,7 @@ public class GameMainLoop : SingletonMonoBehavior<GameMainLoop> {
 		DontDestroyOnLoad(this.gameObject);
 		loadingPage.Init();
 		ModelManager.Instance.Init();
+        ScreenEffectManager.Instance.Init();
 		CardArrayManager.LoadData();
 		yield return new WaitForSeconds(0.5f);
 		if(controller != null)

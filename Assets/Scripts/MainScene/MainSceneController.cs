@@ -16,7 +16,6 @@ public class MainSceneController : AbstractController {
 
 		mainPageView.onClick1P = ShowSinglePlayer;
 		//mainPageView.onClick2P = ShowTwoPlayers;
-		mainPageView.onClickLeaveGame = LeaveGame;
 		//mainPageView.onClickShop = ShowShop;
 		singlePlayerView.onClickBack = ShowMainPage;
 		singlePlayerView.onClickPlay = GoToGameScene;
@@ -34,15 +33,12 @@ public class MainSceneController : AbstractController {
 			break;
 		}
 
-		singlePlayerView.SetProgress(PlayerPrefsManager.OnePlayerProgress);
-
-		AdBanner.Instance.ShowBanner();
+		singlePlayerView.SetProgress(PlayerPrefsManager.OnePlayerProgress);        
 	}
 
 	void GoToGameScene(CardArrayLevel level)
 	{
 		CardArrayManager.currentLevel = level;
-		AdBanner.Instance.HideBanner();
 		GameMainLoop.Instance.ChangeScene(SceneName.GameScene);
 	}
 

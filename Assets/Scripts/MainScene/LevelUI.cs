@@ -7,8 +7,9 @@ public class LevelUI : MonoBehaviour {
 	public CanvasGroup group_Unlock;
 	public CanvasGroup group_Locked;
 	public Text text_HighScore;
-	public Text text_PlayTimes;
-	public RectTransform levelIcon;
+	//public Text text_PlayTimes;
+    public Text text_MaxCombo;
+    public RectTransform levelIcon;
 	public RectTransform lockedLevelIcon;
 	bool levelUnlock;
 
@@ -20,6 +21,7 @@ public class LevelUI : MonoBehaviour {
 		else
 			waveItem = lockedLevelIcon;
 
+		waveItem.rotation = Quaternion.Euler(Vector3.zero);
 		yield return waveItem.DORotate(Vector3.forward*10f, enterDuration).SetEase(Ease.OutBounce).WaitForCompletion();
 		yield return waveItem.DORotate(Vector3.back*7.5f, 0.125f).SetEase(Ease.OutQuad).WaitForCompletion();
 		yield return waveItem.DORotate(Vector3.forward*5.0f, 0.125f).SetEase(Ease.OutQuad).WaitForCompletion();
@@ -47,10 +49,15 @@ public class LevelUI : MonoBehaviour {
 			text_HighScore.text = record.highScore.ToString();
 		else
 			text_HighScore.text = "- -";
-		
-		if(record.playTimes > 0)
-			text_PlayTimes.text = record.playTimes.ToString();
-		else
-			text_PlayTimes.text = "- -";
+
+        if (record.maxCombo > 0)
+            text_MaxCombo.text = record.maxCombo.ToString();
+        else
+            text_MaxCombo.text = "- -";
+
+  //      if (record.playTimes > 0)
+		//	text_PlayTimes.text = record.playTimes.ToString();
+		//else
+		//	text_PlayTimes.text = "- -";
 	}
 }

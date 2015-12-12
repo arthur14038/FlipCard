@@ -9,7 +9,7 @@ public abstract class AbstractView : MonoBehaviour, IView{
 	protected static Vector2 hideLeft = new Vector2(-1080f, 0f);
 	protected VoidNoneParameter backEvent;
 
-	public virtual void ShowUI (bool needAnimation)
+    public virtual void ShowUI (bool needAnimation)
 	{
 		if(!this.gameObject.activeSelf)
 			this.gameObject.SetActive(true);
@@ -35,6 +35,14 @@ public abstract class AbstractView : MonoBehaviour, IView{
 	{
 		if(backEvent != null && Input.GetKeyUp(KeyCode.Escape))
 			backEvent();
+
+        if(Input.GetMouseButtonDown(0))
+        {
+            Vector3 effectPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            effectPos.z = -5f;
+            ParticleListener pl = ScreenEffectManager.Instance.GetScreenEffect();
+            pl.ShowEffect(effectPos);
+        }
 	}
 
 	protected abstract IEnumerator HideUIAnimation();
