@@ -87,6 +87,8 @@ public class CardDealer : MonoBehaviour {
 					{
 						changeScore(4);
 						lastTimeMatch = true;
+                        foreach(Card waitingCard in cardsOnTheTable)
+                            waitingCard.ToggleCardGlow(true);
 					}
 					cardA.Match();
 					cardB.Match();
@@ -96,6 +98,8 @@ public class CardDealer : MonoBehaviour {
 				{
 					if(lastTimeMatch)
                     {
+                        foreach (Card waitingCard in cardsOnTheTable)
+                            waitingCard.ToggleCardGlow(false);
                         lastTimeMatch = false;
                         comboOccur(false);
                     }

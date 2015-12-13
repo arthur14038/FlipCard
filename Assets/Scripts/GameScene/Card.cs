@@ -6,8 +6,8 @@ using UnityEngine.UI;
 public class Card : MonoBehaviour {
 	public Image card;
 	public Image cardImage;
-	public Text text;
-	public enum CardState{Face, Back, None}
+    public Image image_Glow;
+    public enum CardState{Face, Back, None}
 	CardState currentState = CardState.None;
 	Sprite cardBack;
 	Sprite cardFace;
@@ -19,21 +19,24 @@ public class Card : MonoBehaviour {
 	Button thisButton;
 	VoidCard flipToFace;
 	Vector3 flipDown = new Vector3(0f, 0.9f, 1f);
+    Color glowColor = new Color(1f, 1f, 0.5f);
+    Coroutine glowEffect;
 
 	public void Init(VoidCard flipToFace)
 	{
-		this.flipToFace = flipToFace;
+        image_Glow.gameObject.SetActive(false);
+        this.flipToFace = flipToFace;
 		thisButton = this.GetComponent<Button>();
 	}
 
 	public void SetSize(float edgeLength)
 	{
 		card.rectTransform.sizeDelta = Vector2.one*edgeLength;
-	}
+        image_Glow.rectTransform.sizeDelta = Vector2.one * (edgeLength + 48f);
+    }
 
 	public void SetCard(Sprite cardBack, Sprite cardFace, Sprite cardImageSprite, CardState defaultState, string cardId)
 	{
-		text.text = cardId;
 		this.cardId = cardId;
 		this.cardBack = cardBack;
 		this.cardFace = cardFace;
@@ -51,7 +54,10 @@ public class Card : MonoBehaviour {
 		card.rectTransform.anchoredPosition = pos + shiftAmount;
 		card.DOFade(1f, duration).SetDelay(delayTime);
 		card.rectTransform.DOAnchorPos(pos, duration).SetDelay(delayTime);
-	}
+
+        image_Glow.color = glowColor - Color.black;
+        image_Glow.DOFade(1f, duration).SetDelay(delayTime);
+    }
 
 	public void Flip()
 	{
@@ -78,6 +84,37 @@ public class Card : MonoBehaviour {
 	{
 		return cardId;
 	}
+
+    public void ToggleCardGlow(bool turnOn)
+    {
+        if(turnOn)
+        {
+            image_Glow.gameObject.SetActive(true);
+            image_Glow.color = glowColor - Color.black;
+            image_Glow.DOFade(1f, 0.3f);
+            glowEffect = StartCoroutine(GlowEffect());
+        }
+        else
+        {
+            image_Glow.DOFade(0f, 0.3f).OnComplete(
+            delegate () {
+                image_Glow.gameObject.SetActive(false);
+            }
+        );
+            if (glowEffect != null)
+            {
+                StopCoroutine(glowEffect);
+                glowEffect = null;
+            }
+        }
+    }
+
+    IEnumerator GlowEffect()
+    {
+        yield return image_Glow.DOFade(0.7f, 1f).SetEase(Ease.InOutQuad).WaitForCompletion();
+        yield return image_Glow.DOFade(1f, 1f).SetEase(Ease.InOutQuad).WaitForCompletion();
+        glowEffect = StartCoroutine(GlowEffect());
+    }
 
 	IEnumerator FlipCard()
 	{
