@@ -6,10 +6,12 @@ public class GameMainLoop : SingletonMonoBehavior<GameMainLoop> {
 	IController controller;
 	public LoadingPageManager loadingPage;
 	public int showView;
+    VoidNoneParameter onSceneLoadComplete;
 
-	public void RegisterController(IController controller)
-	{
-		this.controller = controller;
+    public void RegisterController(IController controller, VoidNoneParameter onSceneLoadComplete = null)
+    {
+        this.onSceneLoadComplete = onSceneLoadComplete;
+        this.controller = controller;
 	}
 
 	public void ChangeScene(SceneName scene, int view = 0)
@@ -42,6 +44,9 @@ public class GameMainLoop : SingletonMonoBehavior<GameMainLoop> {
 		yield return new WaitForSeconds(0.5f);
 
 		yield return StartCoroutine(loadingPage.FadeOutLoadingPage());
+
+        if (onSceneLoadComplete != null)
+            onSceneLoadComplete();
 	}
 
 	// Use this for initialization

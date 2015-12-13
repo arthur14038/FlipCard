@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GameSceneController : AbstractController {
+public class GameSceneController : AbstractController
+{
     public enum GameState { Waiting, Playing, GameOver, Pausing }
     public static GameState currentState;
     public GameMenuView gameMenuView;
@@ -14,6 +15,12 @@ public class GameSceneController : AbstractController {
     int currentRound;
     bool lastTimeHadMatch;
     CardArraySetting currentSetting;
+
+    protected override void Start()
+    {
+        if (GameMainLoop.Instance != null)
+            GameMainLoop.Instance.RegisterController(this, StartCounting);
+    }
 
     public override IEnumerator Init()
     {
@@ -40,6 +47,11 @@ public class GameSceneController : AbstractController {
         gameMenuView.SetTimeBar(1f);
         lastTimeHadMatch = false;
         yield return StartCoroutine(dealer.DealCard());
+    }
+
+    void StartCounting()
+    {
+        gameMenuView.ShowUI(true);
     }
 
     void PauseGame()
@@ -77,7 +89,7 @@ public class GameSceneController : AbstractController {
     {
         if (PlayerPrefsManager.OnePlayerProgress == (int)currentSetting.level)
             PlayerPrefsManager.OnePlayerProgress += 1;
-        
+
         currentState = GameState.GameOver;
         gameMenuView.SetTimeBar(0f);
         gameMenuView.ShowGameOverWindow(score, maxCombo);
@@ -101,7 +113,8 @@ public class GameSceneController : AbstractController {
                 lastTimeHadMatch = true;
                 dealer.ToggleCardGlow(true);
             }
-        }else
+        }
+        else
         {
             if (lastTimeHadMatch)
             {
@@ -109,17 +122,17 @@ public class GameSceneController : AbstractController {
                 dealer.ToggleCardGlow(false);
             }
             currentCombo = 0;
-            if(currentSetting.level < CardArrayLevel.FourByFive)
+            if (currentSetting.level < CardArrayLevel.FourByFive)
                 scoreChangeAmount = -2;
         }
-        if(scoreChangeAmount != 0)
+        if (scoreChangeAmount != 0)
         {
             int saveScore = score;
             score += scoreChangeAmount;
             if (score < 0)
                 score = 0;
 
-            if(saveScore != score)
+            if (saveScore != score)
             {
                 gameMenuView.SetScore(score);
 
@@ -132,52 +145,52 @@ public class GameSceneController : AbstractController {
             }
         }
     }
-    
+
     void AddGameTime(float addAmount)
     {
         gameTime += addAmount;
         gameMenuView.AddTimeEffect(1f - gamePassTime / gameTime);
     }
 
-	IEnumerator DealCardRoutine()
-	{
-		dealer.FlipAllCard();
-		yield return new WaitForSeconds(0.35f + currentSetting.showCardTime);		
-		dealer.FlipAllCard();
-		yield return new WaitForSeconds(0.35f);
-		gameMenuView.ToggleMask(false);
-		currentState = GameState.Playing;
-	}
+    IEnumerator DealCardRoutine()
+    {
+        dealer.FlipAllCard();
+        yield return new WaitForSeconds(0.35f + currentSetting.showCardTime);
+        dealer.FlipAllCard();
+        yield return new WaitForSeconds(0.35f);
+        gameMenuView.ToggleMask(false);
+        currentState = GameState.Playing;
+    }
 
-	IEnumerator NextRoundRoutine()
-	{
-		gameMenuView.ToggleMask(true);
-		yield return new WaitForSeconds(0.3f);
-		yield return StartCoroutine(dealer.DealCard());
-		yield return new WaitForSeconds(0.3f);
-		yield return StartCoroutine(DealCardRoutine());
-	}
+    IEnumerator NextRoundRoutine()
+    {
+        gameMenuView.ToggleMask(true);
+        yield return new WaitForSeconds(0.3f);
+        yield return StartCoroutine(dealer.DealCard());
+        yield return new WaitForSeconds(0.3f);
+        yield return StartCoroutine(DealCardRoutine());
+    }
 
-	void SaveGameRecord()
-	{		
-		GameRecord record = ModelManager.Instance.GetGameRecord(currentSetting.level);
-		if(score > record.highScore)
-			record.highScore = score;
+    void SaveGameRecord()
+    {
+        GameRecord record = ModelManager.Instance.GetGameRecord(currentSetting.level);
+        if (score > record.highScore)
+            record.highScore = score;
         if (maxCombo > record.maxCombo)
             record.maxCombo = maxCombo;
         record.playTimes += 1;
 
-		ModelManager.Instance.SaveGameRecord(record);
-	}
+        ModelManager.Instance.SaveGameRecord(record);
+    }
 
-	void Update()
-	{
-		if(currentState == GameState.Playing)
-		{
-			gameMenuView.SetTimeBar(1f - gamePassTime/gameTime);
-			gamePassTime += Time.deltaTime;
-			if(gamePassTime >= gameTime)
-				GameOver();
-		}
-	}
+    void Update()
+    {
+        if (currentState == GameState.Playing)
+        {
+            gameMenuView.SetTimeBar(1f - gamePassTime / gameTime);
+            gamePassTime += Time.deltaTime;
+            if (gamePassTime >= gameTime)
+                GameOver();
+        }
+    }
 }

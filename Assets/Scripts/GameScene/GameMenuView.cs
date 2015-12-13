@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 public class GameMenuView : AbstractView {
 	public Slider timeBar;
-	public Button button_Ready;
 	public Text text_Score;
     public Text text_Round;
     public Text text_GameOverScore;
@@ -20,6 +19,11 @@ public class GameMenuView : AbstractView {
 	public CanvasGroup group_Pause;
     public CanvasGroup image_ScoreBoard;
     public Image group_GameOver;
+    public Image group_Counting;
+    public RectTransform image_Counting3;
+    public RectTransform image_Counting2;
+    public RectTransform image_Counting1;
+    public RectTransform image_CountingGo;
     public RectTransform image_PauseWindow;
 	public RectTransform image_GameOverWindow;
     public RectTransform button_Exit;
@@ -34,11 +38,15 @@ public class GameMenuView : AbstractView {
     public override IEnumerator Init ()
 	{
 		yield return 0;
-		ToggleMask(true);		
-		button_Ready.gameObject.SetActive(true);
-		group_Game.gameObject.SetActive(true);
+		ToggleMask(true);
+        group_Counting.gameObject.SetActive(true);
+        group_Game.gameObject.SetActive(true);
 		group_Pause.gameObject.SetActive(false);
 		group_GameOver.gameObject.SetActive(false);
+        image_Counting3.gameObject.SetActive(false);
+        image_Counting2.gameObject.SetActive(false);
+        image_Counting1.gameObject.SetActive(false);
+        image_CountingGo.gameObject.SetActive(false);
         SetScore(0);
         SetRound(1);
         for (int i = 0; i < 8; ++i)
@@ -105,15 +113,7 @@ public class GameMenuView : AbstractView {
 		if(onClickExit != null)
 			onClickExit();
 	}
-
-	public void OnClickReady()
-	{
-		button_Ready.interactable = false;
-		button_Ready.transform.DOScale(0f, 0.3f).SetEase(Ease.InBack);
-		if(onClickReady != null)
-			onClickReady();
-	}
-
+    
 	public void ToggleMask(bool value)
 	{
 		if(image_Mask.activeSelf != value)
@@ -125,7 +125,7 @@ public class GameMenuView : AbstractView {
         ScoreText st = scoreTextQueue.Dequeue();
         st.ShowScoreText(score, pos);
     }
-
+    
     void SaveScoreText(ScoreText st)
     {
         scoreTextQueue.Enqueue(st);
@@ -214,6 +214,36 @@ public class GameMenuView : AbstractView {
 
 	protected override IEnumerator ShowUIAnimation ()
 	{
-		yield return 0;
-	}
+        Vector3 flipDown = new Vector3(0f, 0.9f, 1f);
+        float delayTime = 0.25f;
+
+        image_Counting3.localScale = flipDown;
+        image_Counting3.gameObject.SetActive(true);
+        yield return image_Counting3.DOScale(Vector3.one, 0.15f).WaitForCompletion();
+        yield return image_Counting3.DOScale(flipDown, 0.2f).SetDelay(delayTime).SetEase(Ease.OutQuad).WaitForCompletion();
+        image_Counting3.gameObject.SetActive(false);
+
+        image_Counting2.localScale = flipDown;
+        image_Counting2.gameObject.SetActive(true);
+        yield return image_Counting2.DOScale(Vector3.one, 0.15f).WaitForCompletion();
+        yield return image_Counting2.DOScale(flipDown, 0.2f).SetDelay(delayTime).SetEase(Ease.OutQuad).WaitForCompletion();
+        image_Counting2.gameObject.SetActive(false);
+
+        image_Counting1.localScale = flipDown;
+        image_Counting1.gameObject.SetActive(true);
+        yield return image_Counting1.DOScale(Vector3.one, 0.15f).WaitForCompletion();
+        yield return image_Counting1.DOScale(flipDown, 0.2f).SetDelay(delayTime).SetEase(Ease.OutQuad).WaitForCompletion();
+        image_Counting1.gameObject.SetActive(false);
+
+        image_CountingGo.localScale = flipDown;
+        image_CountingGo.gameObject.SetActive(true);
+        yield return image_CountingGo.DOScale(Vector3.one, 0.15f).WaitForCompletion();
+        group_Counting.DOFade(0f, 0.3f).SetDelay(delayTime + 0.05f);
+        yield return image_CountingGo.DOScale(flipDown, 0.2f).SetDelay(delayTime + 0.15f).SetEase(Ease.OutQuad).WaitForCompletion();
+        image_CountingGo.gameObject.SetActive(false);
+        group_Counting.gameObject.SetActive(false);
+
+        if (onClickReady != null)
+            onClickReady();
+    }
 }
