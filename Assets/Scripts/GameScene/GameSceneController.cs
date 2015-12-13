@@ -11,6 +11,8 @@ public class GameSceneController : AbstractController {
     int score;
     int currentCombo;
     int maxCombo;
+    int currentRound;
+    bool lastTimeHadMatch;
     CardArraySetting currentSetting;
 
     public override IEnumerator Init()
@@ -26,15 +28,17 @@ public class GameSceneController : AbstractController {
 
         currentSetting = CardArrayManager.GetCurrentLevelSetting();
         gameTime = currentSetting.gameTime;
-        dealer.Init(currentSetting, NextRound, ScoreChange, ComboOccur);
+        dealer.Init(currentSetting, NextRound, CardMatch);
 
         score = 0;
         currentCombo = 0;
         maxCombo = 0;
+        currentRound = 1;
 
         gamePassTime = 0;
         currentState = GameState.Waiting;
         gameMenuView.SetTimeBar(1f);
+        lastTimeHadMatch = false;
         yield return StartCoroutine(dealer.DealCard());
     }
 
@@ -62,8 +66,10 @@ public class GameSceneController : AbstractController {
 
     void NextRound()
     {
-        gameTime += currentSetting.awardTime;
-        gameMenuView.AddTimeEffect(1f - gamePassTime / gameTime);
+        currentState = GameState.Waiting;
+        ++currentRound;
+        gameMenuView.SetRound(currentRound);
+        AddGameTime(currentSetting.awardTime);
         StartCoroutine(NextRoundRoutine());
     }
 
@@ -77,25 +83,60 @@ public class GameSceneController : AbstractController {
         gameMenuView.ShowGameOverWindow(score, maxCombo);
     }
 
-    void ScoreChange(int changeAmount)
+    void CardMatch(bool match, params Card[] cards)
     {
-        score += changeAmount;
-        if (score < 0)
-            score = 0;
-        gameMenuView.SetScore(score);
-    }
-
-    void ComboOccur(bool haveCombo)
-    {
-        if(haveCombo)
+        int scoreChangeAmount = 0;
+        if (match)
         {
-            ++currentCombo;
-            maxCombo = Mathf.Max(currentCombo, maxCombo);
+            if (lastTimeHadMatch)
+            {
+                scoreChangeAmount = 12;
+
+                ++currentCombo;
+                maxCombo = Mathf.Max(currentCombo, maxCombo);
+            }
+            else
+            {
+                scoreChangeAmount = 8;
+                lastTimeHadMatch = true;
+                dealer.ToggleCardGlow(true);
+            }
         }else
         {
+            if (lastTimeHadMatch)
+            {
+                lastTimeHadMatch = false;
+                dealer.ToggleCardGlow(false);
+            }
             currentCombo = 0;
+            if(currentSetting.level < CardArrayLevel.FourByFive)
+                scoreChangeAmount = -2;
         }
-        gameMenuView.SetCombo(currentCombo);
+        if(scoreChangeAmount != 0)
+        {
+            int saveScore = score;
+            score += scoreChangeAmount;
+            if (score < 0)
+                score = 0;
+
+            if(saveScore != score)
+            {
+                gameMenuView.SetScore(score);
+
+                foreach (Card matchCard in cards)
+                {
+                    Vector2 pos = matchCard.GetAnchorPosition();
+                    pos.x += currentSetting.edgeLength / 2 - 20f;
+                    gameMenuView.ShowScoreText((score - saveScore) / cards.Length, pos);
+                }
+            }
+        }
+    }
+    
+    void AddGameTime(float addAmount)
+    {
+        gameTime += addAmount;
+        gameMenuView.AddTimeEffect(1f - gamePassTime / gameTime);
     }
 
 	IEnumerator DealCardRoutine()
@@ -111,7 +152,6 @@ public class GameSceneController : AbstractController {
 	IEnumerator NextRoundRoutine()
 	{
 		gameMenuView.ToggleMask(true);
-		currentState = GameState.Waiting;
 		yield return new WaitForSeconds(0.3f);
 		yield return StartCoroutine(dealer.DealCard());
 		yield return new WaitForSeconds(0.3f);

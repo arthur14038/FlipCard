@@ -6,7 +6,7 @@
      "Row": 3, 
      "CardGap": 50.0, 
      "FirstPosition": [-150.0, 200.0], 
-     "GameTime": 8.0, 
+     "GameTime": 9.0, 
      "ShowCardTime": 0.3, 
      "AwardTime": 1.5
  },
@@ -41,6 +41,6 @@
      "FirstPosition": [-400.0, 450.0], 
      "GameTime": 70.0, 
      "ShowCardTime": 3.0, 
-     "AwardTime": 15.0
+     "AwardTime": 20.0
  }
 ]

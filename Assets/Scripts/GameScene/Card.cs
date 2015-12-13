@@ -7,6 +7,7 @@ public class Card : MonoBehaviour {
 	public Image card;
 	public Image cardImage;
     public Image image_Glow;
+    public Text text_CardId;
     public enum CardState{Face, Back, None}
 	CardState currentState = CardState.None;
 	Sprite cardBack;
@@ -20,7 +21,6 @@ public class Card : MonoBehaviour {
 	VoidCard flipToFace;
 	Vector3 flipDown = new Vector3(0f, 0.9f, 1f);
     Color glowColor = new Color(1f, 0.85f, 0f);
-    Coroutine glowEffect;
 
 	public void Init(VoidCard flipToFace)
 	{
@@ -37,7 +37,8 @@ public class Card : MonoBehaviour {
 
 	public void SetCard(Sprite cardBack, Sprite cardFace, Sprite cardImageSprite, CardState defaultState, string cardId)
 	{
-		this.cardId = cardId;
+        text_CardId.text = cardId.Replace("CardImage_", "");
+        this.cardId = cardId;
 		this.cardBack = cardBack;
 		this.cardFace = cardFace;
 		cardImage.sprite = cardImageSprite;
@@ -49,14 +50,17 @@ public class Card : MonoBehaviour {
 	{
 		if(!this.gameObject.activeSelf)
 			this.gameObject.SetActive(true);
-
-		card.color = transparentColor;
+        
+        card.color = transparentColor;
 		card.rectTransform.anchoredPosition = pos + shiftAmount;
 		card.DOFade(1f, duration).SetDelay(delayTime);
 		card.rectTransform.DOAnchorPos(pos, duration).SetDelay(delayTime);
 
-        image_Glow.color = glowColor - Color.black;
-        image_Glow.DOFade(1f, duration).SetDelay(delayTime);
+        if(image_Glow.gameObject.activeSelf)
+        {
+            image_Glow.color = glowColor - Color.black;
+            image_Glow.DOFade(1f, duration).SetDelay(delayTime);
+        }
     }
 
 	public void Flip()
@@ -90,30 +94,35 @@ public class Card : MonoBehaviour {
         if(turnOn)
         {
             image_Glow.gameObject.SetActive(true);
-            image_Glow.color = glowColor - Color.black;
-            image_Glow.DOFade(1f, 0.3f);
-            glowEffect = StartCoroutine(GlowEffect());
+            if(this.gameObject.activeInHierarchy)
+            {
+                image_Glow.color = glowColor - Color.black;
+                image_Glow.DOFade(1f, 0.3f);
+            }
+            else
+            {
+                image_Glow.color = glowColor;
+            }
         }
         else
         {
-            image_Glow.DOFade(0f, 0.3f).OnComplete(
-            delegate () {
-                image_Glow.gameObject.SetActive(false);
-            }
-        );
-            if (glowEffect != null)
+            if (this.gameObject.activeInHierarchy)
             {
-                StopCoroutine(glowEffect);
-                glowEffect = null;
-            }
+                image_Glow.DOFade(0f, 0.3f).OnComplete(
+                    delegate () {
+                        image_Glow.gameObject.SetActive(false);
+                    }
+                    );
+            }else
+            {
+                image_Glow.gameObject.SetActive(false);
+            }            
         }
     }
 
-    IEnumerator GlowEffect()
+    public Vector2 GetAnchorPosition()
     {
-        yield return image_Glow.DOFade(0.7f, 1f).SetEase(Ease.InOutQuad).WaitForCompletion();
-        yield return image_Glow.DOFade(1f, 1f).SetEase(Ease.InOutQuad).WaitForCompletion();
-        glowEffect = StartCoroutine(GlowEffect());
+        return card.rectTransform.anchoredPosition;
     }
 
 	IEnumerator FlipCard()
@@ -144,12 +153,7 @@ public class Card : MonoBehaviour {
 	IEnumerator MatchEffect()
 	{
 		yield return card.rectTransform.DOScale(0f, 0.3f).SetEase(Ease.InBack).WaitForCompletion();
-
-        if (glowEffect != null)
-        {
-            StopCoroutine(glowEffect);
-            glowEffect = null;
-        }
+        
         this.gameObject.SetActive(false);
 		card.rectTransform.localScale = Vector3.one;
 

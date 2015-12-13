@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine.UI;
 
@@ -7,7 +8,7 @@ public class GameMenuView : AbstractView {
 	public Slider timeBar;
 	public Button button_Ready;
 	public Text text_Score;
-    public Text text_Combo;
+    public Text text_Round;
     public Text text_GameOverScore;
 	public Text text_MaxCombo;
 	public GameObject image_Mask;
@@ -26,6 +27,9 @@ public class GameMenuView : AbstractView {
     public RectTransform image_CharacterLeft;
     public RectTransform text_ScoreTitle;
     public RectTransform text_MaxComboTitle;
+    public Transform scoreTextParent;
+    public GameObject scoreTextPrefab;
+    Queue<ScoreText> scoreTextQueue = new Queue<ScoreText>();
 
     public override IEnumerator Init ()
 	{
@@ -36,8 +40,18 @@ public class GameMenuView : AbstractView {
 		group_Pause.gameObject.SetActive(false);
 		group_GameOver.gameObject.SetActive(false);
         SetScore(0);
-        SetCombo(0);
-	}
+        SetRound(1);
+        for (int i = 0; i < 8; ++i)
+        {
+            GameObject tmp = Instantiate(scoreTextPrefab) as GameObject;
+            tmp.name = scoreTextPrefab.name;
+            tmp.transform.SetParent(scoreTextParent);
+            tmp.transform.localScale = Vector3.one;
+            ScoreText st = tmp.GetComponent<ScoreText>();
+            st.Init(SaveScoreText);
+            SaveScoreText(st);
+        }
+    }
 
 	public void SetTimeBar(float value)
 	{
@@ -59,12 +73,12 @@ public class GameMenuView : AbstractView {
         );
     }
 
-    public void SetCombo(int combo)
+    public void SetRound(int round)
     {
-        text_Combo.text = string.Format("Combo: {0}", combo);
-        text_Combo.rectTransform.DOScale(1.2f, 0.15f).SetEase(Ease.InOutQuad).OnComplete(
+        text_Round.text = string.Format("Round: {0}", round);
+        text_Round.rectTransform.DOScale(1.2f, 0.15f).SetEase(Ease.InOutQuad).OnComplete(
             delegate () {
-                text_Combo.rectTransform.DOScale(1f, 0.15f).SetEase(Ease.InOutQuad);
+                text_Round.rectTransform.DOScale(1f, 0.15f).SetEase(Ease.InOutQuad);
             }
         );
     }
@@ -106,7 +120,18 @@ public class GameMenuView : AbstractView {
 			image_Mask.SetActive(value);
 	}
 
-	IEnumerator PauseEffect()
+    public void ShowScoreText(int score, Vector2 pos)
+    {
+        ScoreText st = scoreTextQueue.Dequeue();
+        st.ShowScoreText(score, pos);
+    }
+
+    void SaveScoreText(ScoreText st)
+    {
+        scoreTextQueue.Enqueue(st);
+    }
+
+    IEnumerator PauseEffect()
 	{
 		group_Pause.gameObject.SetActive(true);
 		group_Pause.alpha = 0f;

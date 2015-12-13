@@ -8,5 +8,8 @@ public delegate void VoidTransform(Transform target);
 public delegate void VoidCardArrayLevel(CardArrayLevel level);
 public delegate void VoidString(string value);
 public delegate void VoidCard(Card card);
+public delegate void VoidVector2(Vector2 vec2);
 public delegate void VoidVector3(Vector3 vec3);
 public delegate void VoidParticleListener(ParticleListener pl);
+public delegate void VoidScoreText(ScoreText st);
+public delegate void VoidBoolAndCards(bool value, params Card[] cards);

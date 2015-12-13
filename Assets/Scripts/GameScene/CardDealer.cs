@@ -1,13 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using DG.Tweening;
-using UnityEngine.UI;
 
 public class CardDealer : MonoBehaviour {
 	public GameObject cardPrefab;
-	public Transform cardParent;
-	public Sprite[] cardBack;
+    public Transform cardParent;
+    public Sprite[] cardBack;
 	public Sprite[] cardFace;
 	public Sprite[] cardImage;
 	Card[] cards;
@@ -17,20 +15,17 @@ public class CardDealer : MonoBehaviour {
 	float dealTime = 0.5f;
 	Queue<Card> waitForCompare = new Queue<Card>();
 	List<Card> cardsOnTheTable = new List<Card>();
-	VoidInt changeScore;
-    VoidBool comboOccur;
 	VoidNoneParameter completeOneRound;
-	bool lastTimeMatch;
+    VoidBoolAndCards cardMatch;
 
-	public void Init(CardArraySetting setting, VoidNoneParameter completeOneRound, VoidInt changeScore, VoidBool comboOccur)
-	{
-		this.completeOneRound = completeOneRound;
-		this.changeScore = changeScore;
-        this.comboOccur = comboOccur;
+    public void Init(CardArraySetting setting, VoidNoneParameter completeOneRound, VoidBoolAndCards cardMatch)
+    {
+        this.cardMatch = cardMatch;
+        this.completeOneRound = completeOneRound;
         cards = new Card[setting.column*setting.row];
 		pos = new Vector2[cards.Length];
 
-		for(int i = 0 ; i < cards.Length ; ++i)
+        for (int i = 0 ; i < cards.Length ; ++i)
 		{
 			GameObject tmp = Instantiate(cardPrefab) as GameObject;
 			tmp.name = cardPrefab.name + i.ToString();
@@ -44,7 +39,7 @@ public class CardDealer : MonoBehaviour {
 			float y = setting.realFirstPosition.y - (i/setting.column)*(setting.edgeLength + setting.cardGap);
 			pos[i] = new Vector2(x, y);
 		}
-		lastTimeMatch = false;
+        cardPrefab = null;
 	}
 
 	public IEnumerator DealCard()
@@ -55,7 +50,7 @@ public class CardDealer : MonoBehaviour {
 		{
 			cards[i].SetCard(cardBack[0], cardFace[0], thisTimeCardImage[i], Card.CardState.Back, thisTimeCardImage[i].name);
 			cards[i].Appear(pos[i], shiftAmount, delayDuration*i, appearDuration);
-			cardsOnTheTable.Add(cards[i]);
+            cardsOnTheTable.Add(cards[i]);
 		}
 		yield return new WaitForSeconds(dealTime);
 	}
@@ -67,6 +62,12 @@ public class CardDealer : MonoBehaviour {
 			cards[i].Flip();
 		}
 	}
+    
+    public void ToggleCardGlow(bool turnOn)
+    {
+        foreach (Card usingCard in cards)
+            usingCard.ToggleCardGlow(turnOn);
+    }
 
 	void UserFlipCard(Card card)
 	{
@@ -77,42 +78,27 @@ public class CardDealer : MonoBehaviour {
 			{
 				Card cardA = waitForCompare.Dequeue();
 				Card cardB = waitForCompare.Dequeue();
+                bool isMatch = false;
 				if(cardA.GetCardId() == cardB.GetCardId())
 				{
-					if(lastTimeMatch)
-					{
-                        comboOccur(true);
-						changeScore(6);
-					}else
-					{
-						changeScore(4);
-						lastTimeMatch = true;
-                        foreach(Card waitingCard in cardsOnTheTable)
-                            waitingCard.ToggleCardGlow(true);
-					}
-					cardA.Match();
+                    isMatch = true;
+                    cardA.Match();
 					cardB.Match();
 					cardsOnTheTable.Remove(cardA);
 					cardsOnTheTable.Remove(cardB);
 				}else
 				{
-					if(lastTimeMatch)
-                    {
-                        foreach (Card waitingCard in cardsOnTheTable)
-                            waitingCard.ToggleCardGlow(false);
-                        lastTimeMatch = false;
-                        comboOccur(false);
-                    }
-					cardA.MisMatch();
+                    cardA.MisMatch();
 					cardB.MisMatch();
-					changeScore(-1);
-				}
-			}
+                }
+                if (cardMatch != null)
+                    cardMatch(isMatch, cardA, cardB);
+            }
 			if(cardsOnTheTable.Count == 0 && completeOneRound != null)
 				completeOneRound();
 		}
 	}
-
+    
 	Sprite[] GetCardImage(int count)
 	{
 		Sprite[] choosenCardFace = new Sprite[count];
