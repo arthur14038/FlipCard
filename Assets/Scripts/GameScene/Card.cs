@@ -19,7 +19,7 @@ public class Card : MonoBehaviour {
 	Button thisButton;
 	VoidCard flipToFace;
 	Vector3 flipDown = new Vector3(0f, 0.9f, 1f);
-    Color glowColor = new Color(1f, 1f, 0.5f);
+    Color glowColor = new Color(1f, 0.85f, 0f);
     Coroutine glowEffect;
 
 	public void Init(VoidCard flipToFace)
@@ -144,8 +144,13 @@ public class Card : MonoBehaviour {
 	IEnumerator MatchEffect()
 	{
 		yield return card.rectTransform.DOScale(0f, 0.3f).SetEase(Ease.InBack).WaitForCompletion();
-				
-		this.gameObject.SetActive(false);
+
+        if (glowEffect != null)
+        {
+            StopCoroutine(glowEffect);
+            glowEffect = null;
+        }
+        this.gameObject.SetActive(false);
 		card.rectTransform.localScale = Vector3.one;
 
 		matchEffect = null;
