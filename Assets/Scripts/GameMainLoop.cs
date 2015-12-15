@@ -1,5 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Soomla.Profile;
+using Grow.Highway;
+using Grow.Sync;
+using Soomla.Store;
 
 public enum SceneName{FirstScene = 0, MainScene, GameScene}
 public class GameMainLoop : SingletonMonoBehavior<GameMainLoop> {
@@ -53,7 +57,11 @@ public class GameMainLoop : SingletonMonoBehavior<GameMainLoop> {
 	IEnumerator Start () {
 		DontDestroyOnLoad(this.gameObject);
 		loadingPage.Init();
-		ModelManager.Instance.Init();
+        GrowHighway.Initialize();
+        GrowSync.Initialize(true, true);
+        SoomlaStore.Initialize(new FlipCardStoreAsset());
+        SoomlaProfile.Initialize();
+        ModelManager.Instance.Init();
         ScreenEffectManager.Instance.Init();
 		CardArrayManager.LoadData();
 		yield return new WaitForSeconds(0.5f);

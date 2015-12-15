@@ -10,7 +10,8 @@ public class GameMenuView : AbstractView {
     public Text text_Round;
     public Text text_GameOverScore;
 	public Text text_MaxCombo;
-	public GameObject image_Mask;
+    public Text text_NewRecord;
+    public GameObject image_Mask;
 	public VoidNoneParameter onClickPause;
 	public VoidNoneParameter onClickResume;
 	public VoidNoneParameter onClickExit;
@@ -31,8 +32,10 @@ public class GameMenuView : AbstractView {
     public RectTransform image_CharacterLeft;
     public RectTransform text_ScoreTitle;
     public RectTransform text_MaxComboTitle;
+    public RectTransform image_NewHighScoreHeader;
     public Transform scoreTextParent;
     public GameObject scoreTextPrefab;
+    public GameObject newHighScoreEffect;
     Queue<ScoreText> scoreTextQueue = new Queue<ScoreText>();
 
     public override IEnumerator Init ()
@@ -47,6 +50,8 @@ public class GameMenuView : AbstractView {
         image_Counting2.gameObject.SetActive(false);
         image_Counting1.gameObject.SetActive(false);
         image_CountingGo.gameObject.SetActive(false);
+        image_NewHighScoreHeader.gameObject.SetActive(false);
+        newHighScoreEffect.SetActive(false);
         SetScore(0);
         SetRound(1);
         for (int i = 0; i < 8; ++i)
@@ -91,9 +96,15 @@ public class GameMenuView : AbstractView {
         );
     }
 
-	public void ShowGameOverWindow(int score, int maxCombo)
+	public void ShowGameOverWindow(int score, int maxCombo, bool newHighScore, bool newMaxCombo)
 	{
-        StartCoroutine(GameOverEffect(score, maxCombo));
+        if(newHighScore || newMaxCombo)
+        {
+			newHighScoreEffect.SetActive(true);
+			image_NewHighScoreHeader.gameObject.SetActive(true);
+		}
+
+        StartCoroutine(GameOverEffect(score, maxCombo, newHighScore, newMaxCombo));
     }
 
 	public void OnClickPause()
@@ -131,6 +142,16 @@ public class GameMenuView : AbstractView {
         scoreTextQueue.Enqueue(st);
     }
 
+    IEnumerator TextCelebrateEffect(Text theText)
+    {
+		while(this.gameObject.activeInHierarchy)
+		{
+			yield return theText.rectTransform.DOScale(1.3f, 0.5f).SetEase(Ease.OutQuart).WaitForCompletion();
+			yield return theText.rectTransform.DOScale(1f, 1.5f).SetEase(Ease.OutBounce).WaitForCompletion();
+			yield return new WaitForSeconds(0.2f);
+		}
+    }
+
     IEnumerator PauseEffect()
 	{
 		group_Pause.gameObject.SetActive(true);
@@ -149,7 +170,7 @@ public class GameMenuView : AbstractView {
 			onClickResume();
 	}
 
-    IEnumerator GameOverEffect(int score, int maxCombo)
+    IEnumerator GameOverEffect(int score, int maxCombo, bool newHighScore, bool newMaxCombo)
     {
         image_CharacterRight.gameObject.SetActive(false);
         image_CharacterLeft.gameObject.SetActive(false);
@@ -204,8 +225,14 @@ public class GameMenuView : AbstractView {
 
         button_Exit.gameObject.SetActive(true);
         button_Exit.localScale = new Vector3(1f, 0f, 1f);
-        yield return button_Exit.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
-    }
+
+		if(newHighScore)
+			StartCoroutine(TextCelebrateEffect(text_GameOverScore));
+		if(newMaxCombo)
+			StartCoroutine(TextCelebrateEffect(text_MaxCombo));
+
+		yield return button_Exit.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
+	}
 
 	protected override IEnumerator HideUIAnimation ()
 	{
@@ -246,4 +273,12 @@ public class GameMenuView : AbstractView {
         if (onClickReady != null)
             onClickReady();
     }
+
+	//void OnGUI()
+	//{
+	//	if(GUI.Button(new Rect(10, 10, 150, 50), "Test"))
+	//	{
+	//		StartCoroutine(TextCelebrateEffect(text_GameOverScore));
+	//	}
+	//}
 }

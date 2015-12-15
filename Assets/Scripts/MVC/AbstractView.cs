@@ -36,7 +36,7 @@ public abstract class AbstractView : MonoBehaviour, IView{
 		if(backEvent != null && Input.GetKeyUp(KeyCode.Escape))
 			backEvent();
 
-        if(Input.GetMouseButtonDown(0))
+        if(ScreenEffectManager.Instance != null && Input.GetMouseButtonDown(0))
         {
             Vector3 effectPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             effectPos.z = -5f;

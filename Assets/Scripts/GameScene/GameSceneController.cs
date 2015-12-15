@@ -90,14 +90,23 @@ public class GameSceneController : AbstractController
         if (PlayerPrefsManager.OnePlayerProgress == (int)currentSetting.level)
             PlayerPrefsManager.OnePlayerProgress += 1;
 
+        GameRecord record = ModelManager.Instance.GetGameRecord(currentSetting.level);
+        bool newHighScore = false;
+        bool newMaxCombo = false;
+        if(score > record.highScore)
+            newHighScore = true;
+        if(maxCombo > record.maxCombo)
+            newMaxCombo = true;
+
         currentState = GameState.GameOver;
         gameMenuView.SetTimeBar(0f);
-        gameMenuView.ShowGameOverWindow(score, maxCombo);
+        gameMenuView.ShowGameOverWindow(score, maxCombo, newHighScore, newMaxCombo);
     }
 
     void CardMatch(bool match, params Card[] cards)
     {
         int scoreChangeAmount = 0;
+        //float timeChangeAmount = 0f;
         if (match)
         {
             if (lastTimeHadMatch)
@@ -148,7 +157,9 @@ public class GameSceneController : AbstractController
 
     void AddGameTime(float addAmount)
     {
-        gameTime += addAmount;
+        gamePassTime -= addAmount;
+        if(gamePassTime < 0f)
+            gamePassTime = 0f;
         gameMenuView.AddTimeEffect(1f - gamePassTime / gameTime);
     }
 
