@@ -41,6 +41,7 @@ public class GameMenuView : AbstractView {
     public override IEnumerator Init ()
 	{
 		yield return 0;
+		escapeEvent = OnClickEscape;
 		ToggleMask(true);
         group_Counting.gameObject.SetActive(true);
         group_Game.gameObject.SetActive(true);
@@ -142,6 +143,19 @@ public class GameMenuView : AbstractView {
         scoreTextQueue.Enqueue(st);
     }
 
+	void OnClickEscape()
+	{
+		switch(GameSceneController.currentState)
+		{
+		case GameSceneController.GameState.Playing:
+			OnClickPause();
+			break;
+		case GameSceneController.GameState.Pausing:
+			OnClickResume();
+			break;
+		}
+	}
+
     IEnumerator TextCelebrateEffect(Text theText)
     {
 		while(this.gameObject.activeInHierarchy)
@@ -156,8 +170,8 @@ public class GameMenuView : AbstractView {
 	{
 		group_Pause.gameObject.SetActive(true);
 		group_Pause.alpha = 0f;
-		image_PauseWindow.localScale = Vector3.zero;
 		group_Pause.DOFade(1f, 0.3f);
+		image_PauseWindow.localScale = Vector3.zero;
 		yield return image_PauseWindow.DOScale(1f, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
 	}
 

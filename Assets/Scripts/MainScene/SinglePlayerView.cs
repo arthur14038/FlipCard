@@ -11,7 +11,7 @@ public class SinglePlayerView : AbstractView {
 
 	public override IEnumerator Init ()
 	{
-		backEvent = onClickBack;
+		escapeEvent = OnClickBack;
 		group_1P.gameObject.SetActive(true);
 		yield return 0;
 	}
@@ -48,6 +48,7 @@ public class SinglePlayerView : AbstractView {
 		group_1P.anchoredPosition = Vector2.zero;
 		yield return group_1P.DOAnchorPos(hideRight, 0.5f).SetEase(Ease.OutCubic).WaitForCompletion();
 		base.HideUI(false);
+		hideCoroutine = null;
 	}
 
 	protected override IEnumerator ShowUIAnimation ()
@@ -57,5 +58,6 @@ public class SinglePlayerView : AbstractView {
 		group_1P.gameObject.SetActive(true);
 		group_1P.anchoredPosition = hideRight;
 		yield return group_1P.DOAnchorPos(Vector2.zero, 0.5f).SetEase(Ease.OutCubic).WaitForCompletion();
+		showCoroutine = null;
 	}
 }

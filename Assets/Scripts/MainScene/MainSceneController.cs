@@ -15,8 +15,11 @@ public class MainSceneController : AbstractController {
 		currentView = (MainSceneView)GameMainLoop.Instance.showView;
 
 		mainPageView.onClick1P = ShowSinglePlayer;
-		//mainPageView.onClick2P = ShowTwoPlayers;
-		//mainPageView.onClickShop = ShowShop;
+		mainPageView.onClick2P = ShowTwoPlayers;
+		mainPageView.onClickShop = ShowShop;
+		mainPageView.onClickMail = SendMailToUs;
+		mainPageView.onClickRate = ShowRatePage;
+		mainPageView.onClickLeaveGame = LeaveGame;
 		singlePlayerView.onClickBack = ShowMainPage;
 		singlePlayerView.onClickPlay = GoToGameScene;
 
@@ -39,6 +42,13 @@ public class MainSceneController : AbstractController {
 	void GoToGameScene(CardArrayLevel level)
 	{
 		CardArrayManager.currentLevel = level;
+
+		int thisLevelPlayTimes = ModelManager.Instance.AddPlayTimes(level);
+		if(thisLevelPlayTimes % 3 == 0)
+		{
+			UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.PlayGame, ModelManager.Instance.GetPlayTimes());
+		}
+
 		GameMainLoop.Instance.ChangeScene(SceneName.GameScene);
 	}
 
@@ -63,14 +73,26 @@ public class MainSceneController : AbstractController {
 
 	void ShowTwoPlayers()
 	{
-		mainPageView.HideUI(true);
-		currentView = MainSceneView.TwoPlayer;
+		UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.OnClick2P);
+		//mainPageView.HideUI(true);
+		//currentView = MainSceneView.TwoPlayer;
 	}
 
 	void ShowShop()
 	{
-		mainPageView.HideUI(true);
-		currentView = MainSceneView.Shop;
+		UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.OnClickShop);
+		//mainPageView.HideUI(true);
+		//currentView = MainSceneView.Shop;
+	}
+
+	void ShowRatePage()
+	{
+		UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.OnClickRate);
+	}
+
+	void SendMailToUs()
+	{
+		UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.OnClickMail);
 	}
 
 	void LeaveGame()

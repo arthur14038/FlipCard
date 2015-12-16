@@ -5,7 +5,9 @@ using Newtonsoft.Json;
 
 public class ModelManager : SingletonMonoBehavior<ModelManager> {
 	Dictionary<CardArrayLevel, GameRecord> gameRecordDictionary;
-	string gameRecordFileName = "GameRecord.json";	
+	Dictionary<string, int> playTimesDictionary;
+	string gameRecordFileName = "GameRecord.json";
+	string playTimesFileName = "PlayTimes.json";
 	string encodeKey = "FlipCard";
 	string encodeIV = "VeryGood";
 
@@ -51,6 +53,30 @@ public class ModelManager : SingletonMonoBehavior<ModelManager> {
 			record.playTimes = 0;
 			return record;
 		}
+	}
+
+	public int AddPlayTimes(CardArrayLevel level)
+	{
+		int addUpPlayTimes = 0;
+		if(playTimesDictionary.ContainsKey(level.ToString()))
+		{
+			playTimesDictionary[level.ToString()] += 1;
+			addUpPlayTimes = playTimesDictionary[level.ToString()];
+        } else
+		{
+			addUpPlayTimes = 1;
+            playTimesDictionary.Add(level.ToString(), 1);
+        }
+		string jsonString = JsonConvert.SerializeObject(playTimesDictionary);
+		string encodedString = EncodeTool.GetEncodedBase64(jsonString, encodeKey, encodeIV);
+		string filePath = GetSaveFilePath(playTimesFileName);
+		WriteFileTool.WriteFile(filePath, encodedString);
+		return addUpPlayTimes;
+    }
+
+	public Dictionary<string, int> GetPlayTimes()
+	{
+		return playTimesDictionary;
 	}
 
 	string GetSaveFilePath(string fileName)

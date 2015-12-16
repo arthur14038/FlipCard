@@ -7,15 +7,24 @@ public abstract class AbstractView : MonoBehaviour, IView{
 	protected static Vector2 hideDown = new Vector2(0f, -1664f);
 	protected static Vector2 hideRight = new Vector2(1080f, 0f);
 	protected static Vector2 hideLeft = new Vector2(-1080f, 0f);
-	protected VoidNoneParameter backEvent;
+	protected VoidNoneParameter escapeEvent;
+	protected Coroutine hideCoroutine;
+	protected Coroutine showCoroutine;
 
-    public virtual void ShowUI (bool needAnimation)
+	public virtual void ShowUI (bool needAnimation)
 	{
 		if(!this.gameObject.activeSelf)
 			this.gameObject.SetActive(true);
 
 		if(needAnimation && this.gameObject.activeInHierarchy)
-			StartCoroutine(ShowUIAnimation());
+		{
+			if(hideCoroutine != null)
+			{
+				StopCoroutine(hideCoroutine);
+				hideCoroutine = null;
+			}
+			showCoroutine = StartCoroutine(ShowUIAnimation());
+		}
 	}
 
 	public virtual void HideUI (bool needAnimation)
@@ -23,7 +32,14 @@ public abstract class AbstractView : MonoBehaviour, IView{
 		if(needAnimation)
 		{
 			if(this.gameObject.activeInHierarchy)
-				StartCoroutine(HideUIAnimation());
+			{
+				if(showCoroutine != null)
+				{
+					StopCoroutine(showCoroutine);
+					showCoroutine = null;
+				}
+				hideCoroutine = StartCoroutine(HideUIAnimation());
+			}				
 		}else
 		{
 			if(this.gameObject.activeSelf)
@@ -33,8 +49,8 @@ public abstract class AbstractView : MonoBehaviour, IView{
 		
 	void Update()
 	{
-		if(backEvent != null && Input.GetKeyUp(KeyCode.Escape))
-			backEvent();
+		if(escapeEvent != null && Input.GetKeyUp(KeyCode.Escape))
+			escapeEvent();
 
         if(ScreenEffectManager.Instance != null && Input.GetMouseButtonDown(0))
         {
