@@ -11,11 +11,11 @@ public class GameMenuView : AbstractView {
     public Text text_GameOverScore;
 	public Text text_MaxCombo;
     public Text text_NewRecord;
-    public GameObject image_Mask;
+	public GameObject image_Mask;
 	public VoidNoneParameter onClickPause;
 	public VoidNoneParameter onClickResume;
 	public VoidNoneParameter onClickExit;
-	public VoidNoneParameter onClickReady;
+	public VoidNoneParameter onCountDownFinished;
 	public CanvasGroup group_Game;
 	public CanvasGroup group_Pause;
     public CanvasGroup image_ScoreBoard;
@@ -38,7 +38,9 @@ public class GameMenuView : AbstractView {
 	public Transform scoreTextParent;
     public GameObject scoreTextPrefab;
     public GameObject newHighScoreEffect;
-	Queue<ScoreText> scoreTextQueue = new Queue<ScoreText>();
+	public GameObject timeIsRunning;
+	public ShowComplimentTool group_Compliment;
+    Queue<ScoreText> scoreTextQueue = new Queue<ScoreText>();
 
     public override IEnumerator Init ()
 	{
@@ -59,7 +61,9 @@ public class GameMenuView : AbstractView {
         image_CountingGo.gameObject.SetActive(false);
         image_NewHighScoreHeader.gameObject.SetActive(false);
         newHighScoreEffect.SetActive(false);
-        SetScore(0);
+		timeIsRunning.SetActive(false);
+		group_Compliment.Init(hideLeft, hideRight);
+		SetScore(0);
         SetRound(1);
         for (int i = 0; i < 8; ++i)
         {
@@ -105,8 +109,11 @@ public class GameMenuView : AbstractView {
 
 	public void ShowGameOverWindow(int score, int maxCombo, bool newHighScore, bool newMaxCombo)
 	{
-        if(newHighScore || newMaxCombo)
-        {
+		AudioManager.Instance.StopMusic();
+		AudioManager.Instance.PlayOneShot("GameResult");
+		if(newHighScore || newMaxCombo)
+		{
+			AudioManager.Instance.PlayOneShot("NewHighScore2");
 			newHighScoreEffect.SetActive(true);
 			image_NewHighScoreHeader.gameObject.SetActive(true);
 		}
@@ -157,6 +164,17 @@ public class GameMenuView : AbstractView {
 		AudioManager.Instance.SoundChangeValue(!value);
 	}
 
+	public void ToggleTimeIsRunning(bool value)
+	{
+		if(timeIsRunning.activeSelf != value)
+			timeIsRunning.SetActive(value);
+	}
+
+	public void ShowCompliment(int value)
+	{
+		group_Compliment.ShowCompliment(value);
+	}
+	
 	void SaveScoreText(ScoreText st)
     {
         scoreTextQueue.Enqueue(st);
@@ -164,12 +182,12 @@ public class GameMenuView : AbstractView {
 
 	void OnClickEscape()
 	{
-		switch(GameSceneController.currentState)
+		switch(GameModeJudgement.CurrentGameState)
 		{
-		case GameSceneController.GameState.Playing:
+		case GameModeJudgement.GameState.Playing:
 			OnClickPause();
 			break;
-		case GameSceneController.GameState.Pausing:
+		case GameModeJudgement.GameState.Pausing:
 			OnClickResume();
 			break;
 		}
@@ -318,16 +336,22 @@ public class GameMenuView : AbstractView {
         image_CountingGo.gameObject.SetActive(false);
         group_Counting.gameObject.SetActive(false);
 
-        if (onClickReady != null)
-            onClickReady();
+        if (onCountDownFinished != null)
+            onCountDownFinished();
     }
 
+	//int testCount = 0;
 	//void OnGUI()
 	//{
+	//	if(GUI.Button(new Rect(200, 10, 150, 50), "Init"))
+	//	{
+	//		group_Compliment.Init(hideLeft, hideRight);
+ //       }
+
 	//	if(GUI.Button(new Rect(10, 10, 150, 50), "Test"))
 	//	{
-	//		AudioManager.Instance.PlayOneShot("Batery_StartGame");
-	//		StartCoroutine(ShowUIAnimation());
+	//		++testCount;
+	//		group_Compliment.ShowCompliment(testCount);
 	//	}
 	//}
 }

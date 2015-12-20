@@ -69,7 +69,7 @@ public class Card : MonoBehaviour {
 			AudioManager.Instance.PlayOneShot("GamePlayChooseCard");
 		if(flipCard != null)
 			StopCoroutine(flipCard);
-		flipCard = StartCoroutine(FlipCard());
+		flipCard = StartCoroutine(FlipCard(flipByUser));
 	}
 
 	public void Match()
@@ -127,7 +127,7 @@ public class Card : MonoBehaviour {
         return card.rectTransform.anchoredPosition;
     }
 
-	IEnumerator FlipCard()
+	IEnumerator FlipCard(bool checkMatch)
 	{
 		card.DOColor(Color.gray, 0.2f).SetEase(Ease.OutQuad);
 		yield return card.rectTransform.DOScale(flipDown, 0.2f).SetEase(Ease.OutQuad).WaitForCompletion();
@@ -147,7 +147,7 @@ public class Card : MonoBehaviour {
 
 		if(currentState == CardState.Face)			
 			if(flipToFace != null)
-				flipToFace(this);
+				flipToFace(this, checkMatch);
 
 		flipCard = null;
 	}

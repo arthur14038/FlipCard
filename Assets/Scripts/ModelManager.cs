@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 public class ModelManager : SingletonMonoBehavior<ModelManager> {
 	Dictionary<CardArrayLevel, GameRecord> gameRecordDictionary;
 	string gameRecordFileName = "GameRecord.json";
-	string playTimesFileName = "PlayTimes.json";
 	string encodeKey = "FlipCard";
 	string encodeIV = "VeryGood";
 

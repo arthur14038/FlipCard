@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 
 public enum CardArrayLevel{TwoByThree = 0, ThreeByFour, FourByFive, FiveBySix}
+public enum GameMode { LimitTime = 0, LimitMove}
 public class CardArrayManager{
 	static Dictionary<CardArrayLevel, CardArraySetting> settings = new Dictionary<CardArrayLevel, CardArraySetting>();
 	public static CardArrayLevel currentLevel;
@@ -36,6 +37,7 @@ public class CardArraySetting{
 	public float edgeLength;
 	public int column;
 	public int row;
+	public GameMode mode;
 	public float cardGap;
 	public float[] firstPosition;
 	public Vector2 realFirstPosition;

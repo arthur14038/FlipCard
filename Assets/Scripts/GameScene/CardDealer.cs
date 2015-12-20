@@ -69,32 +69,32 @@ public class CardDealer : MonoBehaviour {
             usingCard.ToggleCardGlow(turnOn);
     }
 
-	void UserFlipCard(Card card)
+	void UserFlipCard(Card card, bool checkMatch)
 	{
-		if(GameSceneController.currentState == GameSceneController.GameState.Playing)
+		if(checkMatch)
 		{
 			waitForCompare.Enqueue(card);
 			if(waitForCompare.Count > 1)
 			{
 				Card cardA = waitForCompare.Dequeue();
 				Card cardB = waitForCompare.Dequeue();
-                bool isMatch = false;
+				bool isMatch = false;
 				if(cardA.GetCardId() == cardB.GetCardId())
 				{
 					AudioManager.Instance.PlayOneShot("GamePlayGetPair");
 					isMatch = true;
-                    cardA.Match();
+					cardA.Match();
 					cardB.Match();
 					cardsOnTheTable.Remove(cardA);
 					cardsOnTheTable.Remove(cardB);
-				}else
+				} else
 				{
-                    cardA.MisMatch();
+					cardA.MisMatch();
 					cardB.MisMatch();
-                }
-                if (cardMatch != null)
-                    cardMatch(isMatch, cardA, cardB);
-            }
+				}
+				if(cardMatch != null)
+					cardMatch(isMatch, cardA, cardB);
+			}
 			if(cardsOnTheTable.Count == 0 && completeOneRound != null)
 				completeOneRound();
 		}
