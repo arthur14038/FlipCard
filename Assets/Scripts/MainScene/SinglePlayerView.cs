@@ -33,12 +33,14 @@ public class SinglePlayerView : AbstractView {
 
 	public void OnClickBack()
 	{
+		AudioManager.Instance.PlayOneShot("Button_Click2");
 		if(onClickBack != null)
 			onClickBack();
 	}
 
 	public void OnClickPlay(int level)
 	{
+		AudioManager.Instance.PlayOneShot("Button_Click");
 		if(onClickPlay != null)
 			onClickPlay((CardArrayLevel)level);
 	}

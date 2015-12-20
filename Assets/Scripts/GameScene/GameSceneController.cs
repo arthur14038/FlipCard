@@ -7,6 +7,7 @@ public class GameSceneController : AbstractController
     public static GameState currentState;
     public GameMenuView gameMenuView;
     public CardDealer dealer;
+	public GameObject timeIsRunning;
     float gamePassTime;
     float gameTime;
     int score;
@@ -32,8 +33,9 @@ public class GameSceneController : AbstractController
         gameMenuView.onClickResume = ResumeGame;
 
         gameMenuView.ShowUI(false);
+		timeIsRunning.SetActive(false);
 
-        currentSetting = CardArrayManager.GetCurrentLevelSetting();
+		currentSetting = CardArrayManager.GetCurrentLevelSetting();
         gameTime = currentSetting.gameTime;
         dealer.Init(currentSetting, NextRound, CardMatch);
 
@@ -51,22 +53,24 @@ public class GameSceneController : AbstractController
 
     void StartCounting()
     {
+		AudioManager.Instance.PlayOneShot("StartGameCountDown");
         gameMenuView.ShowUI(true);
     }
 
     void PauseGame()
-    {
-        currentState = GameState.Pausing;
+	{
+		currentState = GameState.Pausing;
     }
 
     void ResumeGame()
-    {
-        currentState = GameState.Playing;
+	{
+		currentState = GameState.Playing;
     }
 
     void ExitGame()
-    {
-        if (currentState == GameState.GameOver)
+	{
+		AudioManager.Instance.StopMusic();
+		if (currentState == GameState.GameOver)
             SaveGameRecord();
         GameMainLoop.Instance.ChangeScene(SceneName.MainScene, 1);
     }
@@ -87,7 +91,9 @@ public class GameSceneController : AbstractController
 
     void GameOver()
     {
-        if (PlayerPrefsManager.OnePlayerProgress == (int)currentSetting.level)
+		AudioManager.Instance.StopMusic();
+        AudioManager.Instance.PlayOneShot("GameResult");
+		if (PlayerPrefsManager.OnePlayerProgress == (int)currentSetting.level)
             PlayerPrefsManager.OnePlayerProgress += 1;
 
         GameRecord record = ModelManager.Instance.GetGameRecord(currentSetting.level);
@@ -131,8 +137,16 @@ public class GameSceneController : AbstractController
                 dealer.ToggleCardGlow(false);
             }
             currentCombo = 0;
-            if (currentSetting.level < CardArrayLevel.FourByFive)
-                scoreChangeAmount = -2;
+
+			switch(currentSetting.level)
+			{
+			case CardArrayLevel.TwoByThree:
+				scoreChangeAmount = -4;
+				break;
+			case CardArrayLevel.ThreeByFour:
+				scoreChangeAmount = -2;
+				break;
+			}			                
         }
         if (scoreChangeAmount != 0)
         {
@@ -171,7 +185,9 @@ public class GameSceneController : AbstractController
         yield return new WaitForSeconds(0.35f);
         gameMenuView.ToggleMask(false);
         currentState = GameState.Playing;
-    }
+
+		AudioManager.Instance.PlayMusic("GamePlayBGM", true);
+	}
 
     IEnumerator NextRoundRoutine()
     {
@@ -191,6 +207,11 @@ public class GameSceneController : AbstractController
             record.maxCombo = maxCombo;
         record.playTimes += 1;
 
+		if(record.playTimes % 3 == 1)
+		{
+			UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.GameRecord, ModelManager.Instance.GetAllGameRecord());
+		}
+
         ModelManager.Instance.SaveGameRecord(record);
     }
 
@@ -202,6 +223,20 @@ public class GameSceneController : AbstractController
             gamePassTime += Time.deltaTime;
             if (gamePassTime >= gameTime)
                 GameOver();
-        }
+
+			if(gameTime - gamePassTime < 5f)
+			{
+				if(!timeIsRunning.activeSelf)
+					timeIsRunning.SetActive(true);
+			} else
+			{
+				if(timeIsRunning.activeSelf)
+					timeIsRunning.SetActive(false);
+			}
+        }else
+		{
+			if(timeIsRunning.activeSelf)
+				timeIsRunning.SetActive(false);
+		}
     }
 }

@@ -63,8 +63,10 @@ public class Card : MonoBehaviour {
         }
     }
 
-	public void Flip()
+	public void Flip(bool flipByUser = false)
 	{
+		if(flipByUser)
+			AudioManager.Instance.PlayOneShot("GamePlayChooseCard");
 		if(flipCard != null)
 			StopCoroutine(flipCard);
 		flipCard = StartCoroutine(FlipCard());

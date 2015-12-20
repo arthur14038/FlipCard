@@ -33,13 +33,19 @@ public class GameMenuView : AbstractView {
     public RectTransform text_ScoreTitle;
     public RectTransform text_MaxComboTitle;
     public RectTransform image_NewHighScoreHeader;
-    public Transform scoreTextParent;
+	public Toggle toggle_Music;
+	public Toggle toggle_Sound;
+	public Transform scoreTextParent;
     public GameObject scoreTextPrefab;
     public GameObject newHighScoreEffect;
-    Queue<ScoreText> scoreTextQueue = new Queue<ScoreText>();
+	Queue<ScoreText> scoreTextQueue = new Queue<ScoreText>();
 
     public override IEnumerator Init ()
 	{
+		AudioManager.Instance.SetListenToToggle(false);
+		toggle_Music.isOn = !PlayerPrefsManager.MusicSetting;
+		toggle_Sound.isOn = !PlayerPrefsManager.SoundSetting;
+		AudioManager.Instance.SetListenToToggle(true);
 		yield return 0;
 		escapeEvent = OnClickEscape;
 		ToggleMask(true);
@@ -110,6 +116,7 @@ public class GameMenuView : AbstractView {
 
 	public void OnClickPause()
 	{
+		AudioManager.Instance.PlayOneShot("Button_Click2");
 		if(onClickPause != null)
 			onClickPause();
 		StartCoroutine(PauseEffect());
@@ -117,11 +124,13 @@ public class GameMenuView : AbstractView {
 
 	public void OnClickResume()
 	{
+		AudioManager.Instance.PlayOneShot("Button_Click");
 		StartCoroutine(ResumeEffect());
 	}
 
 	public void OnClickExit()
 	{
+		AudioManager.Instance.PlayOneShot("Button_Click");
 		if(onClickExit != null)
 			onClickExit();
 	}
@@ -137,8 +146,18 @@ public class GameMenuView : AbstractView {
         ScoreText st = scoreTextQueue.Dequeue();
         st.ShowScoreText(score, pos);
     }
-    
-    void SaveScoreText(ScoreText st)
+
+	public void OnMusicValueChange(bool value)
+	{
+		AudioManager.Instance.MusicChangeValue(!value);
+	}
+
+	public void OnSoundValueChange(bool value)
+	{
+		AudioManager.Instance.SoundChangeValue(!value);
+	}
+
+	void SaveScoreText(ScoreText st)
     {
         scoreTextQueue.Enqueue(st);
     }
@@ -192,7 +211,7 @@ public class GameMenuView : AbstractView {
         button_Exit.gameObject.SetActive(false);
         group_GameOver.gameObject.SetActive(true);
         group_GameOver.color = Color.clear;
-        group_GameOver.DOColor(Color.black * 0.5f, 0.3f);
+        group_GameOver.DOColor(Color.black * 0.7f, 0.3f);
         image_GameOverWindow.anchoredPosition = new Vector2(0f, 1572f);
         yield return image_GameOverWindow.DOAnchorPos(new Vector2(0f, 72f), 0.5f).SetEase(Ease.OutBack).WaitForCompletion();
 
@@ -209,30 +228,40 @@ public class GameMenuView : AbstractView {
         image_ScoreBoard.alpha = 0f;
         yield return image_ScoreBoard.DOFade(1f, 0.4f).WaitForCompletion();
         
-        float changeTime = 0.35f;
-        float scoreChangeAmount = (score / (changeTime / Time.deltaTime));
-        float tmpScore = 0;
-        while(changeTime > 0f)
-        {
-            text_GameOverScore.text = ((int)tmpScore).ToString();
-            tmpScore += scoreChangeAmount;
-            yield return new WaitForEndOfFrame();
-            changeTime -= Time.deltaTime;
-        }
+		if(score > 0)
+		{
+			float changeTime = 0.35f;
+			float scoreChangeAmount = (score / (changeTime / Time.deltaTime));
+			float tmpScore = 0;
+			while(changeTime > 0f)
+			{
+				AudioManager.Instance.PlayOneShot("GameResultScoreCount");
+				text_GameOverScore.text = ((int)tmpScore).ToString();
+				tmpScore += scoreChangeAmount;
+				yield return new WaitForEndOfFrame();
+				changeTime -= Time.deltaTime;
+			}
+		}
+
         text_GameOverScore.text = score.ToString();
         yield return text_GameOverScore.rectTransform.DOScale(1.5f, 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
         yield return text_GameOverScore.rectTransform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
         
-        changeTime = 0.35f;
-        float comboChangeAmount = (maxCombo/(changeTime / Time.deltaTime));
-        float tmpCombo = 0;
-        while (changeTime > 0f)
-        {
-            text_MaxCombo.text = ((int)tmpCombo).ToString();
-            tmpCombo += comboChangeAmount;
-            yield return new WaitForEndOfFrame();
-            changeTime -= Time.deltaTime;
-        }
+		if(maxCombo > 0)
+		{
+			float changeTime = 0.35f;
+			float comboChangeAmount = (maxCombo / (changeTime / Time.deltaTime));
+			float tmpCombo = 0;
+			while(changeTime > 0f)
+			{
+				AudioManager.Instance.PlayOneShot("GameResultScoreCount");
+				text_MaxCombo.text = ((int)tmpCombo).ToString();
+				tmpCombo += comboChangeAmount;
+				yield return new WaitForEndOfFrame();
+				changeTime -= Time.deltaTime;
+			}
+		}
+
         text_MaxCombo.text = maxCombo.ToString();
         yield return text_MaxCombo.rectTransform.DOScale(1.5f, 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
         yield return text_MaxCombo.rectTransform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
@@ -257,30 +286,35 @@ public class GameMenuView : AbstractView {
 	{
         Vector3 flipDown = new Vector3(0f, 0.9f, 1f);
         float delayTime = 0.25f;
+		float inTime = 0.245f;
+		float outTime = 0.17f;
 
-        image_Counting3.localScale = flipDown;
+		group_Counting.color = Color.black * 0.7f;
+        group_Counting.gameObject.SetActive(true);
+
+		image_Counting3.localScale = flipDown;
         image_Counting3.gameObject.SetActive(true);
-        yield return image_Counting3.DOScale(Vector3.one, 0.15f).WaitForCompletion();
-        yield return image_Counting3.DOScale(flipDown, 0.2f).SetDelay(delayTime).SetEase(Ease.OutQuad).WaitForCompletion();
+        yield return image_Counting3.DOScale(Vector3.one, inTime).WaitForCompletion();
+        yield return image_Counting3.DOScale(flipDown, outTime).SetDelay(delayTime).SetEase(Ease.OutQuad).WaitForCompletion();
         image_Counting3.gameObject.SetActive(false);
 
         image_Counting2.localScale = flipDown;
         image_Counting2.gameObject.SetActive(true);
-        yield return image_Counting2.DOScale(Vector3.one, 0.15f).WaitForCompletion();
-        yield return image_Counting2.DOScale(flipDown, 0.2f).SetDelay(delayTime).SetEase(Ease.OutQuad).WaitForCompletion();
+        yield return image_Counting2.DOScale(Vector3.one, inTime).WaitForCompletion();
+        yield return image_Counting2.DOScale(flipDown, outTime).SetDelay(delayTime).SetEase(Ease.OutQuad).WaitForCompletion();
         image_Counting2.gameObject.SetActive(false);
 
         image_Counting1.localScale = flipDown;
         image_Counting1.gameObject.SetActive(true);
-        yield return image_Counting1.DOScale(Vector3.one, 0.15f).WaitForCompletion();
-        yield return image_Counting1.DOScale(flipDown, 0.2f).SetDelay(delayTime).SetEase(Ease.OutQuad).WaitForCompletion();
+        yield return image_Counting1.DOScale(Vector3.one, inTime).WaitForCompletion();
+        yield return image_Counting1.DOScale(flipDown, outTime).SetDelay(delayTime).SetEase(Ease.OutQuad).WaitForCompletion();
         image_Counting1.gameObject.SetActive(false);
 
         image_CountingGo.localScale = flipDown;
         image_CountingGo.gameObject.SetActive(true);
-        yield return image_CountingGo.DOScale(Vector3.one, 0.15f).WaitForCompletion();
-        group_Counting.DOFade(0f, 0.3f).SetDelay(delayTime + 0.05f);
-        yield return image_CountingGo.DOScale(flipDown, 0.2f).SetDelay(delayTime + 0.15f).SetEase(Ease.OutQuad).WaitForCompletion();
+        yield return image_CountingGo.DOScale(Vector3.one, inTime + 0.15f).WaitForCompletion();
+        group_Counting.DOFade(0f, 0.3f).SetDelay(delayTime + 0.5f);
+        yield return image_CountingGo.DOScale(flipDown, outTime).SetDelay(delayTime + 0.15f).SetEase(Ease.OutQuad).WaitForCompletion();
         image_CountingGo.gameObject.SetActive(false);
         group_Counting.gameObject.SetActive(false);
 
@@ -292,7 +326,8 @@ public class GameMenuView : AbstractView {
 	//{
 	//	if(GUI.Button(new Rect(10, 10, 150, 50), "Test"))
 	//	{
-	//		StartCoroutine(TextCelebrateEffect(text_GameOverScore));
+	//		AudioManager.Instance.PlayOneShot("Batery_StartGame");
+	//		StartCoroutine(ShowUIAnimation());
 	//	}
 	//}
 }

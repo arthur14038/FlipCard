@@ -81,7 +81,8 @@ public class CardDealer : MonoBehaviour {
                 bool isMatch = false;
 				if(cardA.GetCardId() == cardB.GetCardId())
 				{
-                    isMatch = true;
+					AudioManager.Instance.PlayOneShot("GamePlayGetPair");
+					isMatch = true;
                     cardA.Match();
 					cardB.Match();
 					cardsOnTheTable.Remove(cardA);

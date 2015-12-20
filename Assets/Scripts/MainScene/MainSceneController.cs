@@ -6,6 +6,7 @@ public class MainSceneController : AbstractController {
 	MainSceneView currentView;
 	public MainPageView mainPageView;
 	public SinglePlayerView singlePlayerView;
+	string notifyMessage;
 		
 	public override IEnumerator Init ()
 	{
@@ -20,7 +21,8 @@ public class MainSceneController : AbstractController {
 		mainPageView.onClickMail = SendMailToUs;
 		mainPageView.onClickRate = ShowRatePage;
 		mainPageView.onClickLeaveGame = LeaveGame;
-		singlePlayerView.onClickBack = ShowMainPage;
+		mainPageView.onClickNotify = SendNotifyMail;
+        singlePlayerView.onClickBack = ShowMainPage;
 		singlePlayerView.onClickPlay = GoToGameScene;
 
 		mainPageView.HideUI(false);
@@ -36,19 +38,14 @@ public class MainSceneController : AbstractController {
 			break;
 		}
 
-		singlePlayerView.SetProgress(PlayerPrefsManager.OnePlayerProgress);        
+		singlePlayerView.SetProgress(PlayerPrefsManager.OnePlayerProgress);
+		AudioManager.Instance.PlayMusic("FlipCardBGM3", true); 
 	}
 
 	void GoToGameScene(CardArrayLevel level)
 	{
-		CardArrayManager.currentLevel = level;
-
-		int thisLevelPlayTimes = ModelManager.Instance.AddPlayTimes(level);
-		if(thisLevelPlayTimes % 3 == 0)
-		{
-			UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.PlayGame, ModelManager.Instance.GetPlayTimes());
-		}
-
+		AudioManager.Instance.StopMusic();
+        CardArrayManager.currentLevel = level;		
 		GameMainLoop.Instance.ChangeScene(SceneName.GameScene);
 	}
 
@@ -74,6 +71,8 @@ public class MainSceneController : AbstractController {
 	void ShowTwoPlayers()
 	{
 		UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.OnClick2P);
+		mainPageView.ShowUnderConstruction();
+		notifyMessage = "Please notify me when \"Play with Friend\" feature is launches.";
 		//mainPageView.HideUI(true);
 		//currentView = MainSceneView.TwoPlayer;
 	}
@@ -81,22 +80,39 @@ public class MainSceneController : AbstractController {
 	void ShowShop()
 	{
 		UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.OnClickShop);
+		mainPageView.ShowUnderConstruction();
+		notifyMessage = "Please notify me when \"Shop\" feature is launches.";
 		//mainPageView.HideUI(true);
 		//currentView = MainSceneView.Shop;
 	}
 
+	void SendNotifyMail()
+	{
+		string email = "playclaystudio@gmail.com";
+		string subject = MyEscapeURL("Please notify me about...");
+		string body = MyEscapeURL(notifyMessage);
+		Application.OpenURL("mailto:" + email + "?subject=" + subject + "&body=" + body);
+	}
+
 	void ShowRatePage()
 	{
-		UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.OnClickRate);
+
 	}
 
 	void SendMailToUs()
 	{
-		UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.OnClickMail);
+		string email = "playclaystudio@gmail.com";
+		string subject = MyEscapeURL("User Feedback");
+		Application.OpenURL("mailto:" + email + "?subject=" + subject);
 	}
 
 	void LeaveGame()
 	{
 		Application.Quit();
+	}
+
+	string MyEscapeURL(string url)
+	{
+		return WWW.EscapeURL(url).Replace("+", "%20");
 	}
 }

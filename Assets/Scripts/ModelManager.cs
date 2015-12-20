@@ -5,7 +5,6 @@ using Newtonsoft.Json;
 
 public class ModelManager : SingletonMonoBehavior<ModelManager> {
 	Dictionary<CardArrayLevel, GameRecord> gameRecordDictionary;
-	Dictionary<string, int> playTimesDictionary;
 	string gameRecordFileName = "GameRecord.json";
 	string playTimesFileName = "PlayTimes.json";
 	string encodeKey = "FlipCard";
@@ -55,30 +54,16 @@ public class ModelManager : SingletonMonoBehavior<ModelManager> {
 		}
 	}
 
-	public int AddPlayTimes(CardArrayLevel level)
+	public Dictionary<string, object> GetAllGameRecord()
 	{
-		int addUpPlayTimes = 0;
-		if(playTimesDictionary.ContainsKey(level.ToString()))
+		Dictionary<string, object> eventData = new Dictionary<string, object>();
+		foreach(KeyValuePair<CardArrayLevel, GameRecord> kvp in gameRecordDictionary)
 		{
-			playTimesDictionary[level.ToString()] += 1;
-			addUpPlayTimes = playTimesDictionary[level.ToString()];
-        } else
-		{
-			addUpPlayTimes = 1;
-            playTimesDictionary.Add(level.ToString(), 1);
-        }
-		string jsonString = JsonConvert.SerializeObject(playTimesDictionary);
-		string encodedString = EncodeTool.GetEncodedBase64(jsonString, encodeKey, encodeIV);
-		string filePath = GetSaveFilePath(playTimesFileName);
-		WriteFileTool.WriteFile(filePath, encodedString);
-		return addUpPlayTimes;
-    }
-
-	public Dictionary<string, int> GetPlayTimes()
-	{
-		return playTimesDictionary;
+			eventData.Add(kvp.Key.ToString(), JsonConvert.SerializeObject(kvp.Value));
+		}
+		return eventData;
 	}
-
+		
 	string GetSaveFilePath(string fileName)
 	{
 		string saveFilePath = "";

@@ -75,13 +75,13 @@ public class LoadingPageManager : MonoBehaviour {
 			this.gameObject.SetActive(true);
 		
 		DoLoadingAnimation();
-		yield return thisCanvasGroup.DOFade(1, 0.3f).WaitForCompletion();
+		yield return thisCanvasGroup.DOFade(1, 0.5f).WaitForCompletion();
 	}
 
 	public IEnumerator FadeOutLoadingPage()
 	{
 		thisCanvasGroup.alpha = 1f;
-		yield return thisCanvasGroup.DOFade(0, 0.3f).WaitForCompletion();
+		yield return thisCanvasGroup.DOFade(0, 0.5f).WaitForCompletion();
 		
 		if(loadingAnimation != null)
 			StopCoroutine(loadingAnimation);

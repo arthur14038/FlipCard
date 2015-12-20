@@ -4,12 +4,12 @@ using UnityEngine.UI;
 using DG.Tweening;
 
 public class LevelUI : MonoBehaviour {
-	public CanvasGroup group_Unlock;
-	public CanvasGroup group_Locked;
 	public Text text_HighScore;
 	//public Text text_PlayTimes;
     public Text text_MaxCombo;
-    public RectTransform levelIcon;
+	public RectTransform group_Unlock;
+	public RectTransform group_Locked;
+	public RectTransform levelIcon;
 	public RectTransform lockedLevelIcon;
 	bool levelUnlock;
 
