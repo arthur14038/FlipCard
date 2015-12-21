@@ -19,6 +19,8 @@ public abstract class GameModeJudgement{
 	public virtual IEnumerator Init(CardDealer dealer, VoidTwoInt gameOver, CardArraySetting currentSetting, GameMenuView gameMenuView)
 	{
 		currentState = GameState.Waiting;
+		gameMenuView.onClickPause = PauseGame;
+		gameMenuView.onClickResume = ResumeGame;
 		this.dealer = dealer;
 		this.gameOver = gameOver;
 		this.currentSetting = currentSetting;
@@ -27,9 +29,17 @@ public abstract class GameModeJudgement{
 	}
 
 	public abstract IEnumerator StartGame();
-	public abstract void PauseGame();
-	public abstract void ResumeGame();
 
+	public virtual void PauseGame()
+	{
+		currentState = GameState.Pausing;
+	}
+
+	public virtual void ResumeGame()
+	{
+		currentState = GameState.Playing;
+	}
+	
 	public virtual void JudgementUpdate()
 	{
 

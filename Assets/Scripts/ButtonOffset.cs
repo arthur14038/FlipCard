@@ -9,13 +9,13 @@ public class ButtonOffset : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 	public float duration = 0.1f;
 	public Ease offsetEase = Ease.Linear;
 	public Ease scaleEase = Ease.Linear;
-	RectTransform thisRectTransform;
+	protected RectTransform thisRectTransform;
 	Vector2 oriPos;
 	bool shouldWork = false;
 	bool doScale = false;
 	bool doOffset = false;
 
-	void Start()
+	protected virtual void Start()
 	{
 		thisRectTransform = this.GetComponent<RectTransform>();
 		if(thisRectTransform == null)
@@ -50,7 +50,7 @@ public class ButtonOffset : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 		}
 	}
 
-	public void OnPointerDown (PointerEventData eventData)
+	public virtual void OnPointerDown (PointerEventData eventData)
 	{
 		if(shouldWork)
 		{
@@ -62,7 +62,7 @@ public class ButtonOffset : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 		}
 	}
 
-	public void OnPointerUp (PointerEventData eventData)
+	public virtual void OnPointerUp (PointerEventData eventData)
 	{
 		if(shouldWork)
 		{

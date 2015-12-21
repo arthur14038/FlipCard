@@ -35,17 +35,7 @@ public class TimeModeJudgement : GameModeJudgement
 		currentState = GameState.Playing;
 		AudioManager.Instance.PlayMusic("GamePlayBGM", true);
 	}
-
-	public override void PauseGame()
-	{
-		currentState = GameState.Pausing;
-	}
-
-	public override void ResumeGame()
-	{
-		currentState = GameState.Playing;
-	}
-
+	
 	public override void JudgementUpdate()
 	{
 		if(currentState == GameState.Playing)

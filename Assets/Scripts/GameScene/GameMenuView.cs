@@ -11,15 +11,18 @@ public class GameMenuView : AbstractView {
     public Text text_GameOverScore;
 	public Text text_MaxCombo;
     public Text text_NewRecord;
-	public GameObject image_Mask;
+	public Text text_ScorePlayer1;
+	public Text text_ScorePlayer2;
+	public Text text_TakeTurn;
 	public VoidNoneParameter onClickPause;
 	public VoidNoneParameter onClickResume;
 	public VoidNoneParameter onClickExit;
 	public VoidNoneParameter onCountDownFinished;
-	public CanvasGroup group_Game;
+	public VoidNoneParameter onTwoPlayerReady;
 	public CanvasGroup group_Pause;
     public CanvasGroup image_ScoreBoard;
-    public Image group_GameOver;
+	public CanvasGroup group_Instruction;
+	public Image group_GameOver;
     public Image group_Counting;
     public RectTransform image_Counting3;
     public RectTransform image_Counting2;
@@ -33,14 +36,21 @@ public class GameMenuView : AbstractView {
     public RectTransform text_ScoreTitle;
     public RectTransform text_MaxComboTitle;
     public RectTransform image_NewHighScoreHeader;
+	public RectTransform text_Instruction;
 	public Toggle toggle_Music;
 	public Toggle toggle_Sound;
 	public Transform scoreTextParent;
-    public GameObject scoreTextPrefab;
+	public GameObject image_Mask;
+	public GameObject scoreTextPrefab;
     public GameObject newHighScoreEffect;
 	public GameObject timeIsRunning;
+	public GameObject group_1P;
+	public GameObject group_2P;
+	public GameObject group_ChooseSide;
 	public ShowComplimentTool group_Compliment;
-    Queue<ScoreText> scoreTextQueue = new Queue<ScoreText>();
+	public PressButtonTool button_Player1;
+	public PressButtonTool button_Player2;
+	Queue<ScoreText> scoreTextQueue = new Queue<ScoreText>();
 
     public override IEnumerator Init ()
 	{
@@ -51,8 +61,6 @@ public class GameMenuView : AbstractView {
 		yield return 0;
 		escapeEvent = OnClickEscape;
 		ToggleMask(true);
-        group_Counting.gameObject.SetActive(true);
-        group_Game.gameObject.SetActive(true);
 		group_Pause.gameObject.SetActive(false);
 		group_GameOver.gameObject.SetActive(false);
         image_Counting3.gameObject.SetActive(false);
@@ -77,6 +85,27 @@ public class GameMenuView : AbstractView {
         }
     }
 
+	public void SetMode(GameMode mode)
+	{
+		switch(mode)
+		{
+			case GameMode.LimitTime:
+				group_1P.SetActive(true);
+				group_2P.SetActive(false);
+				group_Counting.gameObject.SetActive(true);
+				group_ChooseSide.SetActive(false);
+				group_Instruction.gameObject.SetActive(false);
+				break;
+			case GameMode.Competition:
+				group_1P.SetActive(false);
+				group_2P.SetActive(true);
+				group_Counting.gameObject.SetActive(false);
+				group_ChooseSide.SetActive(true);
+				group_Instruction.gameObject.SetActive(true);
+				break;
+		}
+	}
+
 	public void SetTimeBar(float value)
 	{
 		timeBar.value = value;
@@ -96,6 +125,12 @@ public class GameMenuView : AbstractView {
             }
         );
     }
+
+	public void SetTwoPlayerScore(int player1Score, int player2Score)
+	{
+		text_ScorePlayer1.text = player1Score.ToString();
+		text_ScorePlayer2.text = player2Score.ToString();
+	}
 
     public void SetRound(int round)
     {
@@ -175,6 +210,79 @@ public class GameMenuView : AbstractView {
 		group_Compliment.ShowCompliment(value);
 	}
 	
+	public IEnumerator DisableChooseSide(CompetitionModeJudgement.WhosTurn currentTurn)
+	{
+		text_Instruction.gameObject.SetActive(false);
+
+		if(currentTurn == CompetitionModeJudgement.WhosTurn.Player1Playing)
+			text_TakeTurn.text = "Player1 First!";
+		else if(currentTurn == CompetitionModeJudgement.WhosTurn.Player2Playing)
+			text_TakeTurn.text = "Player2 First!";
+
+		text_TakeTurn.gameObject.SetActive(true);
+		text_TakeTurn.rectTransform.localScale = Vector2.zero;
+		yield return text_TakeTurn.rectTransform.DOScale(1f, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
+		yield return new WaitForSeconds(0.5f);
+
+		SetPlayerButton(currentTurn);
+		if(onCountDownFinished != null)
+			onCountDownFinished();
+	}
+
+	void ShowTakeTurn(CompetitionModeJudgement.WhosTurn currentTurn)
+	{
+		group_Instruction.gameObject.SetActive(true);
+		group_Instruction.alpha = 0f;
+		group_Instruction.DOFade(1f, 0.3f);
+
+		if(currentTurn == CompetitionModeJudgement.WhosTurn.WaitingPlayer1)
+			text_TakeTurn.text = "Player1's Turn!";
+		else if(currentTurn == CompetitionModeJudgement.WhosTurn.WaitingPlayer2)
+			text_TakeTurn.text = "Player2's Turn!";
+
+		text_TakeTurn.gameObject.SetActive(true);
+		text_TakeTurn.rectTransform.localScale = Vector2.zero;
+		text_TakeTurn.rectTransform.DOScale(1f, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
+	}
+
+	IEnumerator FadeOutInstruction()
+	{
+		group_Instruction.DOFade(0f, 0.3f).WaitForCompletion();
+		yield return text_TakeTurn.rectTransform.DOScale(0f, 0.3f).SetEase(Ease.InBack).WaitForCompletion();
+		group_Instruction.gameObject.SetActive(false);
+	}
+
+	public void SetPlayerButton(CompetitionModeJudgement.WhosTurn currentTurn)
+	{
+		switch(currentTurn)
+		{
+			case CompetitionModeJudgement.WhosTurn.WaitingReady:
+				button_Player1.UpdateButton(PressButtonTool.PressButtonState.Clickable);
+				button_Player2.UpdateButton(PressButtonTool.PressButtonState.Clickable);
+				break;
+			case CompetitionModeJudgement.WhosTurn.WaitingPlayer1:
+				ShowTakeTurn(currentTurn);
+				button_Player1.UpdateButton(PressButtonTool.PressButtonState.Clickable);
+				button_Player2.UpdateButton(PressButtonTool.PressButtonState.Disable);
+				break;
+			case CompetitionModeJudgement.WhosTurn.WaitingPlayer2:
+				ShowTakeTurn(currentTurn);
+				button_Player1.UpdateButton(PressButtonTool.PressButtonState.Disable);
+				button_Player2.UpdateButton(PressButtonTool.PressButtonState.Clickable);
+				break;
+			case CompetitionModeJudgement.WhosTurn.Player1Playing:
+				StartCoroutine(FadeOutInstruction());
+				button_Player1.UpdateButton(PressButtonTool.PressButtonState.LightUp);
+				button_Player2.UpdateButton(PressButtonTool.PressButtonState.Disable);
+				break;
+			case CompetitionModeJudgement.WhosTurn.Player2Playing:
+				StartCoroutine(FadeOutInstruction());
+				button_Player1.UpdateButton(PressButtonTool.PressButtonState.Disable);
+				button_Player2.UpdateButton(PressButtonTool.PressButtonState.LightUp);
+				break;
+		}
+	}
+
 	void SaveScoreText(ScoreText st)
     {
         scoreTextQueue.Enqueue(st);

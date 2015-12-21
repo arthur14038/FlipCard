@@ -11,7 +11,7 @@ public class GameSceneController : AbstractController
     protected override void Start()
     {
         if (GameMainLoop.Instance != null)
-            GameMainLoop.Instance.RegisterController(this, StartCounting);
+            GameMainLoop.Instance.RegisterController(this, LoadingComplete);
     }
 
     public override IEnumerator Init()
@@ -19,26 +19,35 @@ public class GameSceneController : AbstractController
         yield return StartCoroutine(gameMenuView.Init());
 
 		currentSetting = CardArrayManager.GetCurrentLevelSetting();
-		judgement = new TimeModeJudgement();
+		judgement = GetJudgement();
 		yield return StartCoroutine(judgement.Init(dealer, GameOver, currentSetting, gameMenuView));
 		
 		gameMenuView.onCountDownFinished = StartGame;
         gameMenuView.onClickExit = ExitGame;
-		gameMenuView.onClickPause = judgement.PauseGame;
-		gameMenuView.onClickResume = judgement.ResumeGame;
-        gameMenuView.ShowUI(false);	
-    }
+		gameMenuView.SetMode(CardArrayManager.currentMode);
+	}
 	
-    void StartCounting()
+    void LoadingComplete()
     {
-		AudioManager.Instance.PlayOneShot("StartGameCountDown");
-        gameMenuView.ShowUI(true);
+		switch(CardArrayManager.currentMode)
+		{
+			case GameMode.LimitTime:
+				AudioManager.Instance.PlayOneShot("StartGameCountDown");
+				gameMenuView.ShowUI(true);
+				break;
+			case GameMode.Competition:
+				gameMenuView.ShowUI(false);
+				break;
+		}
     }
 	
     void ExitGame()
 	{
 		AudioManager.Instance.StopMusic();
-        GameMainLoop.Instance.ChangeScene(SceneName.MainScene, 1);
+		int returnView = 1;
+		if(CardArrayManager.currentMode == GameMode.Competition || CardArrayManager.currentMode == GameMode.Cooperation)
+			returnView = 2;
+		GameMainLoop.Instance.ChangeScene(SceneName.MainScene, returnView);
     }
 
     void StartGame()
@@ -73,6 +82,20 @@ public class GameSceneController : AbstractController
 		
         gameMenuView.ShowGameOverWindow(score, maxCombo, newHighScore, newMaxCombo);
     }
+
+	GameModeJudgement GetJudgement()
+	{
+		switch(CardArrayManager.currentMode)
+		{
+			case GameMode.LimitTime:
+				return new TimeModeJudgement();
+			case GameMode.Competition:
+				return new CompetitionModeJudgement();
+			default:
+				Debug.LogErrorFormat("{0}'s judgement is not implement", CardArrayManager.currentMode);
+				return null;
+		}
+	}
 
     void Update()
     {

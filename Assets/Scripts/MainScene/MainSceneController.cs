@@ -27,6 +27,7 @@ public class MainSceneController : AbstractController {
         singlePlayerView.onClickBack = ShowMainPage;
 		singlePlayerView.onClickPlay = GoToGameScene;
 		twoPlayerView.onClickBack = ShowMainPage;
+		twoPlayerView.onClickPlay = GoToGameScene;
 
 		mainPageView.HideUI(false);
 		singlePlayerView.HideUI(false);

@@ -13,7 +13,7 @@ public class Test : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		int a = 1;
+		//int a = 1;
 		CT ct = new CT();
 		ct.data = 1;
 
