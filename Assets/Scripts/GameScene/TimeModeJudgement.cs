@@ -12,56 +12,71 @@ public class TimeModeJudgement : GameModeJudgement
 	int failedTimes;
 	int complimentTimes;
 	bool lastTimeHadMatch = false;
+	TimeModeView timeModeView;
 
-	public override IEnumerator Init(CardDealer dealer, VoidTwoInt gameOver, CardArraySetting currentSetting, GameMenuView gameMenuView)
+	public override IEnumerator Init(GameMainView gameMainView, GameSettingView gameSettingView, AbstractView modeView)
 	{
-		yield return gameMenuView.StartCoroutine(base.Init(dealer, gameOver, currentSetting, gameMenuView));
+		yield return gameMainView.StartCoroutine(base.Init(gameMainView, gameSettingView, modeView));
 		gameTime = currentSetting.gameTime;
-		dealer.Init(currentSetting, NextRound, CardMatch);
-		gameMenuView.SetTimeBar(1f);
-		yield return gameMenuView.StartCoroutine(dealer.DealCard());
+		gameMainView.completeOneRound = NextRound;
+		gameMainView.cardMatch = CardMatch;
+		timeModeView = (TimeModeView)modeView;
+		timeModeView.onClickPause = PauseGame;
+		timeModeView.onClickGameOverExit = ExitGame;
+		timeModeView.SetTimeBar(1f);
+		timeModeView.onCountDownFinished = StartGame;
+        yield return gameMainView.StartCoroutine(gameMainView.DealCard());
 	}
 
-	public override IEnumerator StartGame()
+	protected override IEnumerator StartGame()
 	{
-        dealer.FlipAllCard();
+		gameMainView.FlipAllCard();
 		yield return new WaitForSeconds(0.35f + currentSetting.showCardTime);
-		dealer.FlipAllCard();
+		gameMainView.FlipAllCard();
 		yield return new WaitForSeconds(0.35f);
-		gameMenuView.ToggleMask(false);
+		gameMainView.ToggleMask(false);
 
 		failedTimes = 0;
 		complimentTimes = 0;
-		currentState = GameState.Playing;
+		if(currentState == GameState.Waiting)
+			currentState = GameState.Playing;
 		AudioManager.Instance.PlayMusic("GamePlayBGM", true);
 	}
 	
 	public override void JudgementUpdate()
 	{
-		if(currentState == GameState.Playing)
+		if(timeModeView != null)
 		{
-			gameMenuView.SetTimeBar(1f - gamePassTime / gameTime);
-			gamePassTime += Time.deltaTime;
-			if(gamePassTime >= gameTime)
+			if(currentState == GameState.Playing)
 			{
-				currentState = GameState.GameOver;
-				gameOver(score, maxCombo);
-				gameMenuView.SetTimeBar(0f);
-			}
+				timeModeView.SetTimeBar(1f - gamePassTime / gameTime);
+				gamePassTime += Time.deltaTime;
+				if(gamePassTime >= gameTime)
+				{
+					GameOver(score, maxCombo);
+					timeModeView.SetTimeBar(0f);
+				}
 
-			if(gameTime - gamePassTime < 5f)
-				gameMenuView.ToggleTimeIsRunning(true);
-			else
-				gameMenuView.ToggleTimeIsRunning(false);
-		} else
-		{
-			gameMenuView.ToggleTimeIsRunning(false);
+				if(gameTime - gamePassTime < 5f)
+					timeModeView.ToggleTimeIsRunning(true);
+				else
+					timeModeView.ToggleTimeIsRunning(false);
+			} else
+			{
+				timeModeView.ToggleTimeIsRunning(false);
+			}
 		}
 	}
 
+	protected override void PauseGame()
+	{
+		base.PauseGame();
+		gameSettingView.ShowUI(true);
+	}
+	
 	void CardMatch(bool match, params Card[] cards)
 	{
-		if(currentState == GameState.Playing)
+		if(currentState != GameState.GameOver)
 		{
 			int scoreChangeAmount = 0;
 			if(match)
@@ -76,14 +91,14 @@ public class TimeModeJudgement : GameModeJudgement
 				{
 					scoreChangeAmount = 8;
 					lastTimeHadMatch = true;
-					dealer.ToggleCardGlow(true);
+					gameMainView.ToggleCardGlow(true);
 				}
 			} else
 			{
 				if(lastTimeHadMatch)
 				{
 					lastTimeHadMatch = false;
-					dealer.ToggleCardGlow(false);
+					gameMainView.ToggleCardGlow(false);
 				}
 				currentCombo = 0;
 				++failedTimes;
@@ -107,13 +122,13 @@ public class TimeModeJudgement : GameModeJudgement
 
 				if(saveScore != score)
 				{
-					gameMenuView.SetScore(score);
+					timeModeView.SetScore(score);
 
 					foreach(Card matchCard in cards)
 					{
 						Vector2 pos = matchCard.GetAnchorPosition();
 						pos.x += currentSetting.edgeLength / 2 - 20f;
-						gameMenuView.ShowScoreText((score - saveScore) / cards.Length, pos);
+						gameMainView.ShowScoreText((score - saveScore) / cards.Length, pos);
 					}
 				}
 			}
@@ -125,13 +140,14 @@ public class TimeModeJudgement : GameModeJudgement
 		if(failedTimes == 0)
 		{
 			++complimentTimes;
-			gameMenuView.ShowCompliment(complimentTimes);
+			timeModeView.ShowCompliment(complimentTimes);
 		}
-		currentState = GameState.Waiting;
+		if(currentState == GameState.Playing)
+			currentState = GameState.Waiting;
 		++currentRound;
-		gameMenuView.SetRound(currentRound);
+		timeModeView.SetRound(currentRound);
 		AddGameTime(currentSetting.awardTime);
-		gameMenuView.StartCoroutine(NextRoundRoutine());
+		gameMainView.StartCoroutine(NextRoundRoutine());
 	}
 	
 	void AddGameTime(float addAmount)
@@ -139,27 +155,60 @@ public class TimeModeJudgement : GameModeJudgement
 		gamePassTime -= addAmount;
 		if(gamePassTime < 0f)
 			gamePassTime = 0f;
-		gameMenuView.AddTimeEffect(1f - gamePassTime / gameTime);
+		timeModeView.AddTimeEffect(1f - gamePassTime / gameTime);
+	}
+
+	protected override void GameOver(params int[] values)
+	{
+		base.GameOver(values);
+		int score = values[0];
+		int maxCombo = values[1];
+
+		if(PlayerPrefsManager.OnePlayerProgress == (int)currentSetting.level)
+			PlayerPrefsManager.OnePlayerProgress += 1;
+
+		GameRecord record = ModelManager.Instance.GetGameRecord(currentSetting.level);
+		bool newHighScore = false;
+		bool newMaxCombo = false;
+		if(score > record.highScore)
+		{
+			record.highScore = score;
+			newHighScore = true;
+		}
+		if(maxCombo > record.maxCombo)
+		{
+			record.maxCombo = maxCombo;
+			newMaxCombo = true;
+		}
+		record.playTimes += 1;
+
+		if(record.playTimes % 3 == 1)
+			UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.GameRecord, ModelManager.Instance.GetAllGameRecord());
+
+		ModelManager.Instance.SaveGameRecord(record);
+
+		timeModeView.ShowGameOverWindow(score, maxCombo, newHighScore, newMaxCombo);
 	}
 	
 	IEnumerator NextRoundRoutine()
 	{
-		gameMenuView.ToggleMask(true);
+		gameMainView.ToggleMask(true);
 		yield return new WaitForSeconds(0.3f);
-		yield return gameMenuView.StartCoroutine(dealer.DealCard());
+		yield return gameMainView.StartCoroutine(gameMainView.DealCard());
 		yield return new WaitForSeconds(0.3f);
-		yield return gameMenuView.StartCoroutine(DealCardRoutine());
+		yield return gameMainView.StartCoroutine(DealCardRoutine());
 	}
 
 	IEnumerator DealCardRoutine()
 	{
-		dealer.FlipAllCard();
+		gameMainView.FlipAllCard();
 		yield return new WaitForSeconds(0.35f + currentSetting.showCardTime);
-		dealer.FlipAllCard();
+		gameMainView.FlipAllCard();
 		yield return new WaitForSeconds(0.35f);
-		gameMenuView.ToggleMask(false);
+		gameMainView.ToggleMask(false);
 		failedTimes = 0;
-		currentState = GameState.Playing;
+		if(currentState == GameState.Waiting)
+			currentState = GameState.Playing;
 
 		AudioManager.Instance.PlayMusic("GamePlayBGM", true);
 	}

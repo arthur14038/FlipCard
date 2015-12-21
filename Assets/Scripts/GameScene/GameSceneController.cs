@@ -3,9 +3,9 @@ using System.Collections;
 
 public class GameSceneController : AbstractController
 {
-    public GameMenuView gameMenuView;
-    public CardDealer dealer;
-	CardArraySetting currentSetting;
+    public GameSettingView gameSettingView;
+	public GameMainView gameMainView;
+	AbstractView modeView;
 	GameModeJudgement judgement;
 
     protected override void Start()
@@ -15,30 +15,23 @@ public class GameSceneController : AbstractController
     }
 
     public override IEnumerator Init()
-    {
-        yield return StartCoroutine(gameMenuView.Init());
-
-		currentSetting = CardArrayManager.GetCurrentLevelSetting();
+	{
+		modeView = GetModeView();
 		judgement = GetJudgement();
-		yield return StartCoroutine(judgement.Init(dealer, GameOver, currentSetting, gameMenuView));
+		judgement.exitGame = ExitGame;
+		yield return StartCoroutine(gameSettingView.Init());
+		yield return StartCoroutine(gameMainView.Init());
+		yield return StartCoroutine(modeView.Init());
+		yield return StartCoroutine(judgement.Init(gameMainView, gameSettingView, modeView));
 		
-		gameMenuView.onCountDownFinished = StartGame;
-        gameMenuView.onClickExit = ExitGame;
-		gameMenuView.SetMode(CardArrayManager.currentMode);
-	}
+		gameSettingView.HideUI(false);
+		gameMainView.ShowUI(false);
+		modeView.ShowUI(false);
+    }
 	
     void LoadingComplete()
     {
-		switch(CardArrayManager.currentMode)
-		{
-			case GameMode.LimitTime:
-				AudioManager.Instance.PlayOneShot("StartGameCountDown");
-				gameMenuView.ShowUI(true);
-				break;
-			case GameMode.Competition:
-				gameMenuView.ShowUI(false);
-				break;
-		}
+		modeView.ShowUI(true);
     }
 	
     void ExitGame()
@@ -49,39 +42,20 @@ public class GameSceneController : AbstractController
 			returnView = 2;
 		GameMainLoop.Instance.ChangeScene(SceneName.MainScene, returnView);
     }
-
-    void StartGame()
-    {
-        StartCoroutine(judgement.StartGame());
-    }
 	
-    void GameOver(int score, int maxCombo)
-    {
-		if (PlayerPrefsManager.OnePlayerProgress == (int)currentSetting.level)
-            PlayerPrefsManager.OnePlayerProgress += 1;
-
-        GameRecord record = ModelManager.Instance.GetGameRecord(currentSetting.level);
-        bool newHighScore = false;
-        bool newMaxCombo = false;
-        if(score > record.highScore)
+	AbstractView GetModeView()
+	{
+		switch(CardArrayManager.currentMode)
 		{
-			record.highScore = score;
-			newHighScore = true;
+		case GameMode.LimitTime:
+			GameObject timeModeView = Instantiate(Resources.Load("UI/TimeModeView")) as GameObject;
+			Canvas timeModeViewCanvas = timeModeView.GetComponent<Canvas>();
+			timeModeViewCanvas.worldCamera = Camera.main;
+			return timeModeView.GetComponent<AbstractView>();
+        default:
+			return null;
 		}
-        if(maxCombo > record.maxCombo)
-		{
-			record.maxCombo = maxCombo;
-			newMaxCombo = true;
-		}
-		record.playTimes += 1;
-
-		if(record.playTimes % 3 == 1)
-			UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.GameRecord, ModelManager.Instance.GetAllGameRecord());
-
-		ModelManager.Instance.SaveGameRecord(record);
-		
-        gameMenuView.ShowGameOverWindow(score, maxCombo, newHighScore, newMaxCombo);
-    }
+	}
 
 	GameModeJudgement GetJudgement()
 	{

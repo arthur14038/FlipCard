@@ -11,35 +11,46 @@ public abstract class GameModeJudgement{
 		}
 	}
 	protected static GameState currentState;
-	protected VoidTwoInt gameOver;
-	protected CardDealer dealer;
+	protected GameMainView gameMainView;
+	protected GameSettingView gameSettingView;
 	protected CardArraySetting currentSetting;
-	protected GameMenuView gameMenuView;
+	public VoidNoneParameter exitGame;
 
-	public virtual IEnumerator Init(CardDealer dealer, VoidTwoInt gameOver, CardArraySetting currentSetting, GameMenuView gameMenuView)
+	public virtual IEnumerator Init(GameMainView gameMainView, GameSettingView gameSettingView, AbstractView modeView)
 	{
 		currentState = GameState.Waiting;
-		gameMenuView.onClickPause = PauseGame;
-		gameMenuView.onClickResume = ResumeGame;
-		this.dealer = dealer;
-		this.gameOver = gameOver;
-		this.currentSetting = currentSetting;
-		this.gameMenuView = gameMenuView;
+		currentSetting = CardArrayManager.GetCurrentLevelSetting();
+        this.gameSettingView = gameSettingView;
+		this.gameMainView = gameMainView;
+		gameSettingView.onClickResume = ResumeGame;
+		gameSettingView.onClickExit = ExitGame;
 		yield return null;
 	}
 
-	public abstract IEnumerator StartGame();
+	protected abstract IEnumerator StartGame();
 
-	public virtual void PauseGame()
+	protected virtual void GameOver(params int[] values)
+	{
+		currentState = GameState.GameOver;
+    }
+
+	protected virtual void PauseGame()
 	{
 		currentState = GameState.Pausing;
 	}
 
-	public virtual void ResumeGame()
+	protected virtual void ResumeGame()
 	{
 		currentState = GameState.Playing;
-	}
+		gameSettingView.HideUI(true);
+    }
 	
+	protected virtual void ExitGame()
+	{
+		if(exitGame != null)
+			exitGame();
+	}
+
 	public virtual void JudgementUpdate()
 	{
 

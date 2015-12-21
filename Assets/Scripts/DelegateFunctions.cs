@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 public delegate void VoidNoneParameter();
 public delegate void VoidBool(bool value);
@@ -15,3 +16,4 @@ public delegate void VoidParticleListener(ParticleListener pl);
 public delegate void VoidScoreText(ScoreText st);
 public delegate void VoidBoolAndCards(bool value, params Card[] cards);
 public delegate void VoidPressButtonTool(PressButtonTool pressButton);
+public delegate IEnumerator IEnumeratorNoneParameter();

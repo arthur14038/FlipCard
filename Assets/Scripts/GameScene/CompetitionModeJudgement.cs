@@ -6,31 +6,34 @@ public class CompetitionModeJudgement : GameModeJudgement
 	public enum WhosTurn {WaitingReady, Player1Playing, Player2Playing, WaitingPlayer1, WaitingPlayer2}
 	WhosTurn currentTurn;
 	int player1Score;
-	int player2Scroe;
+	int player2Score;
 	bool player1Ready = false;
 	bool player2Ready = false;
+	CompetitionModeView competitionModeView;
 
-	public override IEnumerator Init(CardDealer dealer, VoidTwoInt gameOver, CardArraySetting currentSetting, GameMenuView gameMenuView)
+	public override IEnumerator Init(GameMainView gameMainView, GameSettingView gameSettingView, AbstractView modeView)
 	{
-		yield return gameMenuView.StartCoroutine(base.Init(dealer, gameOver, currentSetting, gameMenuView));
-		dealer.Init(currentSetting, GameOver, CardMatch);
+		yield return gameMainView.StartCoroutine(base.Init(gameMainView, gameSettingView, modeView));
+		gameMainView.completeOneRound = GameOver;
+		gameMainView.cardMatch = CardMatch;
 		player1Score = 0;
-		player2Scroe = 0;
-		gameMenuView.button_Player1.onLightUp = OnPlayerButtonLightUp;
-		gameMenuView.button_Player2.onLightUp = OnPlayerButtonLightUp;
-		gameMenuView.SetTwoPlayerScore(player1Score, player2Scroe);
+		player2Score = 0;
+		competitionModeView = (CompetitionModeView)modeView;
+		competitionModeView.button_Player1.onLightUp = OnPlayerButtonLightUp;
+		competitionModeView.button_Player2.onLightUp = OnPlayerButtonLightUp;
+		competitionModeView.SetTwoPlayerScore(player1Score, player2Score);
 		currentTurn = WhosTurn.WaitingReady;
-		gameMenuView.SetPlayerButton(currentTurn);
-		yield return gameMenuView.StartCoroutine(dealer.DealCard());
+		competitionModeView.SetPlayerButton(currentTurn);
+		yield return gameMainView.StartCoroutine(gameMainView.DealCard());
 	}
 
-	public override IEnumerator StartGame()
+	protected override IEnumerator StartGame()
 	{
-		dealer.FlipAllCard();
+		gameMainView.FlipAllCard();
 		yield return new WaitForSeconds(0.35f + currentSetting.showCardTime);
-		dealer.FlipAllCard();
+		gameMainView.FlipAllCard();
 		yield return new WaitForSeconds(0.35f);
-		gameMenuView.ToggleMask(false);
+		gameMainView.ToggleMask(false);
 		currentState = GameState.Playing;
 	}
 
@@ -38,40 +41,39 @@ public class CompetitionModeJudgement : GameModeJudgement
 	{
 		switch(currentTurn)
 		{
-			case WhosTurn.WaitingReady:
-				if(pressButton == gameMenuView.button_Player1)
-					player1Ready = true;
-				if(pressButton == gameMenuView.button_Player2)
-					player2Ready = true;
-				if(player1Ready && player2Ready)
-				{
-					currentTurn = (WhosTurn)Random.Range((int)WhosTurn.Player1Playing, (int)WhosTurn.Player2Playing + 1);
-					gameMenuView.StartCoroutine(gameMenuView.DisableChooseSide(currentTurn));
-				}
-				break;
-			case WhosTurn.WaitingPlayer1:
-				if(pressButton == gameMenuView.button_Player1)
-				{
-					currentTurn = WhosTurn.Player1Playing;
-					gameMenuView.SetPlayerButton(currentTurn);
-					gameMenuView.ToggleMask(false);
-				}
-				break;
-			case WhosTurn.WaitingPlayer2:
-				if(pressButton == gameMenuView.button_Player2)
-				{
-					currentTurn = WhosTurn.Player2Playing;
-					gameMenuView.SetPlayerButton(currentTurn);
-					gameMenuView.ToggleMask(false);
-				}
-				break;
+		case WhosTurn.WaitingReady:
+			if(pressButton == competitionModeView.button_Player1)
+				player1Ready = true;
+			if(pressButton == competitionModeView.button_Player2)
+				player2Ready = true;
+			if(player1Ready && player2Ready)
+			{
+				currentTurn = (WhosTurn)Random.Range((int)WhosTurn.Player1Playing, (int)WhosTurn.Player2Playing + 1);
+				gameMainView.StartCoroutine(competitionModeView.DisableChooseSide(currentTurn));
+			}
+			break;
+		case WhosTurn.WaitingPlayer1:
+			if(pressButton == competitionModeView.button_Player1)
+			{
+				currentTurn = WhosTurn.Player1Playing;
+				competitionModeView.SetPlayerButton(currentTurn);
+				gameMainView.ToggleMask(false);
+			}
+			break;
+		case WhosTurn.WaitingPlayer2:
+			if(pressButton == competitionModeView.button_Player2)
+			{
+				currentTurn = WhosTurn.Player2Playing;
+				competitionModeView.SetPlayerButton(currentTurn);
+				gameMainView.ToggleMask(false);
+			}
+			break;
 		}
 	}
 
 	void GameOver()
 	{
-		if(gameOver != null)
-			gameOver(player1Score, player2Scroe);
+		competitionModeView.ShowGameOver(player1Score, player2Score);
 	}
 
 	void CardMatch(bool match, params Card[] cards)
@@ -88,14 +90,14 @@ public class CompetitionModeJudgement : GameModeJudgement
 				if(currentTurn == WhosTurn.Player1Playing)
 				{
 					currentTurn = WhosTurn.WaitingPlayer2;
-					gameMenuView.SetPlayerButton(currentTurn);
-					gameMenuView.ToggleMask(true);
+					competitionModeView.SetPlayerButton(currentTurn);
+					gameMainView.ToggleMask(true);
 				}
 				if(currentTurn == WhosTurn.Player2Playing)
 				{
 					currentTurn = WhosTurn.WaitingPlayer1;
-					gameMenuView.SetPlayerButton(currentTurn);
-					gameMenuView.ToggleMask(true);
+					competitionModeView.SetPlayerButton(currentTurn);
+					gameMainView.ToggleMask(true);
 				}
 			}
 			if(scoreChangeAmount != 0)

@@ -38,7 +38,6 @@ public class CardArraySetting{
 	public float edgeLength;
 	public int column;
 	public int row;
-	public GameMode mode;
 	public float cardGap;
 	public float[] firstPosition;
 	public Vector2 realFirstPosition;
