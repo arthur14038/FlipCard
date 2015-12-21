@@ -6,7 +6,7 @@ public delegate void VoidInt(int value);
 public delegate void VoidTwoInt(int value, int value2);
 public delegate void VoidGameObject(GameObject go);
 public delegate void VoidTransform(Transform target);
-public delegate void VoidCardArrayLevel(CardArrayLevel level);
+public delegate void VoidCardArrayLevelGameMode(CardArrayLevel level, GameMode mode);
 public delegate void VoidString(string value);
 public delegate void VoidCard(Card card, bool checkMatch);
 public delegate void VoidVector2(Vector2 vec2);

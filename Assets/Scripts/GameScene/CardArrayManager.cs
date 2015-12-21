@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 
 public enum CardArrayLevel{TwoByThree = 0, ThreeByFour, FourByFive, FiveBySix}
-public enum GameMode { LimitTime = 0, LimitMove}
+public enum GameMode { LimitTime = 0, LimitMove, Competition, Cooperation}
 public class CardArrayManager{
 	static Dictionary<CardArrayLevel, CardArraySetting> settings = new Dictionary<CardArrayLevel, CardArraySetting>();
 	public static CardArrayLevel currentLevel;
+	public static GameMode currentMode;
 
 	public static void LoadData()
 	{

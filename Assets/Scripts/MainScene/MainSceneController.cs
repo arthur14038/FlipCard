@@ -6,12 +6,14 @@ public class MainSceneController : AbstractController {
 	MainSceneView currentView;
 	public MainPageView mainPageView;
 	public SinglePlayerView singlePlayerView;
+	public TwoPlayerView twoPlayerView;
 	string notifyMessage;
 		
 	public override IEnumerator Init ()
 	{
 		yield return StartCoroutine(mainPageView.Init());
 		yield return StartCoroutine(singlePlayerView.Init());
+		yield return StartCoroutine(twoPlayerView.Init());
 
 		currentView = (MainSceneView)GameMainLoop.Instance.showView;
 
@@ -24,28 +26,34 @@ public class MainSceneController : AbstractController {
 		mainPageView.onClickNotify = SendNotifyMail;
         singlePlayerView.onClickBack = ShowMainPage;
 		singlePlayerView.onClickPlay = GoToGameScene;
+		twoPlayerView.onClickBack = ShowMainPage;
 
 		mainPageView.HideUI(false);
 		singlePlayerView.HideUI(false);
+		twoPlayerView.HideUI(false);
 
 		switch(currentView)
 		{
-		case MainSceneView.MainPage:
-			mainPageView.ShowUI(false);
-			break;
-		case MainSceneView.SinglePlayer:
-			singlePlayerView.ShowUI(false);
-			break;
+			case MainSceneView.MainPage:
+				mainPageView.ShowUI(false);
+				break;
+			case MainSceneView.SinglePlayer:
+				singlePlayerView.ShowUI(false);
+				break;
+			case MainSceneView.TwoPlayer:
+				twoPlayerView.ShowUI(false);
+				break;
 		}
 
 		singlePlayerView.SetProgress(PlayerPrefsManager.OnePlayerProgress);
 		AudioManager.Instance.PlayMusic("FlipCardBGM3", true); 
 	}
 
-	void GoToGameScene(CardArrayLevel level)
+	void GoToGameScene(CardArrayLevel level, GameMode mode)
 	{
 		AudioManager.Instance.StopMusic();
-        CardArrayManager.currentLevel = level;		
+        CardArrayManager.currentLevel = level;
+		CardArrayManager.currentMode = mode;
 		GameMainLoop.Instance.ChangeScene(SceneName.GameScene);
 	}
 
@@ -53,9 +61,12 @@ public class MainSceneController : AbstractController {
 	{
 		switch(currentView)
 		{
-		case MainSceneView.SinglePlayer:
-			singlePlayerView.HideUI(true);
-			break;
+			case MainSceneView.SinglePlayer:
+				singlePlayerView.HideUI(true);
+				break;
+			case MainSceneView.TwoPlayer:
+				twoPlayerView.HideUI(true);
+				break;
 		}
 		mainPageView.ShowUI(true);
 		currentView = MainSceneView.MainPage;
@@ -70,11 +81,12 @@ public class MainSceneController : AbstractController {
 
 	void ShowTwoPlayers()
 	{
-		UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.OnClick2P);
-		mainPageView.ShowUnderConstruction();
-		notifyMessage = "Please notify me when \"Play with Friend\" feature is launches.";
-		//mainPageView.HideUI(true);
-		//currentView = MainSceneView.TwoPlayer;
+		mainPageView.HideUI(true);
+		twoPlayerView.ShowUI(true);
+		currentView = MainSceneView.TwoPlayer;
+		//UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.OnClick2P);
+		//mainPageView.ShowUnderConstruction();
+		//notifyMessage = "Please notify me when \"Play with Friend\" feature is launches.";
 	}
 
 	void ShowShop()

@@ -1,11 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 using DG.Tweening;
-using UnityEngine.UI;
 
 public class SinglePlayerView : AbstractView {
 	public VoidNoneParameter onClickBack;
-	public VoidCardArrayLevel onClickPlay;
+	public VoidCardArrayLevelGameMode onClickPlay;
 	public RectTransform group_1P;
 	public LevelUI[] levels;
 
@@ -42,7 +41,7 @@ public class SinglePlayerView : AbstractView {
 	{
 		AudioManager.Instance.PlayOneShot("Button_Click");
 		if(onClickPlay != null)
-			onClickPlay((CardArrayLevel)level);
+			onClickPlay((CardArrayLevel)level, GameMode.LimitTime);
 	}
 
 	protected override IEnumerator HideUIAnimation ()

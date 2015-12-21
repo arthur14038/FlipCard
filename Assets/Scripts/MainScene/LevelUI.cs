@@ -5,7 +5,6 @@ using DG.Tweening;
 
 public class LevelUI : MonoBehaviour {
 	public Text text_HighScore;
-	//public Text text_PlayTimes;
     public Text text_MaxCombo;
 	public RectTransform group_Unlock;
 	public RectTransform group_Locked;
@@ -54,10 +53,5 @@ public class LevelUI : MonoBehaviour {
             text_MaxCombo.text = record.maxCombo.ToString();
         else
             text_MaxCombo.text = "- -";
-
-  //      if (record.playTimes > 0)
-		//	text_PlayTimes.text = record.playTimes.ToString();
-		//else
-		//	text_PlayTimes.text = "- -";
 	}
 }
