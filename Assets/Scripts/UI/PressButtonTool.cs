@@ -21,6 +21,12 @@ public class PressButtonTool : ButtonOffset
 	}
 	PressButtonState currentState;
 	Tweener thisTweener;
+	float chargeTime = 0.8f;
+
+	public void SetChargeTime(float value)
+	{
+		chargeTime = value;
+	}
 
 	public override void OnPointerDown(PointerEventData eventData)
 	{
@@ -29,7 +35,7 @@ public class PressButtonTool : ButtonOffset
 			base.OnPointerDown(eventData);
 			if(thisTweener != null)
 				thisTweener.Kill();
-			thisTweener = image_Back.DOFillAmount(1f, 0.8f).OnComplete(
+			thisTweener = image_Back.DOFillAmount(1f, chargeTime).OnComplete(
 				delegate () {
 					UpdateButton(PressButtonState.LightUp);
 					if(onLightUp != null)
@@ -65,6 +71,7 @@ public class PressButtonTool : ButtonOffset
 				thisGroup.alpha = 0.5f;
 				break;
 			case PressButtonState.LightUp:
+				clickableParticle.SetActive(false);
 				lightUpParticle.SetActive(true);
 				image_Icon.color = Color.white;
 				break;

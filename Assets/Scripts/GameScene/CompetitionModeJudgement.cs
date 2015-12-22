@@ -44,10 +44,16 @@ public class CompetitionModeJudgement : GameModeJudgement
 		switch(currentTurn)
 		{
 			case WhosTurn.WaitingReady:
-				if(pressButton == competitionModeView.button_Player1)
+				if(!player1Ready && pressButton == competitionModeView.button_Player1)
+				{
 					player1Ready = true;
-				if(pressButton == competitionModeView.button_Player2)
+					competitionModeView.button_Player1.SetChargeTime(0.1f);
+                }
+				if(!player2Ready && pressButton == competitionModeView.button_Player2)
+				{
 					player2Ready = true;
+					competitionModeView.button_Player2.SetChargeTime(0.1f);
+				}
 				if(player1Ready && player2Ready)
 				{
 					currentTurn = (WhosTurn)Random.Range((int)WhosTurn.Player1Playing, (int)WhosTurn.Player2Playing + 1);
