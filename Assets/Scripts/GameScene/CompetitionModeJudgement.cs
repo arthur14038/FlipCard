@@ -28,15 +28,13 @@ public class CompetitionModeJudgement : GameModeJudgement
 		competitionModeView.onTwoPlayerReady = StartGame;
 		currentTurn = WhosTurn.WaitingReady;
 		competitionModeView.SetPlayerButton(currentTurn);
-		yield return gameMainView.StartCoroutine(gameMainView.DealCard());
 	}
 
 	protected override IEnumerator StartGame()
 	{
-		gameMainView.FlipAllCard();
-		yield return new WaitForSeconds(0.35f + currentSetting.showCardTime);
-		gameMainView.FlipAllCard();
-		yield return new WaitForSeconds(0.35f);
+		yield return gameMainView.StartCoroutine(gameMainView.DealCard());
+		yield return new WaitForSeconds(0.2f);
+		yield return competitionModeView.StartCoroutine(competitionModeView.FadeOutInstruction());
 		gameMainView.ToggleMask(false);
 		currentState = GameState.Playing;
 	}
@@ -118,11 +116,14 @@ public class CompetitionModeJudgement : GameModeJudgement
 			}
 			competitionModeView.SetTwoPlayerScore(player1Score, player2Score);
 
-			foreach(Card matchCard in cards)
+			if(cards != null)
 			{
-				Vector2 pos = matchCard.GetAnchorPosition();
-				pos.x += currentSetting.edgeLength / 2 - 20f;
-				gameMainView.ShowScoreText((score - saveScore) / cards.Length, pos);
+				foreach(Card matchCard in cards)
+				{
+					Vector2 pos = matchCard.GetAnchorPosition();
+					pos.x += currentSetting.edgeLength / 2 - 20f;
+					gameMainView.ShowScoreText((score - saveScore) / cards.Length, pos);
+				}
 			}
 		}
 	}

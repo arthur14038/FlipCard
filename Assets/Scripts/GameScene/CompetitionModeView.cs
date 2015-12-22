@@ -12,6 +12,8 @@ public class CompetitionModeView : AbstractView
 	public Text text_Player2Score;
 	public Text text_Instruction;
 	public Text text_GameOverHeader;
+	public Text text_Player1ResultScore;
+	public Text text_Player2ResultScore;
 	public Image group_GameOver;
 	public CanvasGroup group_Instruction;
 	public RectTransform image_GameOverWindow;
@@ -20,6 +22,8 @@ public class CompetitionModeView : AbstractView
 	public RectTransform image_CharacterLeft;
 	public RectTransform image_Player1Arrow;
 	public RectTransform image_Player2Arrow;
+	public RectTransform image_Player1ScoreBoard;
+	public RectTransform image_Player2ScoreBoard;
 	public PressButtonTool button_Player1;
 	public PressButtonTool button_Player2;
 
@@ -58,16 +62,24 @@ public class CompetitionModeView : AbstractView
 	{
 		TogglePlayerArrow(0);
 		string msg = "";
-		if(currentTurn == CompetitionModeJudgement.WhosTurn.Player1Playing)
-			msg = "Player1's Turn!";
-		else if(currentTurn == CompetitionModeJudgement.WhosTurn.Player2Playing)
-			msg = "Player2's Turn!";
-
+		switch(currentTurn)
+		{
+			case CompetitionModeJudgement.WhosTurn.Player1Playing:
+				button_Player1.UpdateButton(PressButtonTool.PressButtonState.LightUp);
+				button_Player2.UpdateButton(PressButtonTool.PressButtonState.Disable);
+				msg = "Player1 First!";
+				break;
+			case CompetitionModeJudgement.WhosTurn.Player2Playing:
+				button_Player1.UpdateButton(PressButtonTool.PressButtonState.Disable);
+				button_Player2.UpdateButton(PressButtonTool.PressButtonState.LightUp);
+				msg = "Player2 First!";
+				break;
+		}
+		
 		yield return StartCoroutine(ShowInstruction(msg));
 		yield return new WaitForSeconds(0.5f);
-
-		SetPlayerButton(currentTurn);
-		yield return StartCoroutine(onTwoPlayerReady());
+		
+		StartCoroutine(onTwoPlayerReady());
 	}
 
 	public void SetPlayerButton(CompetitionModeJudgement.WhosTurn currentTurn)
@@ -105,6 +117,8 @@ public class CompetitionModeView : AbstractView
 	{
 		AudioManager.Instance.StopMusic();
 		AudioManager.Instance.PlayOneShot("GameResult");
+		text_Player1ResultScore.text = player1Score.ToString();
+		text_Player2ResultScore.text = player2Score.ToString();
 
 		StartCoroutine(GameOverEffect(player1Score, player2Score));
 	}
@@ -162,7 +176,7 @@ public class CompetitionModeView : AbstractView
 		yield return text_Instruction.rectTransform.DOScale(1f, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
 	}
 
-	IEnumerator FadeOutInstruction()
+	public IEnumerator FadeOutInstruction()
 	{
 		group_Instruction.DOFade(0f, 0.3f).WaitForCompletion();
 		yield return text_Instruction.rectTransform.DOScale(0f, 0.3f).SetEase(Ease.InBack).WaitForCompletion();
@@ -171,6 +185,8 @@ public class CompetitionModeView : AbstractView
 
 	IEnumerator GameOverEffect(int player1Score, int player2Score)
 	{
+		image_Player1ScoreBoard.gameObject.SetActive(false);
+		image_Player2ScoreBoard.gameObject.SetActive(false);
 		image_CharacterRight.gameObject.SetActive(false);
 		image_CharacterLeft.gameObject.SetActive(false);
 		button_GameOverExit.gameObject.SetActive(false);
@@ -185,8 +201,19 @@ public class CompetitionModeView : AbstractView
 		image_CharacterRight.gameObject.SetActive(true);
 		image_CharacterLeft.gameObject.SetActive(true);
 		image_CharacterRight.DOAnchorPos(new Vector2(250f, -72f), 0.2f).SetEase(Ease.OutCubic);
-		image_CharacterLeft.DOAnchorPos(new Vector2(-240f, -72f), 0.2f).SetEase(Ease.OutCubic);
-		
+		yield return image_CharacterLeft.DOAnchorPos(new Vector2(-240f, -72f), 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
+
+		image_Player1ScoreBoard.localScale = Vector2.zero;
+		image_Player2ScoreBoard.localScale = Vector2.zero;
+		image_Player1ScoreBoard.gameObject.SetActive(true);
+		image_Player2ScoreBoard.gameObject.SetActive(true);
+
+		image_Player1ScoreBoard.DOScale(1.5f, 0.2f).SetEase(Ease.OutCubic);
+		yield return image_Player2ScoreBoard.DOScale(1.5f, 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
+
+		image_Player1ScoreBoard.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutCubic);
+		yield return image_Player2ScoreBoard.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
+
 		button_GameOverExit.gameObject.SetActive(true);
 		button_GameOverExit.localScale = new Vector3(1f, 0f, 1f);
 		
