@@ -9,6 +9,7 @@ public class CompetitionModeJudgement : GameModeJudgement
 	int player2Score;
 	bool player1Ready = false;
 	bool player2Ready = false;
+	bool lastTimeHadMatch = false;
 	CompetitionModeView competitionModeView;
 
 	public override IEnumerator Init(GameMainView gameMainView, GameSettingView gameSettingView, AbstractView modeView)
@@ -76,6 +77,7 @@ public class CompetitionModeJudgement : GameModeJudgement
 
 	void RoundComplete()
 	{
+		AddScore(1, (int)currentTurn, null);
 		GameOver(player1Score, player2Score);
 	}
 
@@ -85,17 +87,80 @@ public class CompetitionModeJudgement : GameModeJudgement
 		competitionModeView.ShowGameOver(values[0], values[1]);
 	}
 
+	void AddScore(int addAmount, int playerNumber, Card[] cards)
+	{
+		int saveScore = 0;
+		int score = 0;
+		switch(playerNumber)
+		{
+			case 1:
+				score = player1Score;
+				break;
+			case 2:
+				score = player2Score;
+				break;
+		}
+		saveScore = score;
+		score += addAmount;
+		if(score < 0)
+			score = 0;
+
+		if(saveScore != score)
+		{
+			switch(playerNumber)
+			{
+				case 1:
+					player1Score = score;
+					break;
+				case 2:
+					player2Score = score;
+					break;
+			}
+			competitionModeView.SetTwoPlayerScore(player1Score, player2Score);
+
+			foreach(Card matchCard in cards)
+			{
+				Vector2 pos = matchCard.GetAnchorPosition();
+				pos.x += currentSetting.edgeLength / 2 - 20f;
+				gameMainView.ShowScoreText((score - saveScore) / cards.Length, pos);
+			}
+		}
+	}
+
 	void CardMatch(bool match, params Card[] cards)
 	{
 		if(currentState != GameState.GameOver)
 		{
+			bool takeTurn = false;
 			int scoreChangeAmount = 0;
 			if(match)
 			{
-				scoreChangeAmount = 8;
+				if(lastTimeHadMatch)
+				{
+					scoreChangeAmount = 12;
+				}
+				else
+				{
+					scoreChangeAmount = 8;
+					lastTimeHadMatch = true;
+					gameMainView.ToggleCardGlow(true);
+				}
 			}else
 			{
+				if(lastTimeHadMatch)
+				{
+					lastTimeHadMatch = false;
+					gameMainView.ToggleCardGlow(false);
+				}
 				scoreChangeAmount = -2;
+				takeTurn = true;
+			}
+
+			if(scoreChangeAmount != 0)
+				AddScore(scoreChangeAmount, (int)currentTurn, cards);
+
+			if(takeTurn)
+			{
 				if(currentTurn == WhosTurn.Player1Playing)
 				{
 					currentTurn = WhosTurn.WaitingPlayer2;
@@ -108,10 +173,6 @@ public class CompetitionModeJudgement : GameModeJudgement
 					competitionModeView.SetPlayerButton(currentTurn);
 					gameMainView.ToggleMask(true);
 				}
-			}
-			if(scoreChangeAmount != 0)
-			{
-				//加分效果
 			}
 		}
 	}
