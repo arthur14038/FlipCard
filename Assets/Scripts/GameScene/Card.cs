@@ -19,15 +19,15 @@ public class Card : MonoBehaviour {
 	Color transparentColor = new Color(1, 1, 1, 0);
 	string cardId;
 	Button thisButton;
-	BoolNoneParameter checkCanFlipCard;
-	VoidCard checkMatch;
+	BoolCard checkCanFlipCard;
+	VoidCard flipFinish;
 	Vector3 flipDown = new Vector3(0f, 0.9f, 1f);
 
-	public void Init(BoolNoneParameter checkCanFlipCard, VoidCard checkMatch)
+	public void Init(BoolCard checkCanFlipCard, VoidCard flipFinish)
 	{
         image_Glow.gameObject.SetActive(false);
         this.checkCanFlipCard = checkCanFlipCard;
-		this.checkMatch = checkMatch;
+		this.flipFinish = flipFinish;
 		thisButton = this.GetComponent<Button>();
 	}
 
@@ -69,7 +69,7 @@ public class Card : MonoBehaviour {
 	{
 		if(flipByUser)
 		{
-			if(checkCanFlipCard())
+			if(checkCanFlipCard(this))
 			{
 				AudioManager.Instance.PlayOneShot("GamePlayChooseCard");
 				if(flipCard != null)
@@ -159,8 +159,8 @@ public class Card : MonoBehaviour {
 		card.color = Color.white;
 		yield return card.rectTransform.DOScale(Vector3.one, 0.15f).WaitForCompletion();
 
-		if(currentState == CardState.Face && flipByUser && checkMatch != null)
-			checkMatch(this);
+		if(currentState == CardState.Face && flipByUser && flipFinish != null)
+			flipFinish(this);
 
 		flipCard = null;
 	}

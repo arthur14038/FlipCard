@@ -22,6 +22,9 @@ public class CompetitionModeJudgement : GameModeJudgement
 		competitionModeView.button_Player1.onLightUp = OnPlayerButtonLightUp;
 		competitionModeView.button_Player2.onLightUp = OnPlayerButtonLightUp;
 		competitionModeView.SetTwoPlayerScore(player1Score, player2Score);
+		competitionModeView.onClickPause = PauseGame;
+		competitionModeView.onClickGameOverExit = ExitGame;
+		competitionModeView.onTwoPlayerReady = StartGame;
 		currentTurn = WhosTurn.WaitingReady;
 		competitionModeView.SetPlayerButton(currentTurn);
 		yield return gameMainView.StartCoroutine(gameMainView.DealCard());
@@ -41,33 +44,33 @@ public class CompetitionModeJudgement : GameModeJudgement
 	{
 		switch(currentTurn)
 		{
-		case WhosTurn.WaitingReady:
-			if(pressButton == competitionModeView.button_Player1)
-				player1Ready = true;
-			if(pressButton == competitionModeView.button_Player2)
-				player2Ready = true;
-			if(player1Ready && player2Ready)
-			{
-				currentTurn = (WhosTurn)Random.Range((int)WhosTurn.Player1Playing, (int)WhosTurn.Player2Playing + 1);
-				gameMainView.StartCoroutine(competitionModeView.DisableChooseSide(currentTurn));
-			}
-			break;
-		case WhosTurn.WaitingPlayer1:
-			if(pressButton == competitionModeView.button_Player1)
-			{
-				currentTurn = WhosTurn.Player1Playing;
-				competitionModeView.SetPlayerButton(currentTurn);
-				gameMainView.ToggleMask(false);
-			}
-			break;
-		case WhosTurn.WaitingPlayer2:
-			if(pressButton == competitionModeView.button_Player2)
-			{
-				currentTurn = WhosTurn.Player2Playing;
-				competitionModeView.SetPlayerButton(currentTurn);
-				gameMainView.ToggleMask(false);
-			}
-			break;
+			case WhosTurn.WaitingReady:
+				if(pressButton == competitionModeView.button_Player1)
+					player1Ready = true;
+				if(pressButton == competitionModeView.button_Player2)
+					player2Ready = true;
+				if(player1Ready && player2Ready)
+				{
+					currentTurn = (WhosTurn)Random.Range((int)WhosTurn.Player1Playing, (int)WhosTurn.Player2Playing + 1);
+					competitionModeView.StartCoroutine(competitionModeView.PlayerReadyEffect(currentTurn));
+				}
+				break;
+			case WhosTurn.WaitingPlayer1:
+				if(pressButton == competitionModeView.button_Player1)
+				{
+					currentTurn = WhosTurn.Player1Playing;
+					competitionModeView.SetPlayerButton(currentTurn);
+					gameMainView.ToggleMask(false);
+				}
+				break;
+			case WhosTurn.WaitingPlayer2:
+				if(pressButton == competitionModeView.button_Player2)
+				{
+					currentTurn = WhosTurn.Player2Playing;
+					competitionModeView.SetPlayerButton(currentTurn);
+					gameMainView.ToggleMask(false);
+				}
+				break;
 		}
 	}
 

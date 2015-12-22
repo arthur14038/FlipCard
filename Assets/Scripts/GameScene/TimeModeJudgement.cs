@@ -67,13 +67,7 @@ public class TimeModeJudgement : GameModeJudgement
 			}
 		}
 	}
-
-	protected override void PauseGame()
-	{
-		base.PauseGame();
-		gameSettingView.ShowUI(true);
-	}
-	
+		
 	void CardMatch(bool match, params Card[] cards)
 	{
 		if(currentState != GameState.GameOver)

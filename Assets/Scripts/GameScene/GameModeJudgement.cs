@@ -37,6 +37,7 @@ public abstract class GameModeJudgement{
 	protected virtual void PauseGame()
 	{
 		currentState = GameState.Pausing;
+		gameSettingView.ShowUI(true);
 	}
 
 	protected virtual void ResumeGame()

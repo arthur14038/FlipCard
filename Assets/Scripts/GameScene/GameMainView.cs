@@ -22,11 +22,13 @@ public class GameMainView : AbstractView
 	int cardCountOnTable;
 	Card[] cards;
 	Queue<Card> waitForCompare = new Queue<Card>();
+	Queue<Card> waitForMatch = new Queue<Card>();
+	bool lockFlipCard = false;
 
 	public override IEnumerator Init()
 	{
 		ToggleMask(true);
-
+		
 		CardArraySetting setting = CardArrayManager.GetCurrentLevelSetting();
         cards = new Card[setting.column * setting.row];
 		pos = new Vector2[cards.Length];
@@ -40,7 +42,7 @@ public class GameMainView : AbstractView
 			tmp.SetActive(false);
 			cards[i] = tmp.GetComponent<Card>();
 			cards[i].SetSize(setting.edgeLength);
-			cards[i].Init(CanFlipCardNow, CheckCardMatch);
+			cards[i].Init(CanFlipCardNow, CardFlipFinish);
 			float x = setting.realFirstPosition.x + (i % setting.column) * (setting.edgeLength + setting.cardGap);
 			float y = setting.realFirstPosition.y - (i / setting.column) * (setting.edgeLength + setting.cardGap);
 			pos[i] = new Vector2(x, y);
@@ -84,18 +86,32 @@ public class GameMainView : AbstractView
 			card.ToggleCardGlow(turnOn);
 	}
 
-	bool CanFlipCardNow()
+	bool CanFlipCardNow(Card card)
 	{
-		return true;
-	}
+		if(lockFlipCard)
+			return false;
 
-	void CheckCardMatch(Card card)
-	{
 		waitForCompare.Enqueue(card);
 		if(waitForCompare.Count > 1)
 		{
 			Card cardA = waitForCompare.Dequeue();
 			Card cardB = waitForCompare.Dequeue();
+			if(cardA.GetCardId() != cardB.GetCardId())
+			{
+				if(CardArrayManager.currentMode == GameMode.Competition)
+					lockFlipCard = true;
+			}
+		}
+		return true;
+	}
+
+	void CardFlipFinish(Card card)
+	{
+		waitForMatch.Enqueue(card);
+		if(waitForMatch.Count > 1)
+		{
+			Card cardA = waitForMatch.Dequeue();
+			Card cardB = waitForMatch.Dequeue();
 			bool isMatch = false;
 			if(cardA.GetCardId() == cardB.GetCardId())
 			{
@@ -107,6 +123,7 @@ public class GameMainView : AbstractView
 			}
 			else
 			{
+				lockFlipCard = false;
 				cardA.MisMatch();
 				cardB.MisMatch();
 			}

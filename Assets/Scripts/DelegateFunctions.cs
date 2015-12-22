@@ -17,4 +17,5 @@ public delegate void VoidScoreText(ScoreText st);
 public delegate void VoidBoolAndCards(bool value, params Card[] cards);
 public delegate void VoidPressButtonTool(PressButtonTool pressButton);
 public delegate bool BoolNoneParameter();
+public delegate bool BoolCard(Card card);
 public delegate IEnumerator IEnumeratorNoneParameter();

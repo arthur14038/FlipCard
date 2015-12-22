@@ -47,13 +47,18 @@ public class GameSceneController : AbstractController
 	{
 		switch(CardArrayManager.currentMode)
 		{
-		case GameMode.LimitTime:
-			GameObject timeModeView = Instantiate(Resources.Load("UI/TimeModeView")) as GameObject;
-			Canvas timeModeViewCanvas = timeModeView.GetComponent<Canvas>();
-			timeModeViewCanvas.worldCamera = Camera.main;
-			return timeModeView.GetComponent<AbstractView>();
-        default:
-			return null;
+			case GameMode.LimitTime:
+				GameObject timeModeView = Instantiate(Resources.Load("UI/TimeModeView")) as GameObject;
+				Canvas timeModeViewCanvas = timeModeView.GetComponent<Canvas>();
+				timeModeViewCanvas.worldCamera = Camera.main;
+				return timeModeView.GetComponent<AbstractView>();
+			case GameMode.Competition:
+				GameObject competitionModeView = Instantiate(Resources.Load("UI/CompetitionModeView")) as GameObject;
+				Canvas competitionModeViewCanvas = competitionModeView.GetComponent<Canvas>();
+				competitionModeViewCanvas.worldCamera = Camera.main;
+				return competitionModeView.GetComponent<AbstractView>();
+			default:
+				return null;
 		}
 	}
 
