@@ -8,7 +8,8 @@ public class Card : MonoBehaviour {
 	public Image cardImage;
     public Image image_Glow;
     public Text text_CardId;
-    public enum CardState{Face, Back, None}
+	public Color glowColor = new Color(1f, 0.85f, 0f);
+	public enum CardState{Face, Back, None}
 	CardState currentState = CardState.None;
 	Sprite cardBack;
 	Sprite cardFace;
@@ -18,14 +19,15 @@ public class Card : MonoBehaviour {
 	Color transparentColor = new Color(1, 1, 1, 0);
 	string cardId;
 	Button thisButton;
-	VoidCard flipToFace;
+	BoolNoneParameter checkCanFlipCard;
+	VoidCard checkMatch;
 	Vector3 flipDown = new Vector3(0f, 0.9f, 1f);
-    Color glowColor = new Color(1f, 0.85f, 0f);
 
-	public void Init(VoidCard flipToFace)
+	public void Init(BoolNoneParameter checkCanFlipCard, VoidCard checkMatch)
 	{
         image_Glow.gameObject.SetActive(false);
-        this.flipToFace = flipToFace;
+        this.checkCanFlipCard = checkCanFlipCard;
+		this.checkMatch = checkMatch;
 		thisButton = this.GetComponent<Button>();
 	}
 
@@ -66,10 +68,21 @@ public class Card : MonoBehaviour {
 	public void Flip(bool flipByUser = false)
 	{
 		if(flipByUser)
-			AudioManager.Instance.PlayOneShot("GamePlayChooseCard");
-		if(flipCard != null)
-			StopCoroutine(flipCard);
-		flipCard = StartCoroutine(FlipCard(flipByUser));
+		{
+			if(checkCanFlipCard())
+			{
+				AudioManager.Instance.PlayOneShot("GamePlayChooseCard");
+				if(flipCard != null)
+					StopCoroutine(flipCard);
+				flipCard = StartCoroutine(FlipCard(flipByUser));
+			}
+		}
+		else
+		{
+			if(flipCard != null)
+				StopCoroutine(flipCard);
+			flipCard = StartCoroutine(FlipCard(flipByUser));
+		}
 	}
 
 	public void Match()
@@ -107,19 +120,20 @@ public class Card : MonoBehaviour {
             }
         }
         else
-        {
-            if (this.gameObject.activeInHierarchy)
-            {
-                image_Glow.DOFade(0f, 0.3f).OnComplete(
-                    delegate () {
-                        image_Glow.gameObject.SetActive(false);
-                    }
-                    );
-            }else
-            {
-                image_Glow.gameObject.SetActive(false);
-            }            
-        }
+		{
+			if(this.gameObject.activeInHierarchy)
+			{
+				image_Glow.DOFade(0f, 0.3f).OnComplete(
+					delegate () {
+						image_Glow.gameObject.SetActive(false);
+					}
+					);
+			}
+			else
+			{
+				image_Glow.gameObject.SetActive(false);
+			}
+		}
     }
 
     public Vector2 GetAnchorPosition()
@@ -127,7 +141,7 @@ public class Card : MonoBehaviour {
         return card.rectTransform.anchoredPosition;
     }
 
-	IEnumerator FlipCard(bool checkMatch)
+	IEnumerator FlipCard(bool flipByUser)
 	{
 		card.DOColor(Color.gray, 0.2f).SetEase(Ease.OutQuad);
 		yield return card.rectTransform.DOScale(flipDown, 0.2f).SetEase(Ease.OutQuad).WaitForCompletion();
@@ -145,9 +159,8 @@ public class Card : MonoBehaviour {
 		card.color = Color.white;
 		yield return card.rectTransform.DOScale(Vector3.one, 0.15f).WaitForCompletion();
 
-		if(currentState == CardState.Face)			
-			if(flipToFace != null)
-				flipToFace(this, checkMatch);
+		if(currentState == CardState.Face && flipByUser && checkMatch != null)
+			checkMatch(this);
 
 		flipCard = null;
 	}

@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class CompetitionModeView : AbstractView
 {
 	public VoidNoneParameter onTwoPlayerReady;
+	public VoidNoneParameter onClickPause;
+	public VoidNoneParameter onClickGameOverExit;
 	public Text text_Player1Score;
 	public Text text_Player2Score;
 	public Text text_TakeTurn;
@@ -19,6 +21,20 @@ public class CompetitionModeView : AbstractView
 	public override IEnumerator Init()
 	{
 		yield return null;
+	}
+
+	public void OnClickPause()
+	{
+		AudioManager.Instance.PlayOneShot("Button_Click");
+		if(onClickPause != null)
+			onClickPause();
+	}
+
+	public void OnClickGameOverExit()
+	{
+		AudioManager.Instance.PlayOneShot("Button_Click");
+		if(onClickGameOverExit != null)
+			onClickGameOverExit();
 	}
 
 	public void SetTwoPlayerScore(int player1Score, int player2Score)
@@ -106,10 +122,12 @@ public class CompetitionModeView : AbstractView
 	protected override IEnumerator HideUIAnimation()
 	{
 		yield return null;
+		hideCoroutine = null;
 	}
 
 	protected override IEnumerator ShowUIAnimation()
 	{
 		yield return null;
+		showCoroutine = null;
 	}
 }

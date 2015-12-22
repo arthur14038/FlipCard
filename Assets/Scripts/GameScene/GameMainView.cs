@@ -5,23 +5,23 @@ using System.Collections.Generic;
 public class GameMainView : AbstractView
 {
 	public Transform scoreTextParent;
+	public Transform cardParent;
 	public GameObject image_Mask;
 	public GameObject scoreTextPrefab;
 	public GameObject cardPrefab;
-	public Transform cardParent;
 	public Sprite[] cardBack;
 	public Sprite[] cardFace;
 	public Sprite[] cardImage;
 	public VoidNoneParameter completeOneRound;
 	public VoidBoolAndCards cardMatch;
 	Queue<ScoreText> scoreTextQueue = new Queue<ScoreText>();
-	Card[] cards;
 	Vector2[] pos;
 	Vector2 shiftAmount = new Vector2(-100, 50);
 	float appearDuration = 0.3f;
 	float dealTime = 0.5f;
+	int cardCountOnTable;
+	Card[] cards;
 	Queue<Card> waitForCompare = new Queue<Card>();
-	List<Card> cardsOnTheTable = new List<Card>();
 
 	public override IEnumerator Init()
 	{
@@ -40,7 +40,7 @@ public class GameMainView : AbstractView
 			tmp.SetActive(false);
 			cards[i] = tmp.GetComponent<Card>();
 			cards[i].SetSize(setting.edgeLength);
-			cards[i].Init(UserFlipCard);
+			cards[i].Init(CanFlipCardNow, CheckCardMatch);
 			float x = setting.realFirstPosition.x + (i % setting.column) * (setting.edgeLength + setting.cardGap);
 			float y = setting.realFirstPosition.y - (i / setting.column) * (setting.edgeLength + setting.cardGap);
 			pos[i] = new Vector2(x, y);
@@ -67,56 +67,56 @@ public class GameMainView : AbstractView
 		{
 			cards[i].SetCard(cardBack[0], cardFace[0], thisTimeCardImage[i], Card.CardState.Back, thisTimeCardImage[i].name);
 			cards[i].Appear(pos[i], shiftAmount, delayDuration * i, appearDuration);
-			cardsOnTheTable.Add(cards[i]);
 		}
+		cardCountOnTable = cards.Length;
 		yield return new WaitForSeconds(dealTime);
 	}
 
 	public void FlipAllCard()
 	{
-		for(int i = 0 ; i < cards.Length ; ++i)
-		{
-			cards[i].Flip();
-		}
+		foreach(Card card in cards)
+			card.Flip();
 	}
 
 	public void ToggleCardGlow(bool turnOn)
 	{
-		foreach(Card usingCard in cards)
-			usingCard.ToggleCardGlow(turnOn);
+		foreach(Card card in cards)
+			card.ToggleCardGlow(turnOn);
 	}
 
-	void UserFlipCard(Card card, bool checkMatch)
+	bool CanFlipCardNow()
 	{
-		if(checkMatch)
-		{
-			waitForCompare.Enqueue(card);
-			if(waitForCompare.Count > 1)
-			{
-				Card cardA = waitForCompare.Dequeue();
-				Card cardB = waitForCompare.Dequeue();
-				bool isMatch = false;
-				if(cardA.GetCardId() == cardB.GetCardId())
-				{
-					AudioManager.Instance.PlayOneShot("GamePlayGetPair");
-					isMatch = true;
-					cardA.Match();
-					cardB.Match();
-					cardsOnTheTable.Remove(cardA);
-					cardsOnTheTable.Remove(cardB);
-				} else
-				{
-					cardA.MisMatch();
-					cardB.MisMatch();
-				}
-				if(cardMatch != null)
-					cardMatch(isMatch, cardA, cardB);
-			}
-			if(cardsOnTheTable.Count == 0 && completeOneRound != null)
-				completeOneRound();
-		}
+		return true;
 	}
 
+	void CheckCardMatch(Card card)
+	{
+		waitForCompare.Enqueue(card);
+		if(waitForCompare.Count > 1)
+		{
+			Card cardA = waitForCompare.Dequeue();
+			Card cardB = waitForCompare.Dequeue();
+			bool isMatch = false;
+			if(cardA.GetCardId() == cardB.GetCardId())
+			{
+				AudioManager.Instance.PlayOneShot("GamePlayGetPair");
+				isMatch = true;
+				cardA.Match();
+				cardB.Match();
+				cardCountOnTable -= 2;
+			}
+			else
+			{
+				cardA.MisMatch();
+				cardB.MisMatch();
+			}
+			if(cardMatch != null)
+				cardMatch(isMatch, cardA, cardB);
+		}
+		if(cardCountOnTable == 0 && completeOneRound != null)
+			completeOneRound();
+	}
+	
 	public void ToggleMask(bool value)
 	{
 		if(image_Mask.activeSelf != value)

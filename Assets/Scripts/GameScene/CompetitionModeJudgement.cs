@@ -14,7 +14,7 @@ public class CompetitionModeJudgement : GameModeJudgement
 	public override IEnumerator Init(GameMainView gameMainView, GameSettingView gameSettingView, AbstractView modeView)
 	{
 		yield return gameMainView.StartCoroutine(base.Init(gameMainView, gameSettingView, modeView));
-		gameMainView.completeOneRound = GameOver;
+		gameMainView.completeOneRound = RoundComplete;
 		gameMainView.cardMatch = CardMatch;
 		player1Score = 0;
 		player2Score = 0;
@@ -71,14 +71,20 @@ public class CompetitionModeJudgement : GameModeJudgement
 		}
 	}
 
-	void GameOver()
+	void RoundComplete()
 	{
-		competitionModeView.ShowGameOver(player1Score, player2Score);
+		GameOver(player1Score, player2Score);
+	}
+
+	protected override void GameOver(params int[] values)
+	{
+		base.GameOver(values);
+		competitionModeView.ShowGameOver(values[0], values[1]);
 	}
 
 	void CardMatch(bool match, params Card[] cards)
 	{
-		if(currentState == GameState.Playing)
+		if(currentState != GameState.GameOver)
 		{
 			int scoreChangeAmount = 0;
 			if(match)
