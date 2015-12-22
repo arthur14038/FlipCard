@@ -9,6 +9,7 @@ public class Card : MonoBehaviour {
     public Image image_Glow;
     public Text text_CardId;
 	public Color glowColor = new Color(1f, 0.85f, 0f);
+	public GameObject luckyEffect;
 	public enum CardState{Face, Back, None}
 	CardState currentState = CardState.None;
 	Sprite cardBack;
@@ -22,6 +23,7 @@ public class Card : MonoBehaviour {
 	BoolCard checkCanFlipCard;
 	VoidCard flipFinish;
 	Vector3 flipDown = new Vector3(0f, 0.9f, 1f);
+	bool isLuckyCard;
 
 	public void Init(BoolCard checkCanFlipCard, VoidCard flipFinish)
 	{
@@ -29,6 +31,14 @@ public class Card : MonoBehaviour {
         this.checkCanFlipCard = checkCanFlipCard;
 		this.flipFinish = flipFinish;
 		thisButton = this.GetComponent<Button>();
+		ToggleLuckyEffect(false);
+    }
+
+	public void ToggleLuckyEffect(bool value)
+	{
+		isLuckyCard = value;
+		if(luckyEffect.activeSelf != value)
+			luckyEffect.SetActive(value);
 	}
 
 	public void SetSize(float edgeLength)
@@ -140,6 +150,11 @@ public class Card : MonoBehaviour {
     {
         return card.rectTransform.anchoredPosition;
     }
+
+	public bool IsLuckyCard()
+	{
+		return isLuckyCard;
+	}
 
 	IEnumerator FlipCard(bool flipByUser)
 	{

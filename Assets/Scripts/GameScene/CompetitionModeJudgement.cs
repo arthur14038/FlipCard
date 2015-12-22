@@ -36,11 +36,14 @@ public class CompetitionModeJudgement : GameModeJudgement
 		yield return new WaitForSeconds(0.2f);
 		yield return competitionModeView.StartCoroutine(competitionModeView.FadeOutInstruction());
 		gameMainView.ToggleMask(false);
+		gameMainView.SetLuckyCard(1);
 		currentState = GameState.Playing;
+		AudioManager.Instance.PlayMusic("GamePlayBGM", true);
 	}
 
 	void OnPlayerButtonLightUp(PressButtonTool pressButton)
 	{
+		AudioManager.Instance.PlayOneShot("GameResultScoreCount");
 		switch(currentTurn)
 		{
 			case WhosTurn.WaitingReady:
@@ -152,7 +155,11 @@ public class CompetitionModeJudgement : GameModeJudgement
 					lastTimeHadMatch = true;
 					gameMainView.ToggleCardGlow(true);
 				}
-			}else
+				if(cards[0].IsLuckyCard() || cards[1].IsLuckyCard())
+				{
+					scoreChangeAmount *= 2;
+                }
+			} else
 			{
 				if(lastTimeHadMatch)
 				{

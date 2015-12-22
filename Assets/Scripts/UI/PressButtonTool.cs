@@ -32,6 +32,7 @@ public class PressButtonTool : ButtonOffset
 	{
 		if(currentState == PressButtonState.Clickable)
 		{
+			AudioManager.Instance.PlayOneShot("Button_Click");
 			base.OnPointerDown(eventData);
 			if(thisTweener != null)
 				thisTweener.Kill();

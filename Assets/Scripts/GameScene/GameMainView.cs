@@ -9,6 +9,7 @@ public class GameMainView : AbstractView
 	public GameObject image_Mask;
 	public GameObject scoreTextPrefab;
 	public GameObject cardPrefab;
+	public GameObject getLuckyEffect;
 	public Sprite[] cardBack;
 	public Sprite[] cardFace;
 	public Sprite[] cardImage;
@@ -19,16 +20,17 @@ public class GameMainView : AbstractView
 	Vector2 shiftAmount = new Vector2(-100, 50);
 	float appearDuration = 0.3f;
 	float dealTime = 0.5f;
-	int cardCountOnTable;
 	Card[] cards;
 	Queue<Card> waitForCompare = new Queue<Card>();
 	Queue<Card> waitForMatch = new Queue<Card>();
-	bool lockFlipCard = false;
+	List<Card> cardsOnTable = new List<Card>();
+    bool lockFlipCard = false;
 
 	public override IEnumerator Init()
 	{
 		ToggleMask(true);
-		
+		getLuckyEffect.SetActive(false);
+
 		CardArraySetting setting = CardArrayManager.GetCurrentLevelSetting();
         cards = new Card[setting.column * setting.row];
 		pos = new Vector2[cards.Length];
@@ -49,6 +51,7 @@ public class GameMainView : AbstractView
 		}
 		cardPrefab = null;
 		yield return null;
+
 		for(int i = 0 ; i < 8 ; ++i)
 		{
 			GameObject tmp = Instantiate(scoreTextPrefab) as GameObject;
@@ -59,6 +62,8 @@ public class GameMainView : AbstractView
 			st.Init(SaveScoreText);
 			SaveScoreText(st);
 		}
+		scoreTextPrefab = null;
+		yield return null;
 	}
 
 	public IEnumerator DealCard()
@@ -69,8 +74,8 @@ public class GameMainView : AbstractView
 		{
 			cards[i].SetCard(cardBack[0], cardFace[0], thisTimeCardImage[i], Card.CardState.Back, thisTimeCardImage[i].name);
 			cards[i].Appear(pos[i], shiftAmount, delayDuration * i, appearDuration);
-		}
-		cardCountOnTable = cards.Length;
+			cardsOnTable.Add(cards[i]);
+        }
 		yield return new WaitForSeconds(dealTime);
 	}
 
@@ -84,6 +89,19 @@ public class GameMainView : AbstractView
 	{
 		foreach(Card card in cards)
 			card.ToggleCardGlow(turnOn);
+	}
+
+	public void SetLuckyCard(int count)
+	{
+		while(count > 0)
+		{
+			int randomIndex = Random.Range(0, cardsOnTable.Count);
+			if(!cardsOnTable[randomIndex].IsLuckyCard())
+			{
+				cardsOnTable[randomIndex].ToggleLuckyEffect(true);
+				--count;
+			}
+		}
 	}
 
 	bool CanFlipCardNow(Card card)
@@ -115,11 +133,17 @@ public class GameMainView : AbstractView
 			bool isMatch = false;
 			if(cardA.GetCardId() == cardB.GetCardId())
 			{
+				if(cardA.IsLuckyCard() || cardB.IsLuckyCard())
+				{
+					getLuckyEffect.SetActive(false);
+					getLuckyEffect.SetActive(true);
+				}
 				AudioManager.Instance.PlayOneShot("GamePlayGetPair");
 				isMatch = true;
 				cardA.Match();
 				cardB.Match();
-				cardCountOnTable -= 2;
+				cardsOnTable.Remove(cardA);
+				cardsOnTable.Remove(cardB);
 			}
 			else
 			{
@@ -130,7 +154,7 @@ public class GameMainView : AbstractView
 			if(cardMatch != null)
 				cardMatch(isMatch, cardA, cardB);
 		}
-		if(cardCountOnTable == 0 && completeOneRound != null)
+		if(cardsOnTable.Count == 0 && completeOneRound != null)
 			completeOneRound();
 	}
 	
@@ -150,7 +174,7 @@ public class GameMainView : AbstractView
 	{
 		scoreTextQueue.Enqueue(st);
 	}
-
+	
 	Sprite[] GetCardImage(int count)
 	{
 		Sprite[] choosenCardFace = new Sprite[count];
