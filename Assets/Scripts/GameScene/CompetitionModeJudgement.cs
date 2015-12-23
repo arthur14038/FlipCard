@@ -7,9 +7,9 @@ public class CompetitionModeJudgement : GameModeJudgement
 	WhosTurn currentTurn;
 	int player1Score;
 	int player2Score;
+	int comboCount;
 	bool player1Ready = false;
 	bool player2Ready = false;
-	bool lastTimeHadMatch = false;
 	CompetitionModeView competitionModeView;
 
 	public override IEnumerator Init(GameMainView gameMainView, GameSettingView gameSettingView, AbstractView modeView)
@@ -19,6 +19,7 @@ public class CompetitionModeJudgement : GameModeJudgement
 		gameMainView.cardMatch = CardMatch;
 		player1Score = 0;
 		player2Score = 0;
+		comboCount = 0;
 		competitionModeView = (CompetitionModeView)modeView;
 		competitionModeView.button_Player1.onLightUp = OnPlayerButtonLightUp;
 		competitionModeView.button_Player2.onLightUp = OnPlayerButtonLightUp;
@@ -36,7 +37,7 @@ public class CompetitionModeJudgement : GameModeJudgement
 		yield return new WaitForSeconds(0.2f);
 		yield return competitionModeView.StartCoroutine(competitionModeView.FadeOutInstruction());
 		gameMainView.ToggleMask(false);
-		gameMainView.SetLuckyCard(1);
+		//gameMainView.SetLuckyCard(1);
 		currentState = GameState.Playing;
 		AudioManager.Instance.PlayMusic("GamePlayBGM", true);
 	}
@@ -50,12 +51,12 @@ public class CompetitionModeJudgement : GameModeJudgement
 				if(!player1Ready && pressButton == competitionModeView.button_Player1)
 				{
 					player1Ready = true;
-					competitionModeView.button_Player1.SetChargeTime(0.1f);
+					competitionModeView.button_Player1.SetChargeTime(0f);
                 }
 				if(!player2Ready && pressButton == competitionModeView.button_Player2)
 				{
 					player2Ready = true;
-					competitionModeView.button_Player2.SetChargeTime(0.1f);
+					competitionModeView.button_Player2.SetChargeTime(0f);
 				}
 				if(player1Ready && player2Ready)
 				{
@@ -145,28 +146,24 @@ public class CompetitionModeJudgement : GameModeJudgement
 			int scoreChangeAmount = 0;
 			if(match)
 			{
-				if(lastTimeHadMatch)
-				{
-					scoreChangeAmount = 12;
-				}
-				else
-				{
-					scoreChangeAmount = 8;
-					lastTimeHadMatch = true;
+				if(comboCount == 0)
 					gameMainView.ToggleCardGlow(true);
-				}
-				if(cards[0].IsLuckyCard() || cards[1].IsLuckyCard())
+
+				scoreChangeAmount = 2 + 2 * comboCount;
+
+				++comboCount;
+
+				if(cards[0].GetCardType() == Card.CardType.Lucky || cards[1].GetCardType() == Card.CardType.Lucky)
 				{
 					scoreChangeAmount *= 2;
                 }
 			} else
 			{
-				if(lastTimeHadMatch)
+				if(comboCount > 0)
 				{
-					lastTimeHadMatch = false;
+					comboCount = 0;
 					gameMainView.ToggleCardGlow(false);
 				}
-				scoreChangeAmount = -2;
 				takeTurn = true;
 			}
 

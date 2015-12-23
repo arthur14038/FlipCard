@@ -34,15 +34,25 @@ public class PressButtonTool : ButtonOffset
 		{
 			AudioManager.Instance.PlayOneShot("Button_Click");
 			base.OnPointerDown(eventData);
-			if(thisTweener != null)
-				thisTweener.Kill();
-			thisTweener = image_Back.DOFillAmount(1f, chargeTime).OnComplete(
-				delegate () {
-					UpdateButton(PressButtonState.LightUp);
-					if(onLightUp != null)
-						onLightUp(this);
-				}
-			);
+			if(chargeTime > 0f)
+			{
+				if(thisTweener != null)
+					thisTweener.Kill();
+				thisTweener = image_Back.DOFillAmount(1f, chargeTime).OnComplete(
+					delegate () {
+						UpdateButton(PressButtonState.LightUp);
+						if(onLightUp != null)
+							onLightUp(this);
+					}
+				);
+			}
+			else
+			{
+				image_Back.fillAmount = 1f;
+				UpdateButton(PressButtonState.LightUp);
+				if(onLightUp != null)
+					onLightUp(this);
+			}
 		}
 	}
 

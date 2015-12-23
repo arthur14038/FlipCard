@@ -24,6 +24,8 @@ public class GameMainView : AbstractView
 	Queue<Card> waitForCompare = new Queue<Card>();
 	Queue<Card> waitForMatch = new Queue<Card>();
 	List<Card> cardsOnTable = new List<Card>();
+	int luckyCardCount = 0;
+	int unknownCardCount = 0;
     bool lockFlipCard = false;
 
 	public override IEnumerator Init()
@@ -72,7 +74,7 @@ public class GameMainView : AbstractView
 		float delayDuration = dealTime / cards.Length;
 		for(int i = 0 ; i < cards.Length ; ++i)
 		{
-			cards[i].SetCard(cardBack[0], cardFace[0], thisTimeCardImage[i], Card.CardState.Back, thisTimeCardImage[i].name);
+			cards[i].SetCard(cardBack[0], cardFace[0], thisTimeCardImage[i], Card.CardState.Back, Card.CardType.Normal);
 			cards[i].Appear(pos[i], shiftAmount, delayDuration * i, appearDuration);
 			cardsOnTable.Add(cards[i]);
         }
@@ -90,18 +92,15 @@ public class GameMainView : AbstractView
 		foreach(Card card in cards)
 			card.ToggleCardGlow(turnOn);
 	}
-
-	public void SetLuckyCard(int count)
+	
+	public void SetLuckyCardCount(int value)
 	{
-		while(count > 0)
-		{
-			int randomIndex = Random.Range(0, cardsOnTable.Count);
-			if(!cardsOnTable[randomIndex].IsLuckyCard())
-			{
-				cardsOnTable[randomIndex].ToggleLuckyEffect(true);
-				--count;
-			}
-		}
+		luckyCardCount = value;
+	}
+
+	public void SetUnknownCardCount(int value)
+	{
+		unknownCardCount = value;
 	}
 
 	bool CanFlipCardNow(Card card)
@@ -133,7 +132,7 @@ public class GameMainView : AbstractView
 			bool isMatch = false;
 			if(cardA.GetCardId() == cardB.GetCardId())
 			{
-				if(cardA.IsLuckyCard() || cardB.IsLuckyCard())
+				if(cardA.GetCardType() == Card.CardType.Lucky || cardB.GetCardType() == Card.CardType.Lucky)
 				{
 					getLuckyEffect.SetActive(false);
 					getLuckyEffect.SetActive(true);
@@ -220,7 +219,7 @@ public class GameMainView : AbstractView
 
 		return choosenCardFace;
 	}
-
+	
 	protected override IEnumerator HideUIAnimation()
 	{
 		yield return null;

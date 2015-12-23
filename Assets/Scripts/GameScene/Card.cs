@@ -4,7 +4,8 @@ using DG.Tweening;
 using UnityEngine.UI;
 
 public class Card : MonoBehaviour {
-	public Image card;
+	public enum CardType {Normal, Lucky}
+	public Image cardBody;
 	public Image cardImage;
     public Image image_Glow;
     public Text text_CardId;
@@ -12,49 +13,46 @@ public class Card : MonoBehaviour {
 	public GameObject luckyEffect;
 	public enum CardState{Face, Back, None}
 	CardState currentState = CardState.None;
+	CardType thisCardType;
 	Sprite cardBack;
 	Sprite cardFace;
 	Coroutine flipCard;
 	Coroutine matchEffect;
 	Coroutine mismatchEffect;
-	Color transparentColor = new Color(1, 1, 1, 0);
-	string cardId;
 	Button thisButton;
 	BoolCard checkCanFlipCard;
 	VoidCard flipFinish;
+	Color transparentColor = new Color(1, 1, 1, 0);
 	Vector3 flipDown = new Vector3(0f, 0.9f, 1f);
+	string cardId;
 	bool isLuckyCard;
 
 	public void Init(BoolCard checkCanFlipCard, VoidCard flipFinish)
 	{
-        image_Glow.gameObject.SetActive(false);
-        this.checkCanFlipCard = checkCanFlipCard;
+		this.checkCanFlipCard = checkCanFlipCard;
 		this.flipFinish = flipFinish;
+		luckyEffect.SetActive(false);
+		image_Glow.gameObject.SetActive(false);
 		thisButton = this.GetComponent<Button>();
-		ToggleLuckyEffect(false);
     }
-
-	public void ToggleLuckyEffect(bool value)
-	{
-		isLuckyCard = value;
-		if(luckyEffect.activeSelf != value)
-			luckyEffect.SetActive(value);
-	}
-
+	
 	public void SetSize(float edgeLength)
 	{
-		card.rectTransform.sizeDelta = Vector2.one*edgeLength;
+		cardBody.rectTransform.sizeDelta = Vector2.one*edgeLength;
         image_Glow.rectTransform.sizeDelta = Vector2.one * (edgeLength + 48f);
     }
 
-	public void SetCard(Sprite cardBack, Sprite cardFace, Sprite cardImageSprite, CardState defaultState, string cardId)
+	public void SetCard(Sprite cardBack, Sprite cardFace, Sprite cardImageSprite, CardState defaultState, CardType type)
 	{
-        text_CardId.text = cardId.Replace("CardImage_", "");
-        this.cardId = cardId;
+        text_CardId.text = cardImageSprite.name.Replace("CardImage_", "");
+		thisCardType = type;
+		if(thisCardType == CardType.Lucky)
+			luckyEffect.SetActive(true);
+        this.cardId = cardImageSprite.name;
 		this.cardBack = cardBack;
 		this.cardFace = cardFace;
 		cardImage.sprite = cardImageSprite;
-		cardImage.rectTransform.sizeDelta = (new Vector2(cardImageSprite.rect.width, cardImageSprite.rect.height))*card.rectTransform.sizeDelta.x/192f;
+		cardImage.rectTransform.sizeDelta = (new Vector2(cardImageSprite.rect.width, cardImageSprite.rect.height))*cardBody.rectTransform.sizeDelta.x/192f;
 		SetImageAndState(defaultState);
 	}
 
@@ -63,10 +61,10 @@ public class Card : MonoBehaviour {
 		if(!this.gameObject.activeSelf)
 			this.gameObject.SetActive(true);
         
-        card.color = transparentColor;
-		card.rectTransform.anchoredPosition = pos + shiftAmount;
-		card.DOFade(1f, duration).SetDelay(delayTime);
-		card.rectTransform.DOAnchorPos(pos, duration).SetDelay(delayTime);
+        cardBody.color = transparentColor;
+		cardBody.rectTransform.anchoredPosition = pos + shiftAmount;
+		cardBody.DOFade(1f, duration).SetDelay(delayTime);
+		cardBody.rectTransform.DOAnchorPos(pos, duration).SetDelay(delayTime);
 
         if(image_Glow.gameObject.activeSelf)
         {
@@ -148,18 +146,18 @@ public class Card : MonoBehaviour {
 
     public Vector2 GetAnchorPosition()
     {
-        return card.rectTransform.anchoredPosition;
+        return cardBody.rectTransform.anchoredPosition;
     }
 
-	public bool IsLuckyCard()
+	public CardType GetCardType()
 	{
-		return isLuckyCard;
+		return thisCardType;
 	}
 
 	IEnumerator FlipCard(bool flipByUser)
 	{
-		card.DOColor(Color.gray, 0.2f).SetEase(Ease.OutQuad);
-		yield return card.rectTransform.DOScale(flipDown, 0.2f).SetEase(Ease.OutQuad).WaitForCompletion();
+		cardBody.DOColor(Color.gray, 0.2f).SetEase(Ease.OutQuad);
+		yield return cardBody.rectTransform.DOScale(flipDown, 0.2f).SetEase(Ease.OutQuad).WaitForCompletion();
 
 		switch(currentState)
 		{
@@ -171,8 +169,8 @@ public class Card : MonoBehaviour {
 			break;
 		}
 
-		card.color = Color.white;
-		yield return card.rectTransform.DOScale(Vector3.one, 0.15f).WaitForCompletion();
+		cardBody.color = Color.white;
+		yield return cardBody.rectTransform.DOScale(Vector3.one, 0.15f).WaitForCompletion();
 
 		if(currentState == CardState.Face && flipByUser && flipFinish != null)
 			flipFinish(this);
@@ -182,10 +180,10 @@ public class Card : MonoBehaviour {
 
 	IEnumerator MatchEffect()
 	{
-		yield return card.rectTransform.DOScale(0f, 0.3f).SetEase(Ease.InBack).WaitForCompletion();
+		yield return cardBody.rectTransform.DOScale(0f, 0.3f).SetEase(Ease.InBack).WaitForCompletion();
         
         this.gameObject.SetActive(false);
-		card.rectTransform.localScale = Vector3.one;
+		cardBody.rectTransform.localScale = Vector3.one;
 
 		matchEffect = null;
 	}
@@ -206,12 +204,12 @@ public class Card : MonoBehaviour {
 		case CardState.Back:
 			cardImage.gameObject.SetActive(false);
 			thisButton.interactable = true;
-			card.sprite = cardBack;
+			cardBody.sprite = cardBack;
 			break;
 		case CardState.Face:
 			cardImage.gameObject.SetActive(true);
 			thisButton.interactable = false;
-			card.sprite = cardFace;
+			cardBody.sprite = cardFace;
 			break;
 		}
 	}
