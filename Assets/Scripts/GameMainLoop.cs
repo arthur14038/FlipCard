@@ -63,7 +63,7 @@ public class GameMainLoop : SingletonMonoBehavior<GameMainLoop> {
         SoomlaProfile.Initialize();
         ModelManager.Instance.Init();
         ScreenEffectManager.Instance.Init();
-		CardArrayManager.LoadData();
+		GameSettingManager.LoadData();
 		yield return new WaitForSeconds(0.5f);
 		if(controller != null)
 			StartCoroutine(controller.Init());

@@ -53,8 +53,8 @@ public class MainSceneController : AbstractController {
 	void GoToGameScene(CardArrayLevel level, GameMode mode)
 	{
 		AudioManager.Instance.StopMusic();
-        CardArrayManager.currentLevel = level;
-		CardArrayManager.currentMode = mode;
+        GameSettingManager.currentLevel = level;
+		GameSettingManager.currentMode = mode;
 		GameMainLoop.Instance.ChangeScene(SceneName.GameScene);
 	}
 

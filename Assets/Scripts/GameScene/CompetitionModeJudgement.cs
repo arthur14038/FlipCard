@@ -11,10 +11,12 @@ public class CompetitionModeJudgement : GameModeJudgement
 	bool player1Ready = false;
 	bool player2Ready = false;
 	CompetitionModeView competitionModeView;
+	CompetitionModeSetting currentModeSetting;
 
 	public override IEnumerator Init(GameMainView gameMainView, GameSettingView gameSettingView, AbstractView modeView)
 	{
 		yield return gameMainView.StartCoroutine(base.Init(gameMainView, gameSettingView, modeView));
+		currentModeSetting = GameSettingManager.GetCurrentCompetitionModeSetting();
 		gameMainView.completeOneRound = RoundComplete;
 		gameMainView.cardMatch = CardMatch;
 		player1Score = 0;
@@ -33,6 +35,7 @@ public class CompetitionModeJudgement : GameModeJudgement
 
 	protected override IEnumerator StartGame()
 	{
+		gameMainView.SetGoldCard(currentModeSetting.goldCardCount, false);
 		yield return gameMainView.StartCoroutine(gameMainView.DealCard());
 		yield return new WaitForSeconds(0.2f);
 		yield return competitionModeView.StartCoroutine(competitionModeView.FadeOutInstruction());
@@ -131,7 +134,7 @@ public class CompetitionModeJudgement : GameModeJudgement
 				foreach(Card matchCard in cards)
 				{
 					Vector2 pos = matchCard.GetAnchorPosition();
-					pos.x += currentSetting.edgeLength / 2 - 20f;
+					pos.x += currentCardArraySetting.edgeLength / 2 - 20f;
 					gameMainView.ShowScoreText((score - saveScore) / cards.Length, pos);
 				}
 			}
@@ -149,7 +152,7 @@ public class CompetitionModeJudgement : GameModeJudgement
 				if(comboCount == 0)
 					gameMainView.ToggleCardGlow(true);
 
-				scoreChangeAmount = 2 + 2 * comboCount;
+				scoreChangeAmount = currentModeSetting.matchAddScore * cards.Length + currentModeSetting.comboAddScore * cards.Length * comboCount;
 
 				++comboCount;
 
@@ -159,6 +162,7 @@ public class CompetitionModeJudgement : GameModeJudgement
                 }
 			} else
 			{
+				scoreChangeAmount = currentModeSetting.mismatchReduceScore * cards.Length;
 				if(comboCount > 0)
 				{
 					comboCount = 0;

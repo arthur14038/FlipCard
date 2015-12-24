@@ -11,14 +11,18 @@ public class TimeModeJudgement : GameModeJudgement
 	int score;
 	int failedTimes;
 	int complimentTimes;
+	int feverTimeStartRound;
 	bool lastTimeHadMatch = false;
 	bool unknownCardActive = false;
+	bool feverTimeOn = false;
 	TimeModeView timeModeView;
+	TimeModeSetting currentModeSetting;
 
 	public override IEnumerator Init(GameMainView gameMainView, GameSettingView gameSettingView, AbstractView modeView)
 	{
 		yield return gameMainView.StartCoroutine(base.Init(gameMainView, gameSettingView, modeView));
-		gameTime = currentSetting.gameTime;
+		currentModeSetting = GameSettingManager.GetCurrentTimeModeSetting();
+		gameTime = currentModeSetting.gameTime;
 		gameMainView.completeOneRound = NextRound;
 		gameMainView.cardMatch = CardMatch;
 		timeModeView = (TimeModeView)modeView;
@@ -26,13 +30,14 @@ public class TimeModeJudgement : GameModeJudgement
 		timeModeView.onClickGameOverExit = ExitGame;
 		timeModeView.SetTimeBar(1f);
 		timeModeView.onCountDownFinished = StartGame;
-        yield return gameMainView.StartCoroutine(gameMainView.DealCard());
+		feverTimeOn = false;
+		yield return gameMainView.StartCoroutine(gameMainView.DealCard());
 	}
 
 	protected override IEnumerator StartGame()
 	{
 		gameMainView.FlipAllCard();
-		yield return new WaitForSeconds(0.35f + currentSetting.showCardTime);
+		yield return new WaitForSeconds(0.35f + currentModeSetting.showCardTime);
 		gameMainView.FlipAllCard();
 		yield return new WaitForSeconds(0.35f);
 		gameMainView.ToggleMask(false);
@@ -76,25 +81,46 @@ public class TimeModeJudgement : GameModeJudgement
 			int scoreChangeAmount = 0;
 			if(match)
 			{
-				scoreChangeAmount = currentSetting.matchAddScore * cards.Length;
+				scoreChangeAmount = currentModeSetting.matchAddScore * cards.Length;
 				if(lastTimeHadMatch)
 				{
-					scoreChangeAmount += currentSetting.comboAddScore * cards.Length;
+					scoreChangeAmount += currentModeSetting.comboAddScore * cards.Length;
 
 					++currentCombo;
-					maxCombo = Mathf.Max(currentCombo, maxCombo);
 				} else
 				{
+					currentCombo = 1;
 					lastTimeHadMatch = true;
 					gameMainView.ToggleCardGlow(true);
 				}
+				maxCombo = Mathf.Max(currentCombo, maxCombo);
+
+				if(cards[0].GetCardType() == Card.CardType.Gold)
+					scoreChangeAmount *= 2;
+
+				if(cards[1].GetCardType() == Card.CardType.Gold)
+					scoreChangeAmount *= 2;
+
+				if(currentCombo >= currentModeSetting.feverTimeComboThreshold && !feverTimeOn)
+				{
+					feverTimeStartRound = currentRound;
+					feverTimeOn = true;
+					gameMainView.SetGoldCard(-1);
+				}
 			} else
 			{
-				scoreChangeAmount = currentSetting.mismatchReduceScore * cards.Length;
+				scoreChangeAmount = currentModeSetting.mismatchReduceScore * cards.Length;
 				if(lastTimeHadMatch)
 				{
 					lastTimeHadMatch = false;
 					gameMainView.ToggleCardGlow(false);
+				}
+				if(feverTimeOn)
+				{
+					if(unknownCardActive)
+						unknownCardActive = false;
+					feverTimeOn = false;
+					gameMainView.SetGoldCard(0);
 				}
 				currentCombo = 0;
 				++failedTimes;
@@ -113,7 +139,7 @@ public class TimeModeJudgement : GameModeJudgement
 					foreach(Card matchCard in cards)
 					{
 						Vector2 pos = matchCard.GetAnchorPosition();
-						pos.x += currentSetting.edgeLength / 2 - 20f;
+						pos.x += currentCardArraySetting.edgeLength / 2 - 20f;
 						gameMainView.ShowScoreText((score - saveScore) / cards.Length, pos);
 					}
 				}
@@ -132,12 +158,12 @@ public class TimeModeJudgement : GameModeJudgement
 			currentState = GameState.Waiting;
 		++currentRound;
 
-		float awardTime = currentSetting.awardTime;
+		float awardTime = currentModeSetting.awardTime;
 
 		if(unknownCardActive)
 			awardTime *= 1.5f;
 
-		if(!unknownCardActive && currentRound >= currentSetting.unknownCardShowRound)
+		if(feverTimeOn && !unknownCardActive && currentRound - feverTimeStartRound >= currentModeSetting.unknownCardShowRound)
 			unknownCardActive = true;
 
 		timeModeView.SetRound(currentRound);
@@ -159,10 +185,10 @@ public class TimeModeJudgement : GameModeJudgement
 		int score = values[0];
 		int maxCombo = values[1];
 
-		if(PlayerPrefsManager.OnePlayerProgress == (int)currentSetting.level)
+		if(PlayerPrefsManager.OnePlayerProgress == (int)currentModeSetting.level)
 			PlayerPrefsManager.OnePlayerProgress += 1;
 
-		GameRecord record = ModelManager.Instance.GetGameRecord(currentSetting.level);
+		GameRecord record = ModelManager.Instance.GetGameRecord(currentModeSetting.level);
 		bool newHighScore = false;
 		bool newMaxCombo = false;
 		if(score > record.highScore)
@@ -197,9 +223,9 @@ public class TimeModeJudgement : GameModeJudgement
 	IEnumerator DealCardRoutine()
 	{
 		gameMainView.FlipAllCard();
-		yield return new WaitForSeconds(0.35f + currentSetting.showCardTime);
+		yield return new WaitForSeconds(0.35f + currentModeSetting.showCardTime);
 		if(unknownCardActive)
-			yield return new WaitForSeconds(1f);
+			yield return new WaitForSeconds(0.5f);
 		gameMainView.FlipAllCard();
 		yield return new WaitForSeconds(0.35f);
 		if(unknownCardActive)

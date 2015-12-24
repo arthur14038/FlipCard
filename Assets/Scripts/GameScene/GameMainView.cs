@@ -25,9 +25,9 @@ public class GameMainView : AbstractView
 	Queue<Card> waitForCompare = new Queue<Card>();
 	Queue<Card> waitForMatch = new Queue<Card>();
 	List<Card> cardsOnTable = new List<Card>();
-	int luckyCardCount = 0;
 	int unknownCard1 = 0;
 	int unknownCard2 = 0;
+	int goldCardCount = 0;
 	bool lockFlipCard = false;
 
 	public override IEnumerator Init()
@@ -35,7 +35,7 @@ public class GameMainView : AbstractView
 		ToggleMask(true);
 		getLuckyEffect.SetActive(false);
 
-		CardArraySetting setting = CardArrayManager.GetCurrentLevelSetting();
+		CardArraySetting setting = GameSettingManager.GetCurrentCardArraySetting();
         cards = new Card[setting.column * setting.row];
 		pos = new Vector2[cards.Length];
 
@@ -83,10 +83,12 @@ public class GameMainView : AbstractView
 				unknownCard2 = Random.Range(0, thisTimeCardImage.Length);
 		}
 
+		UpdateCardType();
 		for(int i = 0 ; i < cards.Length ; ++i)
 		{
-			cards[i].SetCard(cardBack[0], cardFace[0], thisTimeCardImage[i], Card.CardState.Back, Card.CardType.Normal);
-			
+			cardsOnTable.Add(cards[i]);
+			cards[i].SetCard(cardBack[0], cardFace[0], thisTimeCardImage[i], Card.CardState.Back);
+
 			if(activeUnknownCard)
 			{
 				if(i == unknownCard1 || i == unknownCard2)
@@ -94,8 +96,7 @@ public class GameMainView : AbstractView
 			}
 
 			cards[i].Appear(pos[i], shiftAmount, delayDuration * i, appearDuration);
-			cardsOnTable.Add(cards[i]);
-        }
+		}
 		yield return new WaitForSeconds(dealTime);
 	}
 
@@ -111,17 +112,54 @@ public class GameMainView : AbstractView
 		cards[unknownCard2].SetCardImageToOriginal();
 	}
 
+	public void SetGoldCard(int count, bool setImmediate = true)
+	{
+		goldCardCount = count;
+		if(setImmediate)
+			UpdateCardType();
+	}
+
 	public void ToggleCardGlow(bool turnOn)
 	{
 		foreach(Card card in cards)
 			card.ToggleCardGlow(turnOn);
 	}
-	
-	public void SetLuckyCardCount(int value)
+		
+	void UpdateCardType()
 	{
-		luckyCardCount = value;
+		if(goldCardCount < 0)
+		{
+			foreach(Card card in cards)
+				card.SetCardType(Card.CardType.Gold);
+		}
+		else if(goldCardCount == 0)
+		{
+			foreach(Card card in cards)
+				card.SetCardType(Card.CardType.Normal);
+		}
+		else
+		{
+			if(goldCardCount >= cards.Length)
+			{
+				foreach(Card card in cardsOnTable)
+					card.SetCardType(Card.CardType.Gold);
+			}
+			else
+			{
+				List<int> tickets = new List<int>();
+				for(int i = 0 ; i < cards.Length ; ++i)
+					tickets.Add(i);
+
+				for(int i = 0 ; i < goldCardCount ; ++i)
+				{
+					int randomIndex = Random.Range(0, tickets.Count);
+					tickets.RemoveAt(randomIndex);
+					cards[randomIndex].SetCardType(Card.CardType.Gold);
+				}
+			}
+		}
 	}
-	
+
 	bool CanFlipCardNow(Card card)
 	{
 		if(lockFlipCard)
@@ -134,7 +172,7 @@ public class GameMainView : AbstractView
 			Card cardB = waitForCompare.Dequeue();
 			if(cardA.GetCardId() != cardB.GetCardId())
 			{
-				if(CardArrayManager.currentMode == GameMode.Competition)
+				if(GameSettingManager.currentMode == GameMode.Competition)
 					lockFlipCard = true;
 			}
 		}

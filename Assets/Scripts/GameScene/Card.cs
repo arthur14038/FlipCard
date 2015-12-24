@@ -8,9 +8,9 @@ public class Card : MonoBehaviour {
 	public Image cardBody;
 	public Image cardImage;
     public Image image_Glow;
-    public Text text_CardId;
+	public Image goldCardFrame;
+	public Text text_CardId;
 	public Color glowColor = new Color(1f, 0.85f, 0f);
-	public GameObject luckyEffect;
 	public enum CardState{Face, Back, None}
 	CardState currentState = CardState.None;
 	CardType thisCardType;
@@ -26,35 +26,39 @@ public class Card : MonoBehaviour {
 	Color transparentColor = new Color(1, 1, 1, 0);
 	Vector3 flipDown = new Vector3(0f, 0.9f, 1f);
 	string cardId;
-	bool isLuckyCard;
 
 	public void Init(BoolCard checkCanFlipCard, VoidCard flipFinish)
 	{
 		this.checkCanFlipCard = checkCanFlipCard;
 		this.flipFinish = flipFinish;
-		luckyEffect.SetActive(false);
+		goldCardFrame.gameObject.SetActive(false);
 		image_Glow.gameObject.SetActive(false);
 		thisButton = this.GetComponent<Button>();
-    }
+		thisCardType = CardType.Normal;
+	}
 	
 	public void SetSize(float edgeLength)
 	{
 		cardBody.rectTransform.sizeDelta = Vector2.one*edgeLength;
-        image_Glow.rectTransform.sizeDelta = Vector2.one * (edgeLength + 48f);
+		goldCardFrame.rectTransform.sizeDelta = Vector2.one * edgeLength;
+		image_Glow.rectTransform.sizeDelta = Vector2.one * (edgeLength + 48f);
     }
 
-	public void SetCard(Sprite cardBackSprite, Sprite cardFaceSprite, Sprite cardImageSprite, CardState defaultState, CardType type)
+	public void SetCard(Sprite cardBackSprite, Sprite cardFaceSprite, Sprite cardImageSprite, CardState defaultState)
 	{
         text_CardId.text = cardImageSprite.name.Replace("CardImage_", "");
-		thisCardType = type;
-		if(thisCardType == CardType.Gold)
-			luckyEffect.SetActive(true);
         this.cardId = cardImageSprite.name;
 		this.cardBackSprite = cardBackSprite;
 		this.cardFaceSprite = cardFaceSprite;
 		this.cardImageSprite = cardImageSprite;
 		SetCardImage(cardImageSprite);
 		SetImageAndState(defaultState);
+	}
+
+	public void SetCardType(CardType type)
+	{
+		thisCardType = type;
+		SetImageAndState(currentState);
 	}
 
 	public void SetCardImage(Sprite cardImageSprite)
@@ -77,6 +81,12 @@ public class Card : MonoBehaviour {
 		cardBody.rectTransform.anchoredPosition = pos + shiftAmount;
 		cardBody.DOFade(1f, duration).SetDelay(delayTime);
 		cardBody.rectTransform.DOAnchorPos(pos, duration).SetDelay(delayTime);
+
+		if(thisCardType == CardType.Gold)
+		{
+			goldCardFrame.color = transparentColor;
+			goldCardFrame.DOFade(1f, duration).SetDelay(delayTime);
+		}
 
         if(image_Glow.gameObject.activeSelf)
         {
@@ -213,16 +223,26 @@ public class Card : MonoBehaviour {
 		currentState = state;
 		switch(currentState)
 		{
-		case CardState.Back:
-			cardImage.gameObject.SetActive(false);
-			thisButton.interactable = true;
-			cardBody.sprite = cardBackSprite;
-			break;
-		case CardState.Face:
-			cardImage.gameObject.SetActive(true);
-			thisButton.interactable = false;
-			cardBody.sprite = cardFaceSprite;
-			break;
+			case CardState.Back:
+				switch(thisCardType)
+				{
+					case CardType.Gold:
+						goldCardFrame.gameObject.SetActive(true);
+						break;
+					default:
+						goldCardFrame.gameObject.SetActive(false);
+						break;
+				}
+				cardImage.gameObject.SetActive(false);
+				thisButton.interactable = true;
+				cardBody.sprite = cardBackSprite;
+				break;
+			case CardState.Face:
+				goldCardFrame.gameObject.SetActive(false);
+				cardImage.gameObject.SetActive(true);
+				thisButton.interactable = false;
+				cardBody.sprite = cardFaceSprite;
+				break;
 		}
 	}
 }

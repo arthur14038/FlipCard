@@ -5,14 +5,7 @@
      "Column": 2, 
      "Row": 3, 
      "CardGap": 50.0, 
-     "FirstPosition": [-150.0, 200.0], 
-     "GameTime": 20.0, 
-     "ShowCardTime": 0.5,
-    "AwardTime": 0.6,
-    "MatchAddScore": 1,
-    "MismatchReduceScore": -2,
-    "ComboAddScore": 1,
-    "UnknownCardShowRound":  9
+     "FirstPosition": [-150.0, 200.0]
  },
    {
      "Level": 1, 
@@ -20,14 +13,7 @@
      "Column": 3, 
      "Row": 4, 
      "CardGap": 50.0, 
-     "FirstPosition": [-300.0, 300.0], 
-     "GameTime": 30.0, 
-     "ShowCardTime": 2.5, 
-     "AwardTime": 2.0,
-    "MatchAddScore": 1,
-    "MismatchReduceScore": -1,
-    "ComboAddScore": 2,
-    "UnknownCardShowRound":  6
+     "FirstPosition": [-300.0, 300.0]
  },
    {
      "Level": 2, 
@@ -35,14 +21,7 @@
      "Column": 4, 
      "Row": 5, 
      "CardGap": 50.0, 
-     "FirstPosition": [-375.0, 450.0], 
-     "GameTime": 60.0, 
-     "ShowCardTime": 5.0, 
-     "AwardTime": 5.0,
-    "MatchAddScore": 2,
-    "MismatchReduceScore": 0,
-    "ComboAddScore": 2,
-    "UnknownCardShowRound":  4
+     "FirstPosition": [-375.0, 450.0]
  },
    {
      "Level": 3, 
@@ -50,13 +29,6 @@
      "Column": 5, 
      "Row": 6, 
      "CardGap": 25.0, 
-     "FirstPosition": [-400.0, 450.0], 
-     "GameTime": 90.0, 
-     "ShowCardTime": 10.0, 
-     "AwardTime": 10.0,
-    "MatchAddScore": 2,
-    "MismatchReduceScore": 0,
-    "ComboAddScore": 3,
-    "UnknownCardShowRound":  3
+     "FirstPosition": [-400.0, 450.0]
  }
 ]

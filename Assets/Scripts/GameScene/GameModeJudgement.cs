@@ -13,15 +13,15 @@ public abstract class GameModeJudgement{
 	protected static GameState currentState;
 	protected GameMainView gameMainView;
 	protected GameSettingView gameSettingView;
-	protected CardArraySetting currentSetting;
+	protected CardArraySetting currentCardArraySetting;
 	public VoidNoneParameter exitGame;
 
 	public virtual IEnumerator Init(GameMainView gameMainView, GameSettingView gameSettingView, AbstractView modeView)
 	{
 		currentState = GameState.Waiting;
-		currentSetting = CardArrayManager.GetCurrentLevelSetting();
         this.gameSettingView = gameSettingView;
 		this.gameMainView = gameMainView;
+		currentCardArraySetting = GameSettingManager.GetCurrentCardArraySetting();
 		gameSettingView.onClickResume = ResumeGame;
 		gameSettingView.onClickExit = ExitGame;
 		yield return null;

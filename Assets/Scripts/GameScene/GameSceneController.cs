@@ -38,14 +38,14 @@ public class GameSceneController : AbstractController
 	{
 		AudioManager.Instance.StopMusic();
 		int returnView = 1;
-		if(CardArrayManager.currentMode == GameMode.Competition || CardArrayManager.currentMode == GameMode.Cooperation)
+		if(GameSettingManager.currentMode == GameMode.Competition || GameSettingManager.currentMode == GameMode.Cooperation)
 			returnView = 2;
 		GameMainLoop.Instance.ChangeScene(SceneName.MainScene, returnView);
     }
 	
 	AbstractView GetModeView()
 	{
-		switch(CardArrayManager.currentMode)
+		switch(GameSettingManager.currentMode)
 		{
 			case GameMode.LimitTime:
 				GameObject timeModeView = Instantiate(Resources.Load("UI/TimeModeView")) as GameObject;
@@ -64,14 +64,14 @@ public class GameSceneController : AbstractController
 
 	GameModeJudgement GetJudgement()
 	{
-		switch(CardArrayManager.currentMode)
+		switch(GameSettingManager.currentMode)
 		{
 			case GameMode.LimitTime:
 				return new TimeModeJudgement();
 			case GameMode.Competition:
 				return new CompetitionModeJudgement();
 			default:
-				Debug.LogErrorFormat("{0}'s judgement is not implement", CardArrayManager.currentMode);
+				Debug.LogErrorFormat("{0}'s judgement is not implement", GameSettingManager.currentMode);
 				return null;
 		}
 	}

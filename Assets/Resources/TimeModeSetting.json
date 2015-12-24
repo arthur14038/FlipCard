@@ -1,0 +1,46 @@
+﻿[
+   {
+     "Level": 0, 
+     "GameTime": 20.0, 
+     "ShowCardTime": 0.5,
+    "AwardTime": 0.6,
+    "MatchAddScore": 1,
+    "MismatchReduceScore": -2,
+    "ComboAddScore": 1,
+    "UnknownCardShowRound": 3,
+    "feverTimeComboThreshold": 9
+ },
+   {
+     "Level": 1, 
+     "GameTime": 30.0, 
+     "ShowCardTime": 2.5, 
+     "AwardTime": 2.0,
+    "MatchAddScore": 1,
+    "MismatchReduceScore": -1,
+    "ComboAddScore": 2,
+    "UnknownCardShowRound": 2,
+    "feverTimeComboThreshold": 5
+ },
+   {
+     "Level": 2, 
+     "GameTime": 40.0, 
+     "ShowCardTime": 6.0, 
+     "AwardTime": 20.0,
+    "MatchAddScore": 2,
+    "MismatchReduceScore": 0,
+    "ComboAddScore": 2,
+    "UnknownCardShowRound": 1,
+    "feverTimeComboThreshold": 4
+ },
+   {
+     "Level": 3, 
+     "GameTime": 90.0, 
+     "ShowCardTime": 10.0, 
+     "AwardTime": 10.0,
+    "MatchAddScore": 2,
+    "MismatchReduceScore": 0,
+    "ComboAddScore": 3,
+    "UnknownCardShowRound": 1,
+    "feverTimeComboThreshold": 3
+ }
+]
