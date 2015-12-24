@@ -11,38 +11,26 @@ public class TimeModeView : AbstractView
     public Slider timeBar;
 	public Text text_CurrentScore;
 	public Text text_CurrentRound;
-	public Text text_ResultScore;
-	public Text text_ResultCombo;
-	public CanvasGroup image_ScoreBoard;
 	public Image group_Counting;
-	public Image group_GameOver;
 	public RectTransform image_Counting3;
 	public RectTransform image_Counting2;
 	public RectTransform image_Counting1;
 	public RectTransform image_CountingGo;
-	public RectTransform image_GameOverWindow;
-	public RectTransform button_GameOverExit;
-	public RectTransform image_CharacterRight;
-	public RectTransform image_CharacterLeft;
-	public RectTransform text_ScoreTitle;
-	public RectTransform text_MaxComboTitle;
-	public RectTransform image_NewHighScoreHeader;
-	public GameObject newHighScoreEffect;
+	public RectTransform group_FeverTime;
 	public GameObject timeIsRunning;
-	public ShowComplimentTool group_Compliment;
 
 	public override IEnumerator Init()
 	{
 		yield return null;
 		SetScore(0);
 		SetRound(0);
-		group_Compliment.Init(hideLeft, hideRight);
 		group_Counting.gameObject.SetActive(true);
 		image_Counting3.gameObject.SetActive(false);
 		image_Counting2.gameObject.SetActive(false);
 		image_Counting1.gameObject.SetActive(false);
 		image_CountingGo.gameObject.SetActive(false);
-	}
+		group_FeverTime.gameObject.SetActive(false);
+    }
 	
 	public void OnClickPause()
 	{
@@ -87,114 +75,25 @@ public class TimeModeView : AbstractView
 			}
 		);
 	}
-
-	public void ShowGameOverWindow(int score, int maxCombo, bool newHighScore, bool newMaxCombo)
-	{
-		AudioManager.Instance.StopMusic();
-		AudioManager.Instance.PlayOneShot("GameResult");
-		if(newHighScore || newMaxCombo)
-		{
-			AudioManager.Instance.PlayOneShot("NewHighScore2");
-			newHighScoreEffect.SetActive(true);
-			image_NewHighScoreHeader.gameObject.SetActive(true);
-		}
-
-		StartCoroutine(GameOverEffect(score, maxCombo, newHighScore, newMaxCombo));
-	}
-
+	
 	public void ToggleTimeIsRunning(bool value)
 	{
 		if(timeIsRunning.activeSelf != value)
 			timeIsRunning.SetActive(value);
 	}
 
-	public void ShowCompliment(int value)
+	public void ShowFeverTime()
 	{
-		group_Compliment.ShowCompliment(value);
+		StartCoroutine(FeverTimeEffect());
 	}
-
-	IEnumerator GameOverEffect(int score, int maxCombo, bool newHighScore, bool newMaxCombo)
+	
+	IEnumerator FeverTimeEffect()
 	{
-		image_CharacterRight.gameObject.SetActive(false);
-		image_CharacterLeft.gameObject.SetActive(false);
-		image_ScoreBoard.gameObject.SetActive(false);
-		button_GameOverExit.gameObject.SetActive(false);
-		group_GameOver.gameObject.SetActive(true);
-		group_GameOver.color = Color.clear;
-		group_GameOver.DOColor(Color.black * 0.7f, 0.3f);
-		image_GameOverWindow.anchoredPosition = new Vector2(0f, 1572f);
-		yield return image_GameOverWindow.DOAnchorPos(new Vector2(0f, 72f), 0.5f).SetEase(Ease.OutBack).WaitForCompletion();
-
-		image_CharacterRight.anchoredPosition = new Vector2(750f, -72f);
-		image_CharacterLeft.anchoredPosition = new Vector2(-750f, -72f);
-		image_CharacterRight.gameObject.SetActive(true);
-		image_CharacterLeft.gameObject.SetActive(true);
-		image_CharacterRight.DOAnchorPos(new Vector2(250f, -72f), 0.2f).SetEase(Ease.OutCubic);
-		image_CharacterLeft.DOAnchorPos(new Vector2(-240f, -72f), 0.2f).SetEase(Ease.OutCubic);
-
-		text_ResultCombo.text = "";
-		text_ResultScore.text = "";
-		image_ScoreBoard.gameObject.SetActive(true);
-		image_ScoreBoard.alpha = 0f;
-		yield return image_ScoreBoard.DOFade(1f, 0.4f).WaitForCompletion();
-
-		if(score > 0)
-		{
-			float changeTime = 0.35f;
-			float scoreChangeAmount = (score / (changeTime / Time.deltaTime));
-			float tmpScore = 0;
-			while(changeTime > 0f)
-			{
-				AudioManager.Instance.PlayOneShot("GameResultScoreCount");
-				text_ResultScore.text = ((int)tmpScore).ToString();
-				tmpScore += scoreChangeAmount;
-				yield return new WaitForEndOfFrame();
-				changeTime -= Time.deltaTime;
-			}
-		}
-
-		text_ResultScore.text = score.ToString();
-		yield return text_ResultScore.rectTransform.DOScale(1.5f, 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
-		yield return text_ResultScore.rectTransform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
-
-		if(maxCombo > 0)
-		{
-			float changeTime = 0.35f;
-			float comboChangeAmount = (maxCombo / (changeTime / Time.deltaTime));
-			float tmpCombo = 0;
-			while(changeTime > 0f)
-			{
-				AudioManager.Instance.PlayOneShot("GameResultScoreCount");
-				text_ResultCombo.text = ((int)tmpCombo).ToString();
-				tmpCombo += comboChangeAmount;
-				yield return new WaitForEndOfFrame();
-				changeTime -= Time.deltaTime;
-			}
-		}
-
-		text_ResultCombo.text = maxCombo.ToString();
-		yield return text_ResultCombo.rectTransform.DOScale(1.5f, 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
-		yield return text_ResultCombo.rectTransform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
-
-		button_GameOverExit.gameObject.SetActive(true);
-		button_GameOverExit.localScale = new Vector3(1f, 0f, 1f);
-
-		if(newHighScore)
-			StartCoroutine(TextCelebrateEffect(text_ResultScore));
-		if(newMaxCombo)
-			StartCoroutine(TextCelebrateEffect(text_ResultCombo));
-
-		yield return button_GameOverExit.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
-	}
-
-	IEnumerator TextCelebrateEffect(Text theText)
-	{
-		while(this.gameObject.activeInHierarchy)
-		{
-			yield return theText.rectTransform.DOScale(1.3f, 0.5f).SetEase(Ease.OutQuart).WaitForCompletion();
-			yield return theText.rectTransform.DOScale(1f, 1.5f).SetEase(Ease.OutBounce).WaitForCompletion();
-			yield return new WaitForSeconds(0.2f);
-		}
+		group_FeverTime.gameObject.SetActive(true);
+        group_FeverTime.anchoredPosition = hideRight;
+		yield return group_FeverTime.DOAnchorPos(Vector2.zero, 0.5f).SetEase(Ease.OutBack).WaitForCompletion();
+		yield return group_FeverTime.DOAnchorPos(hideLeft, 0.5f).SetDelay(0.3f).SetEase(Ease.InBack).WaitForCompletion();
+		group_FeverTime.gameObject.SetActive(false);
 	}
 
 	protected override IEnumerator HideUIAnimation()

@@ -40,9 +40,9 @@ public class Card : MonoBehaviour {
 	public void SetSize(float edgeLength)
 	{
 		cardBody.rectTransform.sizeDelta = Vector2.one*edgeLength;
-		goldCardFrame.rectTransform.sizeDelta = Vector2.one * edgeLength;
+		goldCardFrame.rectTransform.sizeDelta = (new Vector2(goldCardFrame.sprite.rect.width, goldCardFrame.sprite.rect.height)) * edgeLength / 192f;
 		image_Glow.rectTransform.sizeDelta = Vector2.one * (edgeLength + 48f);
-    }
+	}
 
 	public void SetCard(Sprite cardBackSprite, Sprite cardFaceSprite, Sprite cardImageSprite, CardState defaultState)
 	{

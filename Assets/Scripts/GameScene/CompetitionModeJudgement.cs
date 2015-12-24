@@ -95,7 +95,7 @@ public class CompetitionModeJudgement : GameModeJudgement
 	protected override void GameOver(params int[] values)
 	{
 		base.GameOver(values);
-		competitionModeView.ShowGameOver(values[0], values[1]);
+		gameSettingView.ShowCompetitionGameOver(values[0], values[1]);
 	}
 
 	void AddScore(int addAmount, int playerNumber, Card[] cards)

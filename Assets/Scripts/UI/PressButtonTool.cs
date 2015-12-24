@@ -7,6 +7,7 @@ public class PressButtonTool : ButtonOffset
 {
 	public Image image_Back;
 	public Image image_Icon;
+	public Image image_AdditionCircle;
 	public CanvasGroup thisGroup;
 	public GameObject lightUpParticle;
 	public GameObject clickableParticle;
@@ -21,6 +22,7 @@ public class PressButtonTool : ButtonOffset
 	}
 	PressButtonState currentState;
 	Tweener thisTweener;
+	Tweener additionTweener;
 	float chargeTime = 0.8f;
 
 	public void SetChargeTime(float value)
@@ -45,6 +47,9 @@ public class PressButtonTool : ButtonOffset
 							onLightUp(this);
 					}
 				);
+				image_AdditionCircle.gameObject.SetActive(true);
+				image_AdditionCircle.fillAmount = 0f;
+				additionTweener = image_AdditionCircle.DOFillAmount(1f, chargeTime);
 			}
 			else
 			{
@@ -61,14 +66,18 @@ public class PressButtonTool : ButtonOffset
 		base.OnPointerUp(eventData);
 		if(currentState == PressButtonState.Clickable)
 		{
+			if(additionTweener != null)
+				additionTweener.Kill();
 			if(thisTweener != null)
 				thisTweener.Kill();
+			image_AdditionCircle.gameObject.SetActive(false);
 			thisTweener = image_Back.DOFillAmount(0f, 0.5f);
 		}
 	}
 
 	public void UpdateButton(PressButtonState state)
 	{
+		image_AdditionCircle.gameObject.SetActive(false);
 		clickableParticle.SetActive(true);
 		lightUpParticle.SetActive(false);
 		currentState = state;

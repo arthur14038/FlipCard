@@ -103,6 +103,7 @@ public class TimeModeJudgement : GameModeJudgement
 
 				if(currentCombo >= currentModeSetting.feverTimeComboThreshold && !feverTimeOn)
 				{
+					timeModeView.ShowFeverTime();
 					feverTimeStartRound = currentRound;
 					feverTimeOn = true;
 					gameMainView.SetGoldCard(-1);
@@ -152,7 +153,7 @@ public class TimeModeJudgement : GameModeJudgement
 		if(failedTimes == 0)
 		{
 			++complimentTimes;
-			timeModeView.ShowCompliment(complimentTimes);
+			//timeModeView.ShowCompliment(complimentTimes);
 		}
 		if(currentState == GameState.Playing)
 			currentState = GameState.Waiting;
@@ -208,7 +209,7 @@ public class TimeModeJudgement : GameModeJudgement
 
 		ModelManager.Instance.SaveGameRecord(record);
 
-		timeModeView.ShowGameOverWindow(score, maxCombo, newHighScore, newMaxCombo);
+		gameSettingView.ShowTimeModeGameOverWindow(score, maxCombo, newHighScore, newMaxCombo);
 	}
 	
 	IEnumerator NextRoundRoutine()
