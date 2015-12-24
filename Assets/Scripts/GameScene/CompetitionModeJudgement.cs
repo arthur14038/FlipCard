@@ -153,7 +153,7 @@ public class CompetitionModeJudgement : GameModeJudgement
 
 				++comboCount;
 
-				if(cards[0].GetCardType() == Card.CardType.Lucky || cards[1].GetCardType() == Card.CardType.Lucky)
+				if(cards[0].GetCardType() == Card.CardType.Gold || cards[1].GetCardType() == Card.CardType.Gold)
 				{
 					scoreChangeAmount *= 2;
                 }

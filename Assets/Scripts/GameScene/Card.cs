@@ -4,7 +4,7 @@ using DG.Tweening;
 using UnityEngine.UI;
 
 public class Card : MonoBehaviour {
-	public enum CardType {Normal, Lucky}
+	public enum CardType {Normal, Gold}
 	public Image cardBody;
 	public Image cardImage;
     public Image image_Glow;
@@ -14,8 +14,9 @@ public class Card : MonoBehaviour {
 	public enum CardState{Face, Back, None}
 	CardState currentState = CardState.None;
 	CardType thisCardType;
-	Sprite cardBack;
-	Sprite cardFace;
+	Sprite cardBackSprite;
+	Sprite cardFaceSprite;
+	Sprite cardImageSprite;
 	Coroutine flipCard;
 	Coroutine matchEffect;
 	Coroutine mismatchEffect;
@@ -42,18 +43,29 @@ public class Card : MonoBehaviour {
         image_Glow.rectTransform.sizeDelta = Vector2.one * (edgeLength + 48f);
     }
 
-	public void SetCard(Sprite cardBack, Sprite cardFace, Sprite cardImageSprite, CardState defaultState, CardType type)
+	public void SetCard(Sprite cardBackSprite, Sprite cardFaceSprite, Sprite cardImageSprite, CardState defaultState, CardType type)
 	{
         text_CardId.text = cardImageSprite.name.Replace("CardImage_", "");
 		thisCardType = type;
-		if(thisCardType == CardType.Lucky)
+		if(thisCardType == CardType.Gold)
 			luckyEffect.SetActive(true);
         this.cardId = cardImageSprite.name;
-		this.cardBack = cardBack;
-		this.cardFace = cardFace;
-		cardImage.sprite = cardImageSprite;
-		cardImage.rectTransform.sizeDelta = (new Vector2(cardImageSprite.rect.width, cardImageSprite.rect.height))*cardBody.rectTransform.sizeDelta.x/192f;
+		this.cardBackSprite = cardBackSprite;
+		this.cardFaceSprite = cardFaceSprite;
+		this.cardImageSprite = cardImageSprite;
+		SetCardImage(cardImageSprite);
 		SetImageAndState(defaultState);
+	}
+
+	public void SetCardImage(Sprite cardImageSprite)
+	{
+		cardImage.sprite = cardImageSprite;
+		cardImage.rectTransform.sizeDelta = (new Vector2(cardImageSprite.rect.width, cardImageSprite.rect.height)) * cardBody.rectTransform.sizeDelta.x / 192f;
+	}
+
+	public void SetCardImageToOriginal()
+	{
+		SetCardImage(cardImageSprite);
 	}
 
 	public void Appear(Vector2 pos, Vector2 shiftAmount, float delayTime, float duration)
@@ -204,12 +216,12 @@ public class Card : MonoBehaviour {
 		case CardState.Back:
 			cardImage.gameObject.SetActive(false);
 			thisButton.interactable = true;
-			cardBody.sprite = cardBack;
+			cardBody.sprite = cardBackSprite;
 			break;
 		case CardState.Face:
 			cardImage.gameObject.SetActive(true);
 			thisButton.interactable = false;
-			cardBody.sprite = cardFace;
+			cardBody.sprite = cardFaceSprite;
 			break;
 		}
 	}

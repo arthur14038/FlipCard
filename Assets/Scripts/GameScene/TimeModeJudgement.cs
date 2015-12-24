@@ -12,6 +12,7 @@ public class TimeModeJudgement : GameModeJudgement
 	int failedTimes;
 	int complimentTimes;
 	bool lastTimeHadMatch = false;
+	bool unknownCardActive = false;
 	TimeModeView timeModeView;
 
 	public override IEnumerator Init(GameMainView gameMainView, GameSettingView gameSettingView, AbstractView modeView)
@@ -75,20 +76,21 @@ public class TimeModeJudgement : GameModeJudgement
 			int scoreChangeAmount = 0;
 			if(match)
 			{
+				scoreChangeAmount = currentSetting.matchAddScore * cards.Length;
 				if(lastTimeHadMatch)
 				{
-					scoreChangeAmount = 12;
+					scoreChangeAmount += currentSetting.comboAddScore * cards.Length;
 
 					++currentCombo;
 					maxCombo = Mathf.Max(currentCombo, maxCombo);
 				} else
 				{
-					scoreChangeAmount = 8;
 					lastTimeHadMatch = true;
 					gameMainView.ToggleCardGlow(true);
 				}
 			} else
 			{
+				scoreChangeAmount = currentSetting.mismatchReduceScore * cards.Length;
 				if(lastTimeHadMatch)
 				{
 					lastTimeHadMatch = false;
@@ -96,16 +98,6 @@ public class TimeModeJudgement : GameModeJudgement
 				}
 				currentCombo = 0;
 				++failedTimes;
-
-				switch(currentSetting.level)
-				{
-				case CardArrayLevel.TwoByThree:
-					scoreChangeAmount = -4;
-					break;
-				case CardArrayLevel.ThreeByFour:
-					scoreChangeAmount = -2;
-					break;
-				}
 			}
 			if(scoreChangeAmount != 0)
 			{
@@ -139,8 +131,17 @@ public class TimeModeJudgement : GameModeJudgement
 		if(currentState == GameState.Playing)
 			currentState = GameState.Waiting;
 		++currentRound;
+
+		float awardTime = currentSetting.awardTime;
+
+		if(unknownCardActive)
+			awardTime *= 1.5f;
+
+		if(!unknownCardActive && currentRound >= currentSetting.unknownCardShowRound)
+			unknownCardActive = true;
+
 		timeModeView.SetRound(currentRound);
-		AddGameTime(currentSetting.awardTime);
+		AddGameTime(awardTime);
 		gameMainView.StartCoroutine(NextRoundRoutine());
 	}
 	
@@ -188,7 +189,7 @@ public class TimeModeJudgement : GameModeJudgement
 	{
 		gameMainView.ToggleMask(true);
 		yield return new WaitForSeconds(0.3f);
-		yield return gameMainView.StartCoroutine(gameMainView.DealCard());
+		yield return gameMainView.StartCoroutine(gameMainView.DealCard(unknownCardActive));
 		yield return new WaitForSeconds(0.3f);
 		yield return gameMainView.StartCoroutine(DealCardRoutine());
 	}
@@ -197,8 +198,12 @@ public class TimeModeJudgement : GameModeJudgement
 	{
 		gameMainView.FlipAllCard();
 		yield return new WaitForSeconds(0.35f + currentSetting.showCardTime);
+		if(unknownCardActive)
+			yield return new WaitForSeconds(1f);
 		gameMainView.FlipAllCard();
 		yield return new WaitForSeconds(0.35f);
+		if(unknownCardActive)
+			gameMainView.ResetUnknownCard();
 		gameMainView.ToggleMask(false);
 		failedTimes = 0;
 		if(currentState == GameState.Waiting)

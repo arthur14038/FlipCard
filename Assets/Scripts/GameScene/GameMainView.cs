@@ -13,6 +13,7 @@ public class GameMainView : AbstractView
 	public Sprite[] cardBack;
 	public Sprite[] cardFace;
 	public Sprite[] cardImage;
+	public Sprite unknownCardImageSprite;
 	public VoidNoneParameter completeOneRound;
 	public VoidBoolAndCards cardMatch;
 	Queue<ScoreText> scoreTextQueue = new Queue<ScoreText>();
@@ -25,8 +26,9 @@ public class GameMainView : AbstractView
 	Queue<Card> waitForMatch = new Queue<Card>();
 	List<Card> cardsOnTable = new List<Card>();
 	int luckyCardCount = 0;
-	int unknownCardCount = 0;
-    bool lockFlipCard = false;
+	int unknownCard1 = 0;
+	int unknownCard2 = 0;
+	bool lockFlipCard = false;
 
 	public override IEnumerator Init()
 	{
@@ -68,13 +70,29 @@ public class GameMainView : AbstractView
 		yield return null;
 	}
 
-	public IEnumerator DealCard()
+	public IEnumerator DealCard(bool activeUnknownCard = false)
 	{
 		Sprite[] thisTimeCardImage = GetCardImage(cards.Length);
 		float delayDuration = dealTime / cards.Length;
+
+		if(activeUnknownCard)
+		{
+			unknownCard1 = Random.Range(0, thisTimeCardImage.Length);
+			unknownCard2 = Random.Range(0, thisTimeCardImage.Length);
+			while(thisTimeCardImage[unknownCard2].name == thisTimeCardImage[unknownCard1].name)
+				unknownCard2 = Random.Range(0, thisTimeCardImage.Length);
+		}
+
 		for(int i = 0 ; i < cards.Length ; ++i)
 		{
 			cards[i].SetCard(cardBack[0], cardFace[0], thisTimeCardImage[i], Card.CardState.Back, Card.CardType.Normal);
+			
+			if(activeUnknownCard)
+			{
+				if(i == unknownCard1 || i == unknownCard2)
+					cards[i].SetCardImage(unknownCardImageSprite);
+			}
+
 			cards[i].Appear(pos[i], shiftAmount, delayDuration * i, appearDuration);
 			cardsOnTable.Add(cards[i]);
         }
@@ -87,6 +105,12 @@ public class GameMainView : AbstractView
 			card.Flip();
 	}
 
+	public void ResetUnknownCard()
+	{
+		cards[unknownCard1].SetCardImageToOriginal();
+		cards[unknownCard2].SetCardImageToOriginal();
+	}
+
 	public void ToggleCardGlow(bool turnOn)
 	{
 		foreach(Card card in cards)
@@ -97,12 +121,7 @@ public class GameMainView : AbstractView
 	{
 		luckyCardCount = value;
 	}
-
-	public void SetUnknownCardCount(int value)
-	{
-		unknownCardCount = value;
-	}
-
+	
 	bool CanFlipCardNow(Card card)
 	{
 		if(lockFlipCard)
@@ -132,7 +151,7 @@ public class GameMainView : AbstractView
 			bool isMatch = false;
 			if(cardA.GetCardId() == cardB.GetCardId())
 			{
-				if(cardA.GetCardType() == Card.CardType.Lucky || cardB.GetCardType() == Card.CardType.Lucky)
+				if(cardA.GetCardType() == Card.CardType.Gold || cardB.GetCardType() == Card.CardType.Gold)
 				{
 					getLuckyEffect.SetActive(false);
 					getLuckyEffect.SetActive(true);

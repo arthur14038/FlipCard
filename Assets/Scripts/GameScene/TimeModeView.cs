@@ -35,7 +35,7 @@ public class TimeModeView : AbstractView
 	{
 		yield return null;
 		SetScore(0);
-		SetRound(1);
+		SetRound(0);
 		group_Compliment.Init(hideLeft, hideRight);
 		group_Counting.gameObject.SetActive(true);
 		image_Counting3.gameObject.SetActive(false);

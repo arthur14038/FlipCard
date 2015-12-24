@@ -44,4 +44,8 @@ public class CardArraySetting{
 	public float gameTime;
 	public float showCardTime;
 	public float awardTime;
+	public int matchAddScore;
+	public int mismatchReduceScore;
+	public int comboAddScore;
+	public int unknownCardShowRound;
 }
