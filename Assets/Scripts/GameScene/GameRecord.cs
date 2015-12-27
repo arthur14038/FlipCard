@@ -6,4 +6,6 @@ public class GameRecord{
 	public int highScore;
 	public int playTimes;
     public int maxCombo;
+	public int maxCollectStar;
+	public int grade;
 }

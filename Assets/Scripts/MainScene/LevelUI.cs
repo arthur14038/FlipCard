@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 
 public class LevelUI : MonoBehaviour {
+	public Image[] image_Grades;
 	public Text text_HighScore;
     public Text text_MaxCombo;
 	public RectTransform group_Unlock;
@@ -49,9 +50,14 @@ public class LevelUI : MonoBehaviour {
 		else
 			text_HighScore.text = "- -";
 
-        if (record.maxCombo > 0)
-            text_MaxCombo.text = record.maxCombo.ToString();
+        if (record.maxCollectStar > 0)
+            text_MaxCombo.text = record.maxCollectStar.ToString();
         else
             text_MaxCombo.text = "- -";
+
+		for(int i = 0 ; i < image_Grades.Length ; ++i)
+			image_Grades[i].gameObject.SetActive(false);
+        if(record.grade > 0)
+			image_Grades[record.grade - 1].gameObject.SetActive(true);
 	}
 }

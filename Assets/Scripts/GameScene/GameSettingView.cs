@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class GameSettingView : AbstractView {
 	public VoidNoneParameter onClickResume;
 	public VoidNoneParameter onClickExit;
+	public Sprite[] complimentSprite;
 	public Text text_TimeModeResultScore;
 	public Text text_TimeModeResultCombo;
 	public Text text_Player1ResultScore;
@@ -17,6 +18,7 @@ public class GameSettingView : AbstractView {
 	public Toggle toggle_Sound;
 	public Image group_CompetitionGameOver;
 	public Image group_TimeModeGameOver;
+	public Image image_grade;
 	public Image image_WinnerBoard;
 	public Image image_WinnerFace;
 	public RectTransform image_CompetitionGameOverWindow;
@@ -98,19 +100,22 @@ public class GameSettingView : AbstractView {
 		StartCoroutine(CompetitionGameOverEffect(player1Score, player2Score));
 	}
 
-	public void ShowTimeModeGameOverWindow(int score, int maxCombo, bool newHighScore, bool newMaxCombo)
+	public void ShowTimeModeGameOverWindow(int score, int maxStar, int grade, bool newHighScore, bool newMaxStar)
 	{
 		base.ShowUI(false);
 		AudioManager.Instance.StopMusic();
 		AudioManager.Instance.PlayOneShot("GameResult");
-		if(newHighScore || newMaxCombo)
+		if(newHighScore || newMaxStar)
 		{
 			AudioManager.Instance.PlayOneShot("NewHighScore2");
 			timeModeNewHighScoreEffect.SetActive(true);
 			image_TimeModeNewHighScoreHeader.gameObject.SetActive(true);
+		}else
+		{
+			image_TimeModeNewHighScoreHeader.gameObject.SetActive(false);
 		}
 
-		StartCoroutine(TimeModeGameOverEffect(score, maxCombo, newHighScore, newMaxCombo));
+		StartCoroutine(TimeModeGameOverEffect(score, maxStar, grade, newHighScore, newMaxStar));
 	}
 
 	void OnClickEscape()
@@ -147,24 +152,30 @@ public class GameSettingView : AbstractView {
 		yield return button_CompetitionGameOverExit.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
 	}
 
-	IEnumerator TimeModeGameOverEffect(int score, int maxCombo, bool newHighScore, bool newMaxCombo)
+	IEnumerator TimeModeGameOverEffect(int score, int maxStar, int grade, bool newHighScore, bool newMaxStar)
 	{
 		image_TimeModeCharacterRight.gameObject.SetActive(false);
 		image_TimeModeCharacterLeft.gameObject.SetActive(false);
 		image_TimeModeScoreBoard.gameObject.SetActive(false);
+		image_grade.gameObject.SetActive(false);
 		button_TimeModeGameOverExit.gameObject.SetActive(false);
 		group_TimeModeGameOver.gameObject.SetActive(true);
 		group_TimeModeGameOver.color = Color.clear;
 		group_TimeModeGameOver.DOColor(Color.black * 0.7f, 0.3f);
 		image_TimeModeGameOverWindow.anchoredPosition = new Vector2(0f, 1572f);
-		yield return image_TimeModeGameOverWindow.DOAnchorPos(new Vector2(0f, 72f), 0.5f).SetEase(Ease.OutBack).WaitForCompletion();
+		yield return image_TimeModeGameOverWindow.DOAnchorPos(new Vector2(0f, 13f), 0.5f).SetEase(Ease.OutBack).WaitForCompletion();
 
-		image_TimeModeCharacterRight.anchoredPosition = new Vector2(750f, -72f);
-		image_TimeModeCharacterLeft.anchoredPosition = new Vector2(-750f, -72f);
+		image_grade.sprite = complimentSprite[grade - 1];
+		image_grade.rectTransform.localScale = Vector3.zero;
+		image_grade.gameObject.SetActive(true);
+		yield return image_grade.rectTransform.DOScale(1f, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
+
+		image_TimeModeCharacterRight.anchoredPosition = new Vector2(750f, -117.5f);
+		image_TimeModeCharacterLeft.anchoredPosition = new Vector2(-750f, -117.5f);
 		image_TimeModeCharacterRight.gameObject.SetActive(true);
 		image_TimeModeCharacterLeft.gameObject.SetActive(true);
-		image_TimeModeCharacterRight.DOAnchorPos(new Vector2(250f, -72f), 0.2f).SetEase(Ease.OutCubic);
-		image_TimeModeCharacterLeft.DOAnchorPos(new Vector2(-240f, -72f), 0.2f).SetEase(Ease.OutCubic);
+		image_TimeModeCharacterRight.DOAnchorPos(new Vector2(250f, -117.5f), 0.2f).SetEase(Ease.OutCubic);
+		image_TimeModeCharacterLeft.DOAnchorPos(new Vector2(-240f, -117.5f), 0.2f).SetEase(Ease.OutCubic);
 
 		text_TimeModeResultCombo.text = "";
 		text_TimeModeResultScore.text = "";
@@ -196,10 +207,10 @@ public class GameSettingView : AbstractView {
 		yield return text_TimeModeResultScore.rectTransform.DOScale(1.5f, 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
 		yield return text_TimeModeResultScore.rectTransform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
 
-		if(maxCombo > 0)
+		if(maxStar > 0)
 		{
 			float changeTime = 0.35f;
-			float comboChangeAmount = (maxCombo / (changeTime / Time.deltaTime));
+			float comboChangeAmount = (maxStar / (changeTime / Time.deltaTime));
 			float tmpCombo = 0;
 			float forCountSound = changeTime;
 			while(changeTime > 0f)
@@ -216,7 +227,7 @@ public class GameSettingView : AbstractView {
 			}
 		}
 
-		text_TimeModeResultCombo.text = maxCombo.ToString();
+		text_TimeModeResultCombo.text = maxStar.ToString();
 		yield return text_TimeModeResultCombo.rectTransform.DOScale(1.5f, 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
 		yield return text_TimeModeResultCombo.rectTransform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
 
@@ -225,7 +236,7 @@ public class GameSettingView : AbstractView {
 
 		if(newHighScore)
 			StartCoroutine(TextCelebrateEffect(text_TimeModeResultScore));
-		if(newMaxCombo)
+		if(newMaxStar)
 			StartCoroutine(TextCelebrateEffect(text_TimeModeResultCombo));
 
 		yield return button_TimeModeGameOverExit.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();

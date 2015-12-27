@@ -18,6 +18,7 @@ public class TimeModeView : AbstractView
 	public RectTransform image_CountingGo;
 	public RectTransform group_FeverTime;
 	public GameObject timeIsRunning;
+	public GameObject feverTimeEffect;
 
 	public override IEnumerator Init()
 	{
@@ -30,6 +31,7 @@ public class TimeModeView : AbstractView
 		image_Counting1.gameObject.SetActive(false);
 		image_CountingGo.gameObject.SetActive(false);
 		group_FeverTime.gameObject.SetActive(false);
+		ToggleFeverTimeEffect(false);
     }
 	
 	public void OnClickPause()
@@ -84,9 +86,16 @@ public class TimeModeView : AbstractView
 
 	public void ShowFeverTime()
 	{
+		ToggleFeverTimeEffect(true);
 		StartCoroutine(FeverTimeEffect());
 	}
 	
+	public void ToggleFeverTimeEffect(bool value)
+	{
+		if(feverTimeEffect != null && feverTimeEffect.activeSelf != value)
+			feverTimeEffect.SetActive(value);
+	}
+
 	IEnumerator FeverTimeEffect()
 	{
 		group_FeverTime.gameObject.SetActive(true);

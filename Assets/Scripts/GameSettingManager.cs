@@ -88,6 +88,7 @@ public class TimeModeSetting
 	public int comboAddScore;
 	public int unknownCardShowRound;
 	public int feverTimeComboThreshold;
+	public int gradeGap;
 }
 
 public class CompetitionModeSetting

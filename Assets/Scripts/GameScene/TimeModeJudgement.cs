@@ -12,6 +12,7 @@ public class TimeModeJudgement : GameModeJudgement
 	int failedTimes;
 	int complimentTimes;
 	int feverTimeStartRound;
+	int currentCollectStar;
 	bool lastTimeHadMatch = false;
 	bool unknownCardActive = false;
 	bool feverTimeOn = false;
@@ -44,7 +45,8 @@ public class TimeModeJudgement : GameModeJudgement
 
 		failedTimes = 0;
 		complimentTimes = 0;
-		if(currentState == GameState.Waiting)
+		currentCollectStar = 0;
+        if(currentState == GameState.Waiting)
 			currentState = GameState.Playing;
 		AudioManager.Instance.PlayMusic("GamePlayBGM", true);
 	}
@@ -59,7 +61,7 @@ public class TimeModeJudgement : GameModeJudgement
 				gamePassTime += Time.deltaTime;
 				if(gamePassTime >= gameTime)
 				{
-					GameOver(score, maxCombo);
+					GameOver(score, maxCombo, currentCollectStar);
 					timeModeView.SetTimeBar(0f);
 				}
 
@@ -96,10 +98,16 @@ public class TimeModeJudgement : GameModeJudgement
 				maxCombo = Mathf.Max(currentCombo, maxCombo);
 
 				if(cards[0].GetCardType() == Card.CardType.Gold)
+				{
 					scoreChangeAmount *= 2;
+					currentCollectStar += 1;
+				}
 
 				if(cards[1].GetCardType() == Card.CardType.Gold)
+				{
+					currentCollectStar += 1;
 					scoreChangeAmount *= 2;
+				}
 
 				if(currentCombo >= currentModeSetting.feverTimeComboThreshold && !feverTimeOn)
 				{
@@ -121,6 +129,7 @@ public class TimeModeJudgement : GameModeJudgement
 					if(unknownCardActive)
 						unknownCardActive = false;
 					feverTimeOn = false;
+					timeModeView.ToggleFeverTimeEffect(false);
 					gameMainView.SetGoldCard(0);
 				}
 				currentCombo = 0;
@@ -184,24 +193,34 @@ public class TimeModeJudgement : GameModeJudgement
 	{
 		base.GameOver(values);
 		int score = values[0];
-		int maxCombo = values[1];
+		//int maxCombo = values[1];
+		int collectStar = values[2];
+		int grade = 1 + score / currentModeSetting.gradeGap;
 
 		if(PlayerPrefsManager.OnePlayerProgress == (int)currentModeSetting.level)
 			PlayerPrefsManager.OnePlayerProgress += 1;
 
 		GameRecord record = ModelManager.Instance.GetGameRecord(currentModeSetting.level);
 		bool newHighScore = false;
-		bool newMaxCombo = false;
+		//bool newMaxCombo = false;
+		bool newMaxStar = false;
 		if(score > record.highScore)
 		{
 			record.highScore = score;
 			newHighScore = true;
 		}
-		if(maxCombo > record.maxCombo)
+		if(grade > record.grade)
+			record.grade = grade;
+		//if(maxCombo > record.maxCombo)
+		//{
+		//	record.maxCombo = maxCombo;
+		//	newMaxCombo = true;
+		//}
+		if(collectStar > record.maxCollectStar)
 		{
-			record.maxCombo = maxCombo;
-			newMaxCombo = true;
-		}
+			record.maxCollectStar = collectStar;
+			newMaxStar = true;
+        }
 		record.playTimes += 1;
 
 		if(record.playTimes % 3 == 1)
@@ -209,7 +228,7 @@ public class TimeModeJudgement : GameModeJudgement
 
 		ModelManager.Instance.SaveGameRecord(record);
 
-		gameSettingView.ShowTimeModeGameOverWindow(score, maxCombo, newHighScore, newMaxCombo);
+		gameSettingView.ShowTimeModeGameOverWindow(score, collectStar, grade, newHighScore, newMaxStar);
 	}
 	
 	IEnumerator NextRoundRoutine()

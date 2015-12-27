@@ -1,22 +1,23 @@
-﻿[{
+﻿[
+   {
      "Level": 1, 
-     "MatchAddScore": 1,
-    "MismatchReduceScore": 0,
-  "ComboAddScore": 1,
-  "GoldCardCount":  1
+     "MatchAddScore": 1, 
+     "MismatchReduceScore": 0, 
+     "ComboAddScore": 1, 
+     "GoldCardCount": 1
  },
    {
      "Level": 2, 
-     "MatchAddScore": 1,
-    "MismatchReduceScore": 0,
-    "ComboAddScore": 1,
-  "GoldCardCount":  2
+     "MatchAddScore": 1, 
+     "MismatchReduceScore": 0, 
+     "ComboAddScore": 1, 
+     "GoldCardCount": 2
  },
    {
      "Level": 3, 
-     "MatchAddScore": 1,
-    "MismatchReduceScore": 0,
-    "ComboAddScore": 1,
-  "GoldCardCount":  4
+     "MatchAddScore": 1, 
+     "MismatchReduceScore": 0, 
+     "ComboAddScore": 1, 
+     "GoldCardCount": 4
  }
 ]
