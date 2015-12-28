@@ -44,13 +44,13 @@ public class Card : MonoBehaviour {
 		image_Glow.rectTransform.sizeDelta = Vector2.one * (edgeLength + 48f);
 	}
 
-	public void SetCard(Sprite cardBackSprite, Sprite cardFaceSprite, Sprite cardImageSprite, CardState defaultState)
+	public void SetCard(Sprite cardImageSprite, CardState defaultState)
 	{
         text_CardId.text = cardImageSprite.name.Replace("CardImage_", "");
         this.cardId = cardImageSprite.name;
-		this.cardBackSprite = cardBackSprite;
-		this.cardFaceSprite = cardFaceSprite;
 		this.cardImageSprite = cardImageSprite;
+		cardBackSprite = InventoryManager.Instance.GetCurrentCardBack();
+		cardFaceSprite = InventoryManager.Instance.GetCurrentCardFace();
 		SetCardImage(cardImageSprite);
 		SetImageAndState(defaultState);
 	}

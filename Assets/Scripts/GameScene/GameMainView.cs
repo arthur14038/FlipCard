@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class GameMainView : AbstractView
 {
@@ -10,8 +11,7 @@ public class GameMainView : AbstractView
 	public GameObject scoreTextPrefab;
 	public GameObject cardPrefab;
 	public GameObject getLuckyEffect;
-	public Sprite[] cardBack;
-	public Sprite[] cardFace;
+	public Image image_Theme;
 	public Sprite[] cardImage;
 	public Sprite unknownCardImageSprite;
 	public VoidNoneParameter completeOneRound;
@@ -35,6 +35,7 @@ public class GameMainView : AbstractView
 		ToggleMask(true);
 		getLuckyEffect.SetActive(false);
 
+		image_Theme.sprite = InventoryManager.Instance.GetCurrentThemeSprite();
 		CardArraySetting setting = GameSettingManager.GetCurrentCardArraySetting();
         cards = new Card[setting.column * setting.row];
 		pos = new Vector2[cards.Length];
@@ -87,7 +88,7 @@ public class GameMainView : AbstractView
 		for(int i = 0 ; i < cards.Length ; ++i)
 		{
 			cardsOnTable.Add(cards[i]);
-			cards[i].SetCard(cardBack[0], cardFace[0], thisTimeCardImage[i], Card.CardState.Back);
+			cards[i].SetCard(thisTimeCardImage[i], Card.CardState.Back);
 
 			if(activeUnknownCard)
 			{

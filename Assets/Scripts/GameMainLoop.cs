@@ -12,7 +12,7 @@ public class GameMainLoop : SingletonMonoBehavior<GameMainLoop> {
 	public int showView;
     VoidNoneParameter onSceneLoadComplete;
 
-    public void RegisterController(IController controller, VoidNoneParameter onSceneLoadComplete = null)
+	public void RegisterController(IController controller, VoidNoneParameter onSceneLoadComplete = null)
     {
         this.onSceneLoadComplete = onSceneLoadComplete;
         this.controller = controller;
@@ -64,7 +64,10 @@ public class GameMainLoop : SingletonMonoBehavior<GameMainLoop> {
         ModelManager.Instance.Init();
         ScreenEffectManager.Instance.Init();
 		GameSettingManager.LoadData();
+
+		yield return StartCoroutine(InventoryManager.Instance.Init());
 		yield return new WaitForSeconds(0.5f);
+
 		if(controller != null)
 			StartCoroutine(controller.Init());
 	}

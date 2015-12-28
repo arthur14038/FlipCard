@@ -14,7 +14,7 @@ public class MainSceneController : AbstractController {
 		yield return StartCoroutine(mainPageView.Init());
 		yield return StartCoroutine(singlePlayerView.Init());
 		yield return StartCoroutine(twoPlayerView.Init());
-
+		
 		currentView = (MainSceneView)GameMainLoop.Instance.showView;
 
 		mainPageView.onClick1P = ShowSinglePlayer;

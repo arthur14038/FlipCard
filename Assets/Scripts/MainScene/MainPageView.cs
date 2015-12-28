@@ -8,7 +8,8 @@ public class MainPageView : AbstractView {
 	ViewState currentState;
 	public RectTransform group_Main;
     public Image image_Mask;
-    public RectTransform image_SettingWindow;
+	public Image image_Theme;
+	public RectTransform image_SettingWindow;
 	public RectTransform image_LeaveWindow;
 	public RectTransform image_UnderConstructionWindow;
 	public Toggle toggle_Music;
@@ -30,7 +31,8 @@ public class MainPageView : AbstractView {
 		image_UnderConstructionWindow.gameObject.SetActive(false);
 		group_Main.gameObject.SetActive(true);
 		escapeEvent = OnClickEscape;
-		
+
+		image_Theme.sprite = InventoryManager.Instance.GetCurrentThemeSprite();
 		AudioManager.Instance.SetListenToToggle(false);
 		toggle_Music.isOn = !PlayerPrefsManager.MusicSetting;
 		toggle_Sound.isOn = !PlayerPrefsManager.SoundSetting;
