@@ -1,8 +1,10 @@
-﻿{
-  "CardBackCount": 3, 
-  "CardFaceCount": 3, 
-  "ThemeCount": 3, 
-  "CardBackPath": "CardBack/CardBack_{0}",
-  "CardFacePath": "CardFace/CardFace_{0}",
-  "ThemePath": "Theme/Theme_{0}"
-}
+﻿[
+   {
+     "CardBackCount": 3, 
+     "CardFaceCount": 3, 
+     "ThemeCount": 3, 
+     "CardBackPath": "CardBack/CardBack_{0}", 
+     "CardFacePath": "CardFace/CardFace_{0}", 
+     "ThemePath": "Theme/Theme_{0}"
+ }
+]

@@ -7,6 +7,7 @@ public class MainSceneController : AbstractController {
 	public MainPageView mainPageView;
 	public SinglePlayerView singlePlayerView;
 	public TwoPlayerView twoPlayerView;
+	public ShopView shopView;
 	string notifyMessage;
 		
 	public override IEnumerator Init ()
@@ -14,7 +15,8 @@ public class MainSceneController : AbstractController {
 		yield return StartCoroutine(mainPageView.Init());
 		yield return StartCoroutine(singlePlayerView.Init());
 		yield return StartCoroutine(twoPlayerView.Init());
-		
+		yield return StartCoroutine(shopView.Init());
+
 		currentView = (MainSceneView)GameMainLoop.Instance.showView;
 
 		mainPageView.onClick1P = ShowSinglePlayer;
@@ -28,8 +30,10 @@ public class MainSceneController : AbstractController {
 		singlePlayerView.onClickPlay = GoToGameScene;
 		twoPlayerView.onClickBack = ShowMainPage;
 		twoPlayerView.onClickPlay = GoToGameScene;
+		shopView.onClickBack = ShowMainPage;
 
-		mainPageView.HideUI(false);
+		shopView.HideUI(false);
+        mainPageView.HideUI(false);
 		singlePlayerView.HideUI(false);
 		twoPlayerView.HideUI(false);
 
@@ -43,6 +47,9 @@ public class MainSceneController : AbstractController {
 				break;
 			case MainSceneView.TwoPlayer:
 				twoPlayerView.ShowUI(false);
+				break;
+			case MainSceneView.Shop:
+				shopView.ShowUI(false);
 				break;
 		}
 
@@ -68,6 +75,9 @@ public class MainSceneController : AbstractController {
 			case MainSceneView.TwoPlayer:
 				twoPlayerView.HideUI(true);
 				break;
+			case MainSceneView.Shop:
+				shopView.HideUI(true);
+				break;
 		}
 		mainPageView.ShowUI(true);
 		currentView = MainSceneView.MainPage;
@@ -92,11 +102,13 @@ public class MainSceneController : AbstractController {
 
 	void ShowShop()
 	{
-		UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.OnClickShop);
-		mainPageView.ShowUnderConstruction();
-		notifyMessage = "Please notify me when \"Shop\" feature is launches.";
+		mainPageView.HideUI(true);
+		shopView.ShowUI(true);
+		currentView = MainSceneView.Shop;
+		//UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.OnClickShop);
+		//mainPageView.ShowUnderConstruction();
+		//notifyMessage = "Please notify me when \"Shop\" feature is launches.";
 		//mainPageView.HideUI(true);
-		//currentView = MainSceneView.Shop;
 	}
 
 	void SendNotifyMail()

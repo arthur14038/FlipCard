@@ -74,7 +74,8 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 	IEnumerator LoadInventoryTexture()
 	{
 		string jsonString = ((TextAsset)Resources.Load("InventoryInfo")).text;
-		inventoryInfo = JsonConvert.DeserializeObject<InventoryInfo>(jsonString);
+		List<InventoryInfo> tmp = JsonConvert.DeserializeObject<List<InventoryInfo>>(jsonString);
+		inventoryInfo = tmp[0];
 
 		for(int i = 0 ; i < inventoryInfo.cardBackCount ; ++i)
 		{
