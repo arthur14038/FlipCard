@@ -119,6 +119,6 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 
 	public Sprite GetCurrentCardFace()
 	{
-		return GetSpriteById(equipTheme.ItemId);
+		return GetSpriteById(equipCardFace.ItemId);
 	}
 }

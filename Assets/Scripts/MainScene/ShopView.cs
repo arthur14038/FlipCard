@@ -4,6 +4,8 @@ using DG.Tweening;
 
 public class ShopView : AbstractView
 {
+	enum ShopGroup {Theme, Shop, Moni, None}
+	ShopGroup currentGroup = ShopGroup.None;
 	public VoidNoneParameter onClickBack;
 	public RectTransform group_Shop;
 
@@ -19,6 +21,11 @@ public class ShopView : AbstractView
 			onClickBack();
 	}
 
+	public void ToggleGroup(int groupIndex)
+	{
+		currentGroup = (ShopGroup)groupIndex;
+	}
+
 	protected override IEnumerator HideUIAnimation()
 	{
 		yield return group_Shop.DOAnchorPos(hideDown, 0.3f).SetEase(Ease.InQuad).WaitForCompletion();
@@ -31,6 +38,5 @@ public class ShopView : AbstractView
 		group_Shop.anchoredPosition = hideDown;
 		yield return group_Shop.DOAnchorPos(Vector2.zero, 0.5f).SetEase(Ease.OutBack).WaitForCompletion();
 		showCoroutine = null;
-	}
-	
+	}	
 }

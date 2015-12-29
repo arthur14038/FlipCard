@@ -95,9 +95,6 @@ public class MainSceneController : AbstractController {
 		mainPageView.HideUI(true);
 		twoPlayerView.ShowUI(true);
 		currentView = MainSceneView.TwoPlayer;
-		//UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.OnClick2P);
-		//mainPageView.ShowUnderConstruction();
-		//notifyMessage = "Please notify me when \"Play with Friend\" feature is launches.";
 	}
 
 	void ShowShop()
@@ -105,10 +102,6 @@ public class MainSceneController : AbstractController {
 		mainPageView.HideUI(true);
 		shopView.ShowUI(true);
 		currentView = MainSceneView.Shop;
-		//UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.OnClickShop);
-		//mainPageView.ShowUnderConstruction();
-		//notifyMessage = "Please notify me when \"Shop\" feature is launches.";
-		//mainPageView.HideUI(true);
 	}
 
 	void SendNotifyMail()
