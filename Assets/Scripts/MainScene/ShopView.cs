@@ -28,15 +28,17 @@ public class ShopView : AbstractView
 
 	protected override IEnumerator HideUIAnimation()
 	{
-		yield return group_Shop.DOAnchorPos(hideDown, 0.3f).SetEase(Ease.InQuad).WaitForCompletion();
+		group_Shop.anchoredPosition = Vector2.zero;
+		yield return group_Shop.DOAnchorPos(hideRight, 0.5f).SetEase(Ease.OutCubic).WaitForCompletion();
+		base.HideUI(false);
 		hideCoroutine = null;
 	}
 
 	protected override IEnumerator ShowUIAnimation()
 	{
 		group_Shop.gameObject.SetActive(true);
-		group_Shop.anchoredPosition = hideDown;
-		yield return group_Shop.DOAnchorPos(Vector2.zero, 0.5f).SetEase(Ease.OutBack).WaitForCompletion();
+		group_Shop.anchoredPosition = hideRight;
+		yield return group_Shop.DOAnchorPos(Vector2.zero, 0.5f).SetEase(Ease.OutCubic).WaitForCompletion();
 		showCoroutine = null;
 	}	
 }

@@ -57,7 +57,6 @@ public class MainPageView : AbstractView {
 	public void OnClickShop()
 	{
 		AudioManager.Instance.PlayOneShot("Button_Click");
-		image_Mask.gameObject.SetActive(true);
 		if(onClickShop != null)
 			onClickShop();
 	}
