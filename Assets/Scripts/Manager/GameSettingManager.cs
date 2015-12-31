@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 
 public enum CardArrayLevel{TwoByThree = 0, ThreeByFour, FourByFive, FiveBySix}
-public enum GameMode { LimitTime = 1, LimitMove, Competition, Cooperation}
+public enum GameMode { LimitTime = 1, Classic, Competition, Cooperation}
 public class GameSettingManager{
 	static Dictionary<CardArrayLevel, CardArraySetting> cardArraySettings = new Dictionary<CardArrayLevel, CardArraySetting>();
 	static Dictionary<CardArrayLevel, TimeModeSetting> timeModeSettings = new Dictionary<CardArrayLevel, TimeModeSetting>();
@@ -98,4 +98,9 @@ public class CompetitionModeSetting
 	public int mismatchReduceScore;
 	public int comboAddScore;
 	public int goldCardCount;
+}
+
+public class ClassicModeSetting
+{
+	public CardArrayLevel level;
 }

@@ -57,6 +57,11 @@ public class GameSceneController : AbstractController
 				Canvas competitionModeViewCanvas = competitionModeView.GetComponent<Canvas>();
 				competitionModeViewCanvas.worldCamera = Camera.main;
 				return competitionModeView.GetComponent<AbstractView>();
+			case GameMode.Classic:
+				GameObject heartModeView = Instantiate(Resources.Load("UI/HeartModeView")) as GameObject;
+				Canvas heartModeViewCanvas = heartModeView.GetComponent<Canvas>();
+				heartModeViewCanvas.worldCamera = Camera.main;
+				return heartModeView.GetComponent<AbstractView>();
 			default:
 				return null;
 		}
@@ -70,6 +75,8 @@ public class GameSceneController : AbstractController
 				return new TimeModeJudgement();
 			case GameMode.Competition:
 				return new CompetitionModeJudgement();
+			case GameMode.Classic:
+				return new ClassicModeJudgement();
 			default:
 				Debug.LogErrorFormat("{0}'s judgement is not implement", GameSettingManager.currentMode);
 				return null;
