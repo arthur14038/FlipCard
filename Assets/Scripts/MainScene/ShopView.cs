@@ -23,7 +23,12 @@ public class ShopView : AbstractView
 
 	public void ToggleGroup(int groupIndex)
 	{
-		currentGroup = (ShopGroup)groupIndex;
+		SetCurrentGroup((ShopGroup)groupIndex);
+	}
+
+	void SetCurrentGroup(ShopGroup value)
+	{
+		currentGroup = value;
 	}
 
 	protected override IEnumerator HideUIAnimation()
