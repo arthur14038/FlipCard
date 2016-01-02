@@ -58,10 +58,10 @@ public class GameSceneController : AbstractController
 				competitionModeViewCanvas.worldCamera = Camera.main;
 				return competitionModeView.GetComponent<AbstractView>();
 			case GameMode.Classic:
-				GameObject heartModeView = Instantiate(Resources.Load("UI/HeartModeView")) as GameObject;
-				Canvas heartModeViewCanvas = heartModeView.GetComponent<Canvas>();
-				heartModeViewCanvas.worldCamera = Camera.main;
-				return heartModeView.GetComponent<AbstractView>();
+				GameObject classicModeView = Instantiate(Resources.Load("UI/ClassicModeView")) as GameObject;
+				Canvas classicModeViewCanvas = classicModeView.GetComponent<Canvas>();
+				classicModeViewCanvas.worldCamera = Camera.main;
+				return classicModeView.GetComponent<AbstractView>();
 			default:
 				return null;
 		}

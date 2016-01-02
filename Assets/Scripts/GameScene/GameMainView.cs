@@ -13,7 +13,6 @@ public class GameMainView : AbstractView
 	public GameObject getLuckyEffect;
 	public Image image_Theme;
 	public Sprite[] cardImage;
-	public Sprite unknownCardImageSprite;
 	public VoidNoneParameter completeOneRound;
 	public VoidBoolAndCards cardMatch;
 	Queue<ScoreText> scoreTextQueue = new Queue<ScoreText>();
@@ -21,10 +20,10 @@ public class GameMainView : AbstractView
 	Vector2 shiftAmount = new Vector2(-100, 50);
 	float appearDuration = 0.3f;
 	float dealTime = 0.5f;
-	Card[] cards;
-	Queue<Card> waitForCompare = new Queue<Card>();
-	Queue<Card> waitForMatch = new Queue<Card>();
-	List<Card> cardsOnTable = new List<Card>();
+	Card_Normal[] cardsDeck;
+	Queue<Card_Normal> waitForCompare = new Queue<Card_Normal>();
+	Queue<Card_Normal> waitForMatch = new Queue<Card_Normal>();
+	List<Card_Normal> cardsOnTable = new List<Card_Normal>();
 	int unknownCard1 = 0;
 	int unknownCard2 = 0;
 	int goldCardCount = 0;
@@ -37,19 +36,18 @@ public class GameMainView : AbstractView
 
 		image_Theme.sprite = InventoryManager.Instance.GetCurrentThemeSprite();
 		CardArraySetting setting = GameSettingManager.GetCurrentCardArraySetting();
-        cards = new Card[setting.column * setting.row];
-		pos = new Vector2[cards.Length];
+		cardsDeck = new Card_Normal[setting.column * setting.row];
+		pos = new Vector2[cardsDeck.Length];
 
-		for(int i = 0 ; i < cards.Length ; ++i)
+		for(int i = 0 ; i < cardsDeck.Length ; ++i)
 		{
 			GameObject tmp = Instantiate(cardPrefab) as GameObject;
 			tmp.name = cardPrefab.name + i.ToString();
 			tmp.transform.SetParent(cardParent);
 			tmp.transform.localScale = Vector3.one;
 			tmp.SetActive(false);
-			cards[i] = tmp.GetComponent<Card>();
-			cards[i].SetSize(setting.edgeLength);
-			cards[i].Init(CanFlipCardNow, CardFlipFinish);
+			cardsDeck[i] = tmp.GetComponent<Card_Normal>();
+			cardsDeck[i].Init(CanFlipCardNow, CardFlipFinish, setting.edgeLength);
 			float x = setting.realFirstPosition.x + (i % setting.column) * (setting.edgeLength + setting.cardGap);
 			float y = setting.realFirstPosition.y - (i / setting.column) * (setting.edgeLength + setting.cardGap);
 			pos[i] = new Vector2(x, y);
@@ -73,8 +71,8 @@ public class GameMainView : AbstractView
 
 	public IEnumerator DealCard(bool activeUnknownCard = false)
 	{
-		Sprite[] thisTimeCardImage = GetCardImage(cards.Length);
-		float delayDuration = dealTime / cards.Length;
+		Sprite[] thisTimeCardImage = GetCardImage(cardsDeck.Length);
+		float delayDuration = dealTime / cardsDeck.Length;
 
 		if(activeUnknownCard)
 		{
@@ -84,84 +82,85 @@ public class GameMainView : AbstractView
 				unknownCard2 = Random.Range(0, thisTimeCardImage.Length);
 		}
 
-		UpdateCardType();
-		for(int i = 0 ; i < cards.Length ; ++i)
+		UpdateGoldCard();
+		for(int i = 0 ; i < cardsDeck.Length ; ++i)
 		{
-			cardsOnTable.Add(cards[i]);
-			cards[i].SetCard(thisTimeCardImage[i], Card.CardState.Back);
-
 			if(activeUnknownCard)
 			{
 				if(i == unknownCard1 || i == unknownCard2)
-					cards[i].SetCardImage(unknownCardImageSprite);
+					cardsDeck[i].SetCardType(CardType.UnknownFace);
 			}
 
-			cards[i].Appear(pos[i], shiftAmount, delayDuration * i, appearDuration);
+			cardsOnTable.Add(cardsDeck[i]);
+			cardsDeck[i].SetCardSprite(thisTimeCardImage[i], null, CardState.Back);
+			cardsDeck[i].SetCardId(thisTimeCardImage[i].name);
+            cardsDeck[i].Appear(pos[i], shiftAmount, delayDuration * i, appearDuration);
 		}
 		yield return new WaitForSeconds(dealTime);
 	}
 
 	public void FlipAllCard()
 	{
-		foreach(Card card in cards)
+		foreach(Card_Normal card in cardsDeck)
 			card.Flip();
+	}
+
+	public void SetAllCardBackUnknown()
+	{
+		foreach(Card_Normal card in cardsDeck)
+			card.SetCardType(CardType.UnknownBack);
 	}
 
 	public void ResetUnknownCard()
 	{
-		cards[unknownCard1].SetCardImageToOriginal();
-		cards[unknownCard2].SetCardImageToOriginal();
+		cardsDeck[unknownCard1].SetCardType(CardType.Normal);
+		cardsDeck[unknownCard2].SetCardType(CardType.Normal);
+	}
+
+	public void ToggleCardGlow(bool turnOn)
+	{
+		foreach(Card_Normal card in cardsDeck)
+			card.ToggleCardGlow(turnOn);
 	}
 
 	public void SetGoldCard(int count, bool setImmediate = true)
 	{
 		goldCardCount = count;
 		if(setImmediate)
-			UpdateCardType();
+			UpdateGoldCard();
 	}
 
-	public void ToggleCardGlow(bool turnOn)
-	{
-		foreach(Card card in cards)
-			card.ToggleCardGlow(turnOn);
-	}
-		
-	void UpdateCardType()
+	void UpdateGoldCard()
 	{
 		if(goldCardCount < 0)
 		{
-			foreach(Card card in cards)
-				card.SetCardType(Card.CardType.Gold);
+			foreach(Card_Normal card in cardsDeck)
+				card.ToggleGoldCard(true);
 		}
 		else if(goldCardCount == 0)
 		{
-			foreach(Card card in cards)
-				card.SetCardType(Card.CardType.Normal);
+			foreach(Card_Normal card in cardsDeck)
+				card.ToggleGoldCard(false);
 		}
 		else
 		{
-			if(goldCardCount >= cards.Length)
-			{
-				foreach(Card card in cardsOnTable)
-					card.SetCardType(Card.CardType.Gold);
-			}
-			else
-			{
-				List<int> tickets = new List<int>();
-				for(int i = 0 ; i < cards.Length ; ++i)
-					tickets.Add(i);
+			foreach(Card_Normal card in cardsDeck)
+				card.ToggleGoldCard(false);
 
-				for(int i = 0 ; i < goldCardCount ; ++i)
-				{
-					int randomIndex = Random.Range(0, tickets.Count);
-					tickets.RemoveAt(randomIndex);
-					cards[randomIndex].SetCardType(Card.CardType.Gold);
-				}
+			List<int> tickets = new List<int>();
+			for(int i = 0 ; i < cardsDeck.Length ; ++i)
+				tickets.Add(i);
+
+			for(int i = 0 ; i < goldCardCount ; ++i)
+			{
+				int randomIndex = Random.Range(0, tickets.Count);
+				tickets.RemoveAt(randomIndex);
+				cardsDeck[randomIndex].ToggleGoldCard(true);
 			}
 		}
 	}
 
-	bool CanFlipCardNow(Card card)
+	bool CanFlipCardNow(Card_Normal card)
 	{
 		if(lockFlipCard)
 			return false;
@@ -169,8 +168,8 @@ public class GameMainView : AbstractView
 		waitForCompare.Enqueue(card);
 		if(waitForCompare.Count > 1)
 		{
-			Card cardA = waitForCompare.Dequeue();
-			Card cardB = waitForCompare.Dequeue();
+			Card_Normal cardA = waitForCompare.Dequeue();
+			Card_Normal cardB = waitForCompare.Dequeue();
 			if(cardA.GetCardId() != cardB.GetCardId())
 			{
 				if(GameSettingManager.currentMode == GameMode.Competition)
@@ -180,17 +179,17 @@ public class GameMainView : AbstractView
 		return true;
 	}
 
-	void CardFlipFinish(Card card)
+	void CardFlipFinish(Card_Normal card)
 	{
 		waitForMatch.Enqueue(card);
 		if(waitForMatch.Count > 1)
 		{
-			Card cardA = waitForMatch.Dequeue();
-			Card cardB = waitForMatch.Dequeue();
+			Card_Normal cardA = waitForMatch.Dequeue();
+			Card_Normal cardB = waitForMatch.Dequeue();
 			bool isMatch = false;
 			if(cardA.GetCardId() == cardB.GetCardId())
 			{
-				if(cardA.GetCardType() == Card.CardType.Gold || cardB.GetCardType() == Card.CardType.Gold)
+				if(cardA.IsGoldCard() || cardB.IsGoldCard())
 				{
 					getLuckyEffect.SetActive(false);
 					getLuckyEffect.SetActive(true);

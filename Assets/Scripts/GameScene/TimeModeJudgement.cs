@@ -6,13 +6,11 @@ public class TimeModeJudgement : GameModeJudgement
 	float gamePassTime;
 	float gameTime;
 	int currentRound;
-	int maxCombo;
 	int currentCombo;
 	int score;
 	int failedTimes;
 	int complimentTimes;
 	int feverTimeStartRound;
-	int currentCollectStar;
 	bool lastTimeHadMatch = false;
 	bool unknownCardActive = false;
 	bool feverTimeOn = false;
@@ -28,7 +26,6 @@ public class TimeModeJudgement : GameModeJudgement
 		gameMainView.cardMatch = CardMatch;
 		timeModeView = (TimeModeView)modeView;
 		timeModeView.onClickPause = PauseGame;
-		timeModeView.onClickGameOverExit = ExitGame;
 		timeModeView.SetTimeBar(1f);
 		timeModeView.onCountDownFinished = StartGame;
 		feverTimeOn = false;
@@ -45,7 +42,6 @@ public class TimeModeJudgement : GameModeJudgement
 
 		failedTimes = 0;
 		complimentTimes = 0;
-		currentCollectStar = 0;
         if(currentState == GameState.Waiting)
 			currentState = GameState.Playing;
 		AudioManager.Instance.PlayMusic("GamePlayBGM", true);
@@ -61,7 +57,7 @@ public class TimeModeJudgement : GameModeJudgement
 				gamePassTime += Time.deltaTime;
 				if(gamePassTime >= gameTime)
 				{
-					GameOver(score, maxCombo, currentCollectStar);
+					GameOver(score);
 					timeModeView.SetTimeBar(0f);
 				}
 
@@ -76,7 +72,7 @@ public class TimeModeJudgement : GameModeJudgement
 		}
 	}
 		
-	void CardMatch(bool match, params Card[] cards)
+	void CardMatch(bool match, params Card_Normal[] cards)
 	{
 		if(currentState != GameState.GameOver)
 		{
@@ -95,19 +91,12 @@ public class TimeModeJudgement : GameModeJudgement
 					lastTimeHadMatch = true;
 					gameMainView.ToggleCardGlow(true);
 				}
-				maxCombo = Mathf.Max(currentCombo, maxCombo);
 
-				if(cards[0].GetCardType() == Card.CardType.Gold)
-				{
+				if(cards[0].IsGoldCard())
 					scoreChangeAmount *= 2;
-					currentCollectStar += 1;
-				}
 
-				if(cards[1].GetCardType() == Card.CardType.Gold)
-				{
-					currentCollectStar += 1;
+				if(cards[1].IsGoldCard())
 					scoreChangeAmount *= 2;
-				}
 
 				if(currentCombo >= currentModeSetting.feverTimeComboThreshold && !feverTimeOn)
 				{
@@ -146,7 +135,7 @@ public class TimeModeJudgement : GameModeJudgement
 				{
 					timeModeView.SetScore(score);
 
-					foreach(Card matchCard in cards)
+					foreach(Card_Normal matchCard in cards)
 					{
 						Vector2 pos = matchCard.GetAnchorPosition();
 						pos.x += currentCardArraySetting.edgeLength / 2 - 20f;
@@ -162,7 +151,6 @@ public class TimeModeJudgement : GameModeJudgement
 		if(failedTimes == 0)
 		{
 			++complimentTimes;
-			//timeModeView.ShowCompliment(complimentTimes);
 		}
 		if(currentState == GameState.Playing)
 			currentState = GameState.Waiting;
@@ -193,42 +181,28 @@ public class TimeModeJudgement : GameModeJudgement
 	{
 		base.GameOver(values);
 		int score = values[0];
-		//int maxCombo = values[1];
-		int collectStar = values[2];
 		int grade = 1 + score / currentModeSetting.gradeGap;
-
-		if(PlayerPrefsManager.OnePlayerProgress == (int)currentModeSetting.level)
-			PlayerPrefsManager.OnePlayerProgress += 1;
-
-		GameRecord record = ModelManager.Instance.GetGameRecord(currentModeSetting.level);
-		bool newHighScore = false;
-		//bool newMaxCombo = false;
-		bool newMaxStar = false;
+		
+		GameRecord record = ModelManager.Instance.GetGameRecord(currentModeSetting.level, GameMode.LimitTime);
+		bool recordBreak = false;
 		if(score > record.highScore)
 		{
 			record.highScore = score;
-			newHighScore = true;
+			recordBreak = true;
 		}
 		if(grade > record.grade)
-			record.grade = grade;
-		//if(maxCombo > record.maxCombo)
-		//{
-		//	record.maxCombo = maxCombo;
-		//	newMaxCombo = true;
-		//}
-		if(collectStar > record.maxCollectStar)
 		{
-			record.maxCollectStar = collectStar;
-			newMaxStar = true;
-        }
+			record.grade = grade;
+			recordBreak = true;
+		}
 		record.playTimes += 1;
 
 		if(record.playTimes % 3 == 1)
-			UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.GameRecord, ModelManager.Instance.GetAllGameRecord());
+			UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.GameRecord, ModelManager.Instance.GetGameRecordForSendEvent(GameMode.LimitTime));
 
 		ModelManager.Instance.SaveGameRecord(record);
 
-		gameSettingView.ShowTimeModeGameOverWindow(score, collectStar, grade, newHighScore, newMaxStar);
+		gameSettingView.ShowSinglePlayerGameOver(grade, score, ".SCORE.", "TIME'S UP", recordBreak);
 	}
 	
 	IEnumerator NextRoundRoutine()

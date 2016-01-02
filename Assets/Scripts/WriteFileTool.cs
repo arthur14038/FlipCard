@@ -43,10 +43,14 @@ public class WriteFileTool {
 
 	public static void DeleteFile(string filePath)
 	{
-		File.Delete(filePath);
-		
-//		#if UNITY_EDITOR 
-//		Debug.Log(string.Format("DeleteFile -- filePath: {0}", filePath));
-//		#endif
+		try
+		{
+			File.Delete(filePath);
+		} catch
+		{
+		}
+		//		#if UNITY_EDITOR 
+		//		Debug.Log(string.Format("DeleteFile -- filePath: {0}", filePath));
+		//		#endif
 	}
 }

@@ -7,35 +7,37 @@ public class GameSettingView : AbstractView {
 	public VoidNoneParameter onClickResume;
 	public VoidNoneParameter onClickExit;
 	public Sprite[] complimentSprite;
-	public Text text_TimeModeResultScore;
-	public Text text_TimeModeResultCombo;
-	public Text text_Player1ResultScore;
-	public Text text_Player2ResultScore;
-	public Text text_WinnerName;
-    public CanvasGroup image_TimeModeScoreBoard;
+	public Sprite player1Sprite;
+	public Sprite player2Sprite;
+	public Image image_Mask;
+
 	public CanvasGroup group_Pause;
 	public Toggle toggle_Music;
 	public Toggle toggle_Sound;
-	public Image group_CompetitionGameOver;
-	public Image group_TimeModeGameOver;
-	public Image image_grade;
+	public RectTransform image_PauseWindow;
+
+	public RectTransform group_SinglePlayer;
+	public RectTransform image_CharacterRight;
+	public RectTransform image_CharacterLeft;
+	public RectTransform button_SinglePlayerGameOverExit;
+	public CanvasGroup image_SinglePlayerScoreBoard;
+	public Text text_SinglePlayerTitle;
+	public Text text_ScoreTitle;
+	public Text text_Score;
+    public Image image_Grade;
+    public GameObject newHighScoreEffect;
+	public GameObject image_NewHighScoreHeader;
+
+	public RectTransform group_TwoPlayer;
 	public Image image_WinnerBoard;
 	public Image image_WinnerFace;
-	public RectTransform image_CompetitionGameOverWindow;
+	public Text text_WinnerName;	
+	public Text text_Player1ResultScore;
+	public Text text_Player2ResultScore;
 	public RectTransform button_CompetitionGameOverExit;
-	public RectTransform image_CompetitionCharacterRight;
-	public RectTransform image_CompetitionCharacterLeft;
-	public RectTransform image_PauseWindow;
-	public RectTransform image_TimeModeGameOverWindow;
-	public RectTransform button_TimeModeGameOverExit;
-	public RectTransform image_TimeModeCharacterRight;
-	public RectTransform image_TimeModeCharacterLeft;
-	public RectTransform text_TimeModeScoreTitle;
-	public RectTransform text_TimeModeMaxComboTitle;
-	public RectTransform image_TimeModeNewHighScoreHeader;
-    public GameObject timeModeNewHighScoreEffect;
-	public Sprite player1Sprite;
-	public Sprite player2Sprite;
+	public RectTransform image_Player1;
+	public RectTransform image_Player2;
+
 	float countSoundTime = 0.05f;
 	Color player1Color = new Color(9f/255f, 147f / 255f, 147f / 255f, 178f / 255f);
 	Color player2Color = new Color(255f / 255f, 73f / 255f, 73f / 255f, 178f / 255f);
@@ -49,8 +51,8 @@ public class GameSettingView : AbstractView {
 		yield return 0;
 		escapeEvent = OnClickEscape;
 		group_Pause.gameObject.SetActive(false);
-		group_TimeModeGameOver.gameObject.SetActive(false);
-		group_CompetitionGameOver.gameObject.SetActive(false);
+		group_SinglePlayer.gameObject.SetActive(false);
+		group_TwoPlayer.gameObject.SetActive(false);
 	}
 	
 	public void OnClickResume()
@@ -75,9 +77,10 @@ public class GameSettingView : AbstractView {
 	{
 		AudioManager.Instance.SoundChangeValue(!value);
 	}
-
-	public void ShowCompetitionGameOver(int player1Score, int player2Score)
+	
+	public void ShowTwoPlayersGameOver(int player1Score, int player2Score)
 	{
+		ToggleMask(true, 0.3f);
 		base.ShowUI(false);
 		AudioManager.Instance.StopMusic();
 		AudioManager.Instance.PlayOneShot("GameResult");
@@ -100,89 +103,91 @@ public class GameSettingView : AbstractView {
 		StartCoroutine(CompetitionGameOverEffect(player1Score, player2Score));
 	}
 
-	public void ShowTimeModeGameOverWindow(int score, int maxStar, int grade, bool newHighScore, bool newMaxStar)
-	{
-		base.ShowUI(false);
-		AudioManager.Instance.StopMusic();
-		AudioManager.Instance.PlayOneShot("GameResult");
-		if(newHighScore || newMaxStar)
-		{
-			AudioManager.Instance.PlayOneShot("NewHighScore2");
-			timeModeNewHighScoreEffect.SetActive(true);
-			image_TimeModeNewHighScoreHeader.gameObject.SetActive(true);
-		}else
-		{
-			image_TimeModeNewHighScoreHeader.gameObject.SetActive(false);
-		}
-
-		StartCoroutine(TimeModeGameOverEffect(score, maxStar, grade, newHighScore, newMaxStar));
-	}
-
-	void OnClickEscape()
-	{
-		OnClickResume();
-	}
-
 	IEnumerator CompetitionGameOverEffect(int player1Score, int player2Score)
 	{
 		image_WinnerBoard.gameObject.SetActive(false);
-        image_CompetitionCharacterRight.gameObject.SetActive(false);
-		image_CompetitionCharacterLeft.gameObject.SetActive(false);
+		image_Player1.gameObject.SetActive(false);
+		image_Player2.gameObject.SetActive(false);
 		button_CompetitionGameOverExit.gameObject.SetActive(false);
-		group_CompetitionGameOver.gameObject.SetActive(true);
-		group_CompetitionGameOver.color = Color.clear;
-		group_CompetitionGameOver.DOColor(Color.black * 0.7f, 0.3f);
-		image_CompetitionGameOverWindow.anchoredPosition = new Vector2(0f, 1775f);
-		yield return image_CompetitionGameOverWindow.DOAnchorPos(new Vector2(0f, 5f), 0.5f).SetEase(Ease.OutBack).WaitForCompletion();
+		group_TwoPlayer.gameObject.SetActive(true);
+		group_TwoPlayer.anchoredPosition = hideUp;
+		yield return group_TwoPlayer.DOAnchorPos(Vector2.zero, 0.5f).SetEase(Ease.OutBack).WaitForCompletion();
 
 		image_WinnerBoard.rectTransform.localScale = Vector3.zero;
 		image_WinnerBoard.gameObject.SetActive(true);
 		yield return image_WinnerBoard.rectTransform.DOScale(1f, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
 
-		image_CompetitionCharacterRight.anchoredPosition = new Vector2(750f, -392f);
-		image_CompetitionCharacterLeft.anchoredPosition = new Vector2(-750f, -392f);
-		image_CompetitionCharacterRight.gameObject.SetActive(true);
-		image_CompetitionCharacterLeft.gameObject.SetActive(true);
-		image_CompetitionCharacterRight.DOAnchorPos(new Vector2(217f, -392f), 0.2f).SetEase(Ease.OutCubic);
-		yield return image_CompetitionCharacterLeft.DOAnchorPos(new Vector2(-217f, -392f), 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
-		
+		image_Player1.anchoredPosition = new Vector2(750f, -392f);
+		image_Player2.anchoredPosition = new Vector2(-750f, -392f);
+		image_Player1.gameObject.SetActive(true);
+		image_Player2.gameObject.SetActive(true);
+		image_Player1.DOAnchorPos(new Vector2(217f, -392f), 0.2f).SetEase(Ease.OutCubic);
+		yield return image_Player2.DOAnchorPos(new Vector2(-217f, -392f), 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
+
 		button_CompetitionGameOverExit.gameObject.SetActive(true);
 		button_CompetitionGameOverExit.localScale = new Vector3(1f, 0f, 1f);
 
 		yield return button_CompetitionGameOverExit.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
 	}
 
-	IEnumerator TimeModeGameOverEffect(int score, int maxStar, int grade, bool newHighScore, bool newMaxStar)
+	public void ShowSinglePlayerGameOver(int grade, int score, string scoreTitle, string headerTitle, bool recordBreak)
 	{
-		image_TimeModeCharacterRight.gameObject.SetActive(false);
-		image_TimeModeCharacterLeft.gameObject.SetActive(false);
-		image_TimeModeScoreBoard.gameObject.SetActive(false);
-		image_grade.gameObject.SetActive(false);
-		button_TimeModeGameOverExit.gameObject.SetActive(false);
-		group_TimeModeGameOver.gameObject.SetActive(true);
-		group_TimeModeGameOver.color = Color.clear;
-		group_TimeModeGameOver.DOColor(Color.black * 0.7f, 0.3f);
-		image_TimeModeGameOverWindow.anchoredPosition = new Vector2(0f, 1572f);
-		yield return image_TimeModeGameOverWindow.DOAnchorPos(new Vector2(0f, 13f), 0.5f).SetEase(Ease.OutBack).WaitForCompletion();
+		ToggleMask(true, 0.3f);
+		base.ShowUI(false);
+		AudioManager.Instance.StopMusic();
+		AudioManager.Instance.PlayOneShot("GameResult");
 
-		image_grade.sprite = complimentSprite[grade - 1];
-		image_grade.rectTransform.localScale = Vector3.zero;
-		image_grade.gameObject.SetActive(true);
-		yield return image_grade.rectTransform.DOScale(1f, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
+		if(grade < 1)
+			grade = 1;
+		if(grade > complimentSprite.Length)
+			grade = complimentSprite.Length;
+        image_Grade.sprite = complimentSprite[grade - 1];
+		text_ScoreTitle.text = scoreTitle;
+		text_SinglePlayerTitle.text = headerTitle;
 
-		image_TimeModeCharacterRight.anchoredPosition = new Vector2(750f, -117.5f);
-		image_TimeModeCharacterLeft.anchoredPosition = new Vector2(-750f, -117.5f);
-		image_TimeModeCharacterRight.gameObject.SetActive(true);
-		image_TimeModeCharacterLeft.gameObject.SetActive(true);
-		image_TimeModeCharacterRight.DOAnchorPos(new Vector2(250f, -117.5f), 0.2f).SetEase(Ease.OutCubic);
-		image_TimeModeCharacterLeft.DOAnchorPos(new Vector2(-240f, -117.5f), 0.2f).SetEase(Ease.OutCubic);
+		if(recordBreak)
+		{
+			AudioManager.Instance.PlayOneShot("NewHighScore2");
+			newHighScoreEffect.SetActive(true);
+			image_NewHighScoreHeader.gameObject.SetActive(true);
+		} else
+		{
+			newHighScoreEffect.SetActive(false);
+			image_NewHighScoreHeader.gameObject.SetActive(false);
+		}
 
-		text_TimeModeResultCombo.text = "";
-		text_TimeModeResultScore.text = "";
-		image_TimeModeScoreBoard.gameObject.SetActive(true);
-		image_TimeModeScoreBoard.alpha = 0f;
-		yield return image_TimeModeScoreBoard.DOFade(1f, 0.4f).WaitForCompletion();
+		StartCoroutine(SinglePlayerGameOverEffect(score, recordBreak));
+	}
 
+	IEnumerator SinglePlayerGameOverEffect(int score, bool recordBreak)
+	{
+		image_CharacterLeft.gameObject.SetActive(false);
+		image_CharacterRight.gameObject.SetActive(false);
+		image_SinglePlayerScoreBoard.gameObject.SetActive(false);
+		image_Grade.gameObject.SetActive(false);
+		button_SinglePlayerGameOverExit.gameObject.SetActive(false);
+		text_Score.gameObject.SetActive(false);
+		group_SinglePlayer.gameObject.SetActive(true);
+		group_SinglePlayer.anchoredPosition = hideUp;
+		yield return group_SinglePlayer.DOAnchorPos(Vector2.zero, 0.5f).SetEase(Ease.OutBack).WaitForCompletion();
+
+		image_Grade.rectTransform.localScale = Vector3.zero;
+		image_Grade.gameObject.SetActive(true);
+		yield return image_Grade.rectTransform.DOScale(1f, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
+
+		image_CharacterRight.anchoredPosition = new Vector2(750f, -117.5f);
+		image_CharacterLeft.anchoredPosition = new Vector2(-750f, -117.5f);
+		image_CharacterRight.gameObject.SetActive(true);
+		image_CharacterLeft.gameObject.SetActive(true);
+		image_CharacterRight.DOAnchorPos(new Vector2(250f, -93f), 0.2f).SetEase(Ease.OutCubic);
+		image_CharacterLeft.DOAnchorPos(new Vector2(-240f, -93f), 0.2f).SetEase(Ease.OutCubic);
+
+		image_SinglePlayerScoreBoard.alpha = 0f;
+		image_SinglePlayerScoreBoard.gameObject.SetActive(true);
+		yield return image_SinglePlayerScoreBoard.DOFade(1f, 0.4f).WaitForCompletion();
+
+		text_Score.text = "";
+		text_Score.gameObject.SetActive(true);
 		if(score > 0)
 		{
 			float changeTime = 0.35f;
@@ -196,50 +201,25 @@ public class GameSettingView : AbstractView {
 					forCountSound = changeTime;
 					AudioManager.Instance.PlayOneShot("GameResultScoreCount");
 				}
-				text_TimeModeResultScore.text = ((int)tmpScore).ToString();
+				text_Score.text = ((int)tmpScore).ToString();
 				tmpScore += scoreChangeAmount;
 				yield return new WaitForEndOfFrame();
 				changeTime -= Time.deltaTime;
 			}
 		}
 
-		text_TimeModeResultScore.text = score.ToString();
-		yield return text_TimeModeResultScore.rectTransform.DOScale(1.5f, 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
-		yield return text_TimeModeResultScore.rectTransform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
+		text_Score.text = score.ToString();
 
-		if(maxStar > 0)
-		{
-			float changeTime = 0.35f;
-			float comboChangeAmount = (maxStar / (changeTime / Time.deltaTime));
-			float tmpCombo = 0;
-			float forCountSound = changeTime;
-			while(changeTime > 0f)
-			{
-				if(forCountSound - changeTime > countSoundTime)
-				{
-					forCountSound = changeTime;
-					AudioManager.Instance.PlayOneShot("GameResultScoreCount");
-				}
-				text_TimeModeResultCombo.text = ((int)tmpCombo).ToString();
-				tmpCombo += comboChangeAmount;
-				yield return new WaitForEndOfFrame();
-				changeTime -= Time.deltaTime;
-			}
-		}
+		yield return text_Score.rectTransform.DOScale(1.5f, 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
+		yield return text_Score.rectTransform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
 
-		text_TimeModeResultCombo.text = maxStar.ToString();
-		yield return text_TimeModeResultCombo.rectTransform.DOScale(1.5f, 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
-		yield return text_TimeModeResultCombo.rectTransform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
+		if(recordBreak)
+			StartCoroutine(TextCelebrateEffect(text_Score));
 
-		button_TimeModeGameOverExit.gameObject.SetActive(true);
-		button_TimeModeGameOverExit.localScale = new Vector3(1f, 0f, 1f);
+		button_SinglePlayerGameOverExit.localScale = new Vector3(1f, 0f, 1f);
+		button_SinglePlayerGameOverExit.gameObject.SetActive(true);
 
-		if(newHighScore)
-			StartCoroutine(TextCelebrateEffect(text_TimeModeResultScore));
-		if(newMaxStar)
-			StartCoroutine(TextCelebrateEffect(text_TimeModeResultCombo));
-
-		yield return button_TimeModeGameOverExit.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
+		yield return button_SinglePlayerGameOverExit.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
 	}
 
 	IEnumerator TextCelebrateEffect(Text theText)
@@ -252,8 +232,31 @@ public class GameSettingView : AbstractView {
 		}
 	}
 
+	void OnClickEscape()
+	{
+		OnClickResume();
+	}
+
+	void ToggleMask(bool turnOn, float fadeDuration)
+	{
+		if(turnOn)
+		{
+			image_Mask.gameObject.SetActive(true);
+			image_Mask.color = Color.clear;
+			image_Mask.DOColor(Color.black * 0.7f, fadeDuration);
+		} else
+		{
+			image_Mask.DOFade(0f, fadeDuration).OnComplete(
+			delegate () {
+				image_Mask.gameObject.SetActive(false);
+			}
+		);
+		}
+	}
+	
 	protected override IEnumerator HideUIAnimation ()
 	{
+		ToggleMask(false, 0.3f);
 		group_Pause.DOFade(0f, 0.3f);
 		yield return image_PauseWindow.DOScale(0f, 0.3f).SetEase(Ease.InBack).WaitForCompletion();
 		if(onClickResume != null)
@@ -264,7 +267,8 @@ public class GameSettingView : AbstractView {
 
 	protected override IEnumerator ShowUIAnimation ()
 	{
-		group_Pause.gameObject.SetActive(true);
+		ToggleMask(true, 0.3f);
+        group_Pause.gameObject.SetActive(true);
         group_Pause.alpha = 0f;
 		group_Pause.DOFade(1f, 0.3f);
 		image_PauseWindow.localScale = Vector3.zero;

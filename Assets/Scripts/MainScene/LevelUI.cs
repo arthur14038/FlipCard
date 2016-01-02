@@ -4,14 +4,44 @@ using UnityEngine.UI;
 using DG.Tweening;
 
 public class LevelUI : MonoBehaviour {
-	public Image[] image_Grades;
-	public Text text_HighScore;
-    public Text text_MaxCombo;
+	public Image image_Grade;
+	public Image image_LevelIcon;
+	public Image image_Header;
+    public Text text_LevelTitle;
+	public Text text_ShowWordsTitle;
+	public Text text_ShowWordsContent;
+	public Text text_LockInstruction;
+	public Button button_Play;
 	public RectTransform group_Unlock;
 	public RectTransform group_Locked;
 	public RectTransform levelIcon;
 	public RectTransform lockedLevelIcon;
+	public Sprite[] gradeSprites;
+	public Sprite[] levelIconSprites;
 	bool levelUnlock;
+	VoidTwoInt onClickPlay;
+	SinglePlayerLevel theLevel;
+
+	public void Init(VoidTwoInt onClickPlay, SinglePlayerLevel theLevel)
+	{
+		this.onClickPlay = onClickPlay;
+        button_Play.onClick.AddListener(OnClickPlay);
+		this.theLevel = theLevel;
+
+		if(string.IsNullOrEmpty(theLevel.showContent))
+			text_ShowWordsTitle.gameObject.SetActive(false);
+		else
+		{
+			text_ShowWordsTitle.gameObject.SetActive(true);
+			text_ShowWordsTitle.text = theLevel.showContent;
+        }
+		text_LevelTitle.text = theLevel.levelTitle;
+		text_LockInstruction.text = theLevel.lockInstruction;
+		image_LevelIcon.sprite = levelIconSprites[(int)theLevel.gameLevel];
+		Color headerColor;
+		ColorUtility.TryParseHtmlString(theLevel.headerColor, out headerColor);
+		image_Header.color = headerColor;
+    }
 
 	public IEnumerator EnterEffect(float enterDuration)
 	{
@@ -36,6 +66,9 @@ public class LevelUI : MonoBehaviour {
 		{
 			group_Unlock.gameObject.SetActive(true);
 			group_Locked.gameObject.SetActive(false);
+
+			GameRecord thisRecord = ModelManager.Instance.GetGameRecord(theLevel.gameLevel, theLevel.gameMode);
+			SetGameRecord(thisRecord);
 		}else
 		{
 			group_Unlock.gameObject.SetActive(false);
@@ -43,21 +76,34 @@ public class LevelUI : MonoBehaviour {
 		}
 	}
 
-	public void SetGameRecord(GameRecord record)
+	void SetGameRecord(GameRecord record)
 	{
-		if(record.highScore > 0)
-			text_HighScore.text = record.highScore.ToString();
+		if(record == null)
+		{
+			text_ShowWordsContent.text = "-- --";
+			image_Grade.gameObject.SetActive(false);
+			return;
+		}
+		
+		if(record.grade > 0)
+		{
+			if(record.grade > gradeSprites.Length)
+				image_Grade.sprite = gradeSprites[gradeSprites.Length - 1];
+			else
+				image_Grade.sprite = gradeSprites[record.grade - 1];
+		}
 		else
-			text_HighScore.text = "- -";
+			image_Grade.gameObject.SetActive(false);
 
-        if (record.maxCollectStar > 0)
-            text_MaxCombo.text = record.maxCollectStar.ToString();
-        else
-            text_MaxCombo.text = "- -";
+		if(record.highScore > 0)
+			text_ShowWordsContent.text = record.highScore.ToString();
+		else
+			text_ShowWordsContent.text = "-- --";
+    }
 
-		for(int i = 0 ; i < image_Grades.Length ; ++i)
-			image_Grades[i].gameObject.SetActive(false);
-        if(record.grade > 0)
-			image_Grades[record.grade - 1].gameObject.SetActive(true);
+	void OnClickPlay()
+	{
+		if(onClickPlay != null)
+			onClickPlay((int)theLevel.gameLevel, (int)theLevel.gameMode);
 	}
 }

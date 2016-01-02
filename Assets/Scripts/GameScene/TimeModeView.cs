@@ -7,7 +7,6 @@ public class TimeModeView : AbstractView
 {
 	public IEnumeratorNoneParameter onCountDownFinished;
 	public VoidNoneParameter onClickPause;
-	public VoidNoneParameter onClickGameOverExit;
     public Slider timeBar;
 	public Text text_CurrentScore;
 	public Text text_CurrentRound;
@@ -40,14 +39,7 @@ public class TimeModeView : AbstractView
 		if(onClickPause != null)
 			onClickPause();
 	}
-
-	public void OnClickGameOverExit()
-	{
-		AudioManager.Instance.PlayOneShot("Button_Click");
-		if(onClickGameOverExit != null)
-			onClickGameOverExit();
-	}
-
+	
 	public void SetTimeBar(float value)
 	{
 		timeBar.value = value;

@@ -27,7 +27,6 @@ public class CompetitionModeJudgement : GameModeJudgement
 		competitionModeView.button_Player2.onLightUp = OnPlayerButtonLightUp;
 		competitionModeView.SetTwoPlayerScore(player1Score, player2Score);
 		competitionModeView.onClickPause = PauseGame;
-		competitionModeView.onClickGameOverExit = ExitGame;
 		competitionModeView.onTwoPlayerReady = StartGame;
 		currentTurn = WhosTurn.WaitingReady;
 		competitionModeView.SetPlayerButton(currentTurn);
@@ -95,10 +94,10 @@ public class CompetitionModeJudgement : GameModeJudgement
 	protected override void GameOver(params int[] values)
 	{
 		base.GameOver(values);
-		gameSettingView.ShowCompetitionGameOver(values[0], values[1]);
+		gameSettingView.ShowTwoPlayersGameOver(values[0], values[1]);
 	}
 
-	void AddScore(int addAmount, int playerNumber, Card[] cards)
+	void AddScore(int addAmount, int playerNumber, Card_Normal[] cards)
 	{
 		int saveScore = 0;
 		int score = 0;
@@ -131,7 +130,7 @@ public class CompetitionModeJudgement : GameModeJudgement
 
 			if(cards != null)
 			{
-				foreach(Card matchCard in cards)
+				foreach(Card_Normal matchCard in cards)
 				{
 					Vector2 pos = matchCard.GetAnchorPosition();
 					pos.x += currentCardArraySetting.edgeLength / 2 - 20f;
@@ -141,7 +140,7 @@ public class CompetitionModeJudgement : GameModeJudgement
 		}
 	}
 
-	void CardMatch(bool match, params Card[] cards)
+	void CardMatch(bool match, params Card_Normal[] cards)
 	{
 		if(currentState != GameState.GameOver)
 		{
@@ -156,7 +155,7 @@ public class CompetitionModeJudgement : GameModeJudgement
 
 				++comboCount;
 
-				if(cards[0].GetCardType() == Card.CardType.Gold || cards[1].GetCardType() == Card.CardType.Gold)
+				if(cards[0].IsGoldCard() || cards[1].IsGoldCard())
 				{
 					scoreChangeAmount *= 2;
                 }

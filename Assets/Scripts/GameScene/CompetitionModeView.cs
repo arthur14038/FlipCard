@@ -7,7 +7,6 @@ public class CompetitionModeView : AbstractView
 {
 	public IEnumeratorNoneParameter onTwoPlayerReady;
 	public VoidNoneParameter onClickPause;
-	public VoidNoneParameter onClickGameOverExit;
 	public Text text_Player1Score;
 	public Text text_Player2Score;
 	public Text text_Instruction;
@@ -33,14 +32,7 @@ public class CompetitionModeView : AbstractView
 		if(onClickPause != null)
 			onClickPause();
 	}
-
-	public void OnClickGameOverExit()
-	{
-		AudioManager.Instance.PlayOneShot("Button_Click");
-		if(onClickGameOverExit != null)
-			onClickGameOverExit();
-	}
-
+	
 	public void SetTwoPlayerScore(int player1Score, int player2Score)
 	{
 		text_Player1Score.text = player1Score.ToString();

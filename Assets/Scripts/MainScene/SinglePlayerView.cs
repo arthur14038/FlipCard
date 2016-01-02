@@ -1,32 +1,44 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using DG.Tweening;
 
 public class SinglePlayerView : AbstractView {
 	public VoidNoneParameter onClickBack;
 	public VoidCardArrayLevelGameMode onClickPlay;
 	public RectTransform group_1P;
-	public LevelUI[] levels;
+	public GameObject levelUIPrefab;
+	public Transform levelParent;
+	List<LevelUI> levelUIList = new List<LevelUI>();
+	List<SinglePlayerLevel> levelList;
 
 	public override IEnumerator Init ()
 	{
 		escapeEvent = OnClickBack;
 		group_1P.gameObject.SetActive(true);
-		yield return 0;
+
+		levelList = GameSettingManager.GetAllSinglePlayerLevel();
+		for(int i = 0 ; i < levelList.Count ; ++i)
+		{
+			GameObject tmp = Instantiate(levelUIPrefab) as GameObject;
+			tmp.transform.SetParent(levelParent);
+			tmp.transform.localScale = Vector3.one;
+            tmp.name = levelUIPrefab.name + i.ToString();
+			LevelUI levelUI = tmp.GetComponent<LevelUI>();
+			levelUI.Init(OnClickLevelPlay, levelList[i]);
+            levelUIList.Add(levelUI);
+        }
+        yield return 0;
 	}
 
 	public void SetProgress(int progress)
 	{
-		for(int i = 0 ; i < levels.Length ; ++i)
+		for(int i = 0 ; i < levelUIList.Count ; ++i)
 		{
-			if(i > progress)
-			{
-				levels[i].SetLockState(false);
-			}else
-			{
-				levels[i].SetLockState(true);
-				levels[i].SetGameRecord(ModelManager.Instance.GetGameRecord((CardArrayLevel)i));
-			}
+			if(levelList[i].requireProgress > progress)
+				levelUIList[i].SetLockState(false);
+			else
+				levelUIList[i].SetLockState(true);
 		}
 	}
 
@@ -37,13 +49,13 @@ public class SinglePlayerView : AbstractView {
 			onClickBack();
 	}
 
-	public void OnClickPlay(int level)
+	void OnClickLevelPlay(int level, int mode)
 	{
 		AudioManager.Instance.PlayOneShot("Button_Click");
 		if(onClickPlay != null)
-			onClickPlay((CardArrayLevel)level, GameMode.LimitTime);
+			onClickPlay((CardArrayLevel)level, (GameMode)mode);
 	}
-
+	
 	protected override IEnumerator HideUIAnimation ()
 	{
 		group_1P.anchoredPosition = Vector2.zero;
@@ -54,7 +66,7 @@ public class SinglePlayerView : AbstractView {
 
 	protected override IEnumerator ShowUIAnimation ()
 	{
-		foreach(LevelUI level in levels)
+		foreach(LevelUI level in levelUIList)
 			StartCoroutine(level.EnterEffect(0.5f));
 		group_1P.gameObject.SetActive(true);
 		group_1P.anchoredPosition = hideRight;

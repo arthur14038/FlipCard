@@ -1,0 +1,22 @@
+﻿[
+   {
+     "Level": 0, 
+     "GradeGap": 6, 
+     "ExcellentMove": 3
+ },
+   {
+     "Level": 1, 
+     "GradeGap": 12, 
+     "ExcellentMove": 6
+ },
+   {
+     "Level": 2, 
+     "GradeGap": 20, 
+     "ExcellentMove": 10
+ },
+   {
+     "Level": 3, 
+     "GradeGap": 30, 
+     "ExcellentMove": 15
+ }
+]

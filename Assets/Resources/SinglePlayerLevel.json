@@ -1,0 +1,74 @@
+﻿[
+   {
+     "RequireProgress": 0, 
+     "GameLevel": 0, 
+     "GameMode": 2, 
+     "ShowContent": "MOVE", 
+     "LevelTitle": "2x3 CLASSIC MODE", 
+     "LockInstruction": "", 
+     "HeaderColor": "#00aa89"
+ },
+   {
+     "RequireProgress": 1, 
+     "GameLevel": 0, 
+     "GameMode": 1, 
+     "ShowContent": "HIGH SCORE", 
+     "LevelTitle": "2x3 TIME MODE", 
+     "LockInstruction": "PASS 2x3 CLASSIC MODE TO UNLOCK", 
+     "HeaderColor": "#00aa89"
+ },
+   {
+     "RequireProgress": 1, 
+     "GameLevel": 1, 
+     "GameMode": 2, 
+     "ShowContent": "MOVE", 
+     "LevelTitle": "3x4 CLASSIC MODE", 
+     "LockInstruction": "PASS 2x3 CLASSIC MODE TO UNLOCK", 
+     "HeaderColor": "#ff4d37"
+ },
+   {
+     "RequireProgress": 2, 
+     "GameLevel": 1, 
+     "GameMode": 1, 
+     "ShowContent": "HIGH SCORE", 
+     "LevelTitle": "3x4 TIME MODE", 
+     "LockInstruction": "PASS 3x4 CLASSIC MODE TO UNLOCK", 
+     "HeaderColor": "#ff4d37"
+ },
+   {
+     "RequireProgress": 2, 
+     "GameLevel": 2, 
+     "GameMode": 2, 
+     "ShowContent": "MOVE", 
+     "LevelTitle": "4x5 CLASSIC MODE", 
+     "LockInstruction": "PASS 3x4 CLASSIC MODE TO UNLOCK", 
+     "HeaderColor": "#ff6393"
+ },
+   {
+     "RequireProgress": 3, 
+     "GameLevel": 2, 
+     "GameMode": 1, 
+     "ShowContent": "HIGH SCORE", 
+     "LevelTitle": "4x5 TIME MODE", 
+     "LockInstruction": "PASS 4x5 CLASSIC MODE TO UNLOCK", 
+     "HeaderColor": "#ff6393"
+ },
+   {
+     "RequireProgress": 3, 
+     "GameLevel": 3, 
+     "GameMode": 2, 
+     "ShowContent": "MOVE", 
+     "LevelTitle": "5x6 CLASSIC MODE", 
+     "LockInstruction": "PASS 4x5 CLASSIC MODE TO UNLOCK", 
+     "HeaderColor": "#008496"
+ },
+   {
+     "RequireProgress": 4, 
+     "GameLevel": 3, 
+     "GameMode": 1, 
+     "ShowContent": "HIGH SCORE", 
+     "LevelTitle": "5x6 TIME MODE", 
+     "LockInstruction": "PASS 5x6 CLASSIC MODE TO UNLOCK", 
+     "HeaderColor": "#008496"
+ }
+]
