@@ -2,48 +2,54 @@
 using System.Collections;
 
 public class MainSceneController : AbstractController {
-	enum MainSceneView{MainPage = 0, SinglePlayer, TwoPlayer, Shop}
+	enum MainSceneView{MainPage = 0, ClassicMode, TwoPlayer, TimeMode, Shop}
 	MainSceneView currentView;
 	public MainPageView mainPageView;
-	public SinglePlayerView singlePlayerView;
+	public ClassicModeView classicModeView;
 	public TwoPlayerView twoPlayerView;
+	public TimeModeView timeModeView;
 	public ShopView shopView;
 	string notifyMessage;
 		
 	public override IEnumerator Init ()
 	{
 		yield return StartCoroutine(mainPageView.Init());
-		yield return StartCoroutine(singlePlayerView.Init());
+		yield return StartCoroutine(classicModeView.Init());
 		yield return StartCoroutine(twoPlayerView.Init());
+		yield return StartCoroutine(timeModeView.Init());
 		yield return StartCoroutine(shopView.Init());
 
 		currentView = (MainSceneView)GameMainLoop.Instance.showView;
 
-		mainPageView.onClick1P = ShowSinglePlayer;
+		mainPageView.onClickClassicMode = ShowClassicMode;
 		mainPageView.onClick2P = ShowTwoPlayers;
+		mainPageView.onClickTimeMode = ShowTimeMode;
 		mainPageView.onClickShop = ShowShop;
 		mainPageView.onClickMail = SendMailToUs;
 		mainPageView.onClickRate = ShowRatePage;
 		mainPageView.onClickLeaveGame = LeaveGame;
 		mainPageView.onClickNotify = SendNotifyMail;
-        singlePlayerView.onClickBack = ShowMainPage;
-		singlePlayerView.onClickPlay = GoToGameScene;
+		classicModeView.onClickBack = ShowMainPage;
+		classicModeView.onClickPlay = GoToGameScene;
 		twoPlayerView.onClickBack = ShowMainPage;
 		twoPlayerView.onClickPlay = GoToGameScene;
+		timeModeView.onClickBack = ShowMainPage;
+		timeModeView.onClickPlay = GoToGameScene;
 		shopView.onClickBack = ShowMainPage;
 
 		shopView.HideUI(false);
         mainPageView.HideUI(false);
-		singlePlayerView.HideUI(false);
+		classicModeView.HideUI(false);
 		twoPlayerView.HideUI(false);
+		timeModeView.HideUI(false);
 
 		switch(currentView)
 		{
 			case MainSceneView.MainPage:
 				mainPageView.ShowUI(false);
 				break;
-			case MainSceneView.SinglePlayer:
-				singlePlayerView.ShowUI(false);
+			case MainSceneView.ClassicMode:
+				classicModeView.ShowUI(false);
 				break;
 			case MainSceneView.TwoPlayer:
 				twoPlayerView.ShowUI(false);
@@ -51,9 +57,13 @@ public class MainSceneController : AbstractController {
 			case MainSceneView.Shop:
 				shopView.ShowUI(false);
 				break;
+			case MainSceneView.TimeMode:
+				timeModeView.ShowUI(false);
+				break;
 		}
 
-		singlePlayerView.SetProgress(PlayerPrefsManager.OnePlayerProgress);
+		classicModeView.SetProgress(PlayerPrefsManager.ClassicModeProgress);
+		timeModeView.SetProgress(PlayerPrefsManager.TimeModeProgress);
 		AudioManager.Instance.PlayMusic("FlipCardBGM3", true); 
 	}
 
@@ -69,8 +79,8 @@ public class MainSceneController : AbstractController {
 	{
 		switch(currentView)
 		{
-			case MainSceneView.SinglePlayer:
-				singlePlayerView.HideUI(true);
+			case MainSceneView.ClassicMode:
+				classicModeView.HideUI(true);
 				break;
 			case MainSceneView.TwoPlayer:
 				twoPlayerView.HideUI(true);
@@ -78,16 +88,19 @@ public class MainSceneController : AbstractController {
 			case MainSceneView.Shop:
 				shopView.HideUI(true);
 				break;
+			case MainSceneView.TimeMode:
+				timeModeView.HideUI(true);
+				break;
 		}
 		mainPageView.ShowUI(true);
 		currentView = MainSceneView.MainPage;
 	}
 
-	void ShowSinglePlayer()
+	void ShowClassicMode()
 	{
 		mainPageView.HideUI(true);
-		singlePlayerView.ShowUI(true);
-		currentView = MainSceneView.SinglePlayer;
+		classicModeView.ShowUI(true);
+		currentView = MainSceneView.ClassicMode;
 	}
 
 	void ShowTwoPlayers()
@@ -95,6 +108,13 @@ public class MainSceneController : AbstractController {
 		mainPageView.HideUI(true);
 		twoPlayerView.ShowUI(true);
 		currentView = MainSceneView.TwoPlayer;
+	}
+
+	void ShowTimeMode()
+	{
+		mainPageView.HideUI(true);
+		timeModeView.ShowUI(true);
+		currentView = MainSceneView.TimeMode;
 	}
 
 	void ShowShop()

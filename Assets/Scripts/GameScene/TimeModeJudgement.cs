@@ -14,7 +14,7 @@ public class TimeModeJudgement : GameModeJudgement
 	bool lastTimeHadMatch = false;
 	bool unknownCardActive = false;
 	bool feverTimeOn = false;
-	TimeModeView timeModeView;
+	TimeModeGameView timeModeGameView;
 	TimeModeSetting currentModeSetting;
 
 	public override IEnumerator Init(GameMainView gameMainView, GameSettingView gameSettingView, AbstractView modeView)
@@ -24,10 +24,10 @@ public class TimeModeJudgement : GameModeJudgement
 		gameTime = currentModeSetting.gameTime;
 		gameMainView.completeOneRound = NextRound;
 		gameMainView.cardMatch = CardMatch;
-		timeModeView = (TimeModeView)modeView;
-		timeModeView.onClickPause = PauseGame;
-		timeModeView.SetTimeBar(1f);
-		timeModeView.onCountDownFinished = StartGame;
+		timeModeGameView = (TimeModeGameView)modeView;
+		timeModeGameView.onClickPause = PauseGame;
+		timeModeGameView.SetTimeBar(1f);
+		timeModeGameView.onCountDownFinished = StartGame;
 		feverTimeOn = false;
 		yield return gameMainView.StartCoroutine(gameMainView.DealCard());
 	}
@@ -49,25 +49,25 @@ public class TimeModeJudgement : GameModeJudgement
 	
 	public override void JudgementUpdate()
 	{
-		if(timeModeView != null)
+		if(timeModeGameView != null)
 		{
 			if(currentState == GameState.Playing)
 			{
-				timeModeView.SetTimeBar(1f - gamePassTime / gameTime);
+				timeModeGameView.SetTimeBar(1f - gamePassTime / gameTime);
 				gamePassTime += Time.deltaTime;
 				if(gamePassTime >= gameTime)
 				{
 					GameOver(score);
-					timeModeView.SetTimeBar(0f);
+					timeModeGameView.SetTimeBar(0f);
 				}
 
 				if(gameTime - gamePassTime < 5f)
-					timeModeView.ToggleTimeIsRunning(true);
+					timeModeGameView.ToggleTimeIsRunning(true);
 				else
-					timeModeView.ToggleTimeIsRunning(false);
+					timeModeGameView.ToggleTimeIsRunning(false);
 			} else
 			{
-				timeModeView.ToggleTimeIsRunning(false);
+				timeModeGameView.ToggleTimeIsRunning(false);
 			}
 		}
 	}
@@ -100,7 +100,7 @@ public class TimeModeJudgement : GameModeJudgement
 
 				if(currentCombo >= currentModeSetting.feverTimeComboThreshold && !feverTimeOn)
 				{
-					timeModeView.ShowFeverTime();
+					timeModeGameView.ShowFeverTime();
 					feverTimeStartRound = currentRound;
 					feverTimeOn = true;
 					gameMainView.SetGoldCard(-1);
@@ -118,7 +118,7 @@ public class TimeModeJudgement : GameModeJudgement
 					if(unknownCardActive)
 						unknownCardActive = false;
 					feverTimeOn = false;
-					timeModeView.ToggleFeverTimeEffect(false);
+					timeModeGameView.ToggleFeverTimeEffect(false);
 					gameMainView.SetGoldCard(0);
 				}
 				currentCombo = 0;
@@ -133,7 +133,7 @@ public class TimeModeJudgement : GameModeJudgement
 
 				if(saveScore != score)
 				{
-					timeModeView.SetScore(score);
+					timeModeGameView.SetScore(score);
 
 					foreach(Card_Normal matchCard in cards)
 					{
@@ -164,7 +164,7 @@ public class TimeModeJudgement : GameModeJudgement
 		if(feverTimeOn && !unknownCardActive && currentRound - feverTimeStartRound >= currentModeSetting.unknownCardShowRound)
 			unknownCardActive = true;
 
-		timeModeView.SetRound(currentRound);
+		timeModeGameView.SetRound(currentRound);
 		AddGameTime(awardTime);
 		gameMainView.StartCoroutine(NextRoundRoutine());
 	}
@@ -174,7 +174,7 @@ public class TimeModeJudgement : GameModeJudgement
 		gamePassTime -= addAmount;
 		if(gamePassTime < 0f)
 			gamePassTime = 0f;
-		timeModeView.AddTimeEffect(1f - gamePassTime / gameTime);
+		timeModeGameView.AddTimeEffect(1f - gamePassTime / gameTime);
 	}
 
 	protected override void GameOver(params int[] values)

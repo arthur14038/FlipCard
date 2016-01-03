@@ -20,12 +20,36 @@ public class PlayerPrefsManager{
 		}
 	}
 
-	public static int OnePlayerProgress{
+	public static int UnlockMode
+	{
+		get
+		{
+			return PlayerPrefs.GetInt("UnlockMode", 0);
+		}
+		set
+		{
+			PlayerPrefs.SetInt("UnlockMode", value);
+		}
+	}
+
+	public static int ClassicModeProgress{
 		get{
-			return PlayerPrefs.GetInt("OnePlayerProgress", 0);
+			return PlayerPrefs.GetInt("ClassicModeProgress", 0);
 		}
 		set{
-			PlayerPrefs.SetInt("OnePlayerProgress", value);
+			PlayerPrefs.SetInt("ClassicModeProgress", value);
+		}
+	}
+	
+	public static int TimeModeProgress
+	{
+		get
+		{
+			return PlayerPrefs.GetInt("TimeModeProgress", -1);
+		}
+		set
+		{
+			PlayerPrefs.SetInt("TimeModeProgress", value);
 		}
 	}
 }

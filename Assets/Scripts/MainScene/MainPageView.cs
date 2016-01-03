@@ -14,13 +14,17 @@ public class MainPageView : AbstractView {
 	public RectTransform image_UnderConstructionWindow;
 	public Toggle toggle_Music;
 	public Toggle toggle_Sound;
-	public VoidNoneParameter onClick1P;
-	public VoidNoneParameter onClick2P;
+	public RectTransform[] modeButtons;
 	public VoidNoneParameter onClickRate;
 	public VoidNoneParameter onClickMail;
 	public VoidNoneParameter onClickShop;
 	public VoidNoneParameter onClickLeaveGame;
 	public VoidNoneParameter onClickNotify;
+	public VoidNoneParameter onClickClassicMode;
+	public VoidNoneParameter onClick2P;
+	public VoidNoneParameter onClickTimeMode;
+	public VoidNoneParameter onClickComingSoon;
+	Vector2[] buttonsOriPos;
 
 	public override IEnumerator Init ()
 	{
@@ -37,14 +41,28 @@ public class MainPageView : AbstractView {
 		toggle_Music.isOn = !PlayerPrefsManager.MusicSetting;
 		toggle_Sound.isOn = !PlayerPrefsManager.SoundSetting;
 		AudioManager.Instance.SetListenToToggle(true);
+
+		buttonsOriPos = new Vector2[modeButtons.Length];
+		for(int i = 0 ; i < modeButtons.Length ; ++i)
+		{
+			buttonsOriPos[i] = modeButtons[i].anchoredPosition;
+			if(i > PlayerPrefsManager.UnlockMode)
+			{
+				modeButtons[i].gameObject.SetActive(false);
+            } else
+			{
+				modeButtons[i].gameObject.SetActive(true);
+			}
+		}
+
 		yield return 0;
 	}
 
-	public void OnClick1P()
+	public void OnClickClassicMode()
 	{
 		AudioManager.Instance.PlayOneShot("Button_Click");
-		if(onClick1P != null)
-			onClick1P();
+		if(onClickClassicMode != null)
+			onClickClassicMode();
 	}
 	
 	public void OnClick2P()
@@ -52,6 +70,20 @@ public class MainPageView : AbstractView {
 		AudioManager.Instance.PlayOneShot("Button_Click");
 		if(onClick2P != null)
 			onClick2P();
+	}
+
+	public void OnClickTimeMode()
+	{
+		AudioManager.Instance.PlayOneShot("Button_Click");
+		if(onClickTimeMode != null)
+			onClickTimeMode();
+	}
+
+	public void OnClickComingSoon()
+	{
+		AudioManager.Instance.PlayOneShot("Button_Click");
+		if(onClickComingSoon != null)
+			onClickComingSoon();
 	}
 
 	public void OnClickShop()
@@ -205,7 +237,35 @@ public class MainPageView : AbstractView {
 
 		yield return group_Main.DOAnchorPos(Vector2.zero, 0.5f).SetEase(Ease.OutCubic).WaitForCompletion();
 
+		if(GameMainLoop.Instance.lastUnlockMode < PlayerPrefsManager.UnlockMode)
+		{
+			for(int i = GameMainLoop.Instance.lastUnlockMode + 1 ; i <= PlayerPrefsManager.UnlockMode ; ++i)
+			{
+				modeButtons[i].anchoredPosition = buttonsOriPos[i] + hideDown;
+                modeButtons[i].DOAnchorPos(buttonsOriPos[i], 0.5f).SetDelay(0.1f*(i - GameMainLoop.Instance.lastUnlockMode + 1));
+			}
+			GameMainLoop.Instance.lastUnlockMode = PlayerPrefsManager.UnlockMode;
+        }
+
 		currentState = ViewState.Main;
 		showCoroutine = null;
 	}
+
+	//void OnGUI()
+	//{
+	//	if(GUI.Button(new Rect(10, 10, 150, 50), "Test"))
+	//	{
+	//		buttonsOriPos = new Vector2[modeButtons.Length];
+	//		for(int i = 0 ; i < modeButtons.Length ; ++i)
+	//		{
+	//			buttonsOriPos[i] = modeButtons[i].anchoredPosition;
+	//		}
+
+	//		for(int i = 1 ; i <= 3 ; ++i)
+	//		{
+	//			modeButtons[i].anchoredPosition = buttonsOriPos[i] + hideDown;
+	//			modeButtons[i].DOAnchorPos(buttonsOriPos[i], 0.5f).SetDelay(0.1f * (i - 1));
+	//		}
+	//	}
+	//}
 }

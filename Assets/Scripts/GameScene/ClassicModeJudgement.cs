@@ -3,7 +3,7 @@ using System.Collections;
 
 public class ClassicModeJudgement : GameModeJudgement
 {	
-	ClassicModeView classicModeView;
+	ClassicModeGameView classicModeGameView;
 	ClassicModeSetting currentModeSetting;
 	int moveTimes;
 
@@ -13,9 +13,9 @@ public class ClassicModeJudgement : GameModeJudgement
 		currentModeSetting = GameSettingManager.GetCurrentClassicModeSetting();
         gameMainView.completeOneRound = RoundComplete;
 		gameMainView.cardMatch = CardMatch;
-		classicModeView = (ClassicModeView)modeView;
-		classicModeView.onClickPause = PauseGame;
-		classicModeView.onGameStart = StartGame;
+		classicModeGameView = (ClassicModeGameView)modeView;
+		classicModeGameView.onClickPause = PauseGame;
+		classicModeGameView.onGameStart = StartGame;
 		yield return gameMainView.StartCoroutine(gameMainView.DealCard());
 		//gameMainView.SetAllCardBackUnknown();
     }
@@ -37,8 +37,14 @@ public class ClassicModeJudgement : GameModeJudgement
 
 	protected override void GameOver(params int[] values)
 	{
-		if(PlayerPrefsManager.OnePlayerProgress == (int)currentModeSetting.level)
-			PlayerPrefsManager.OnePlayerProgress += 1;
+		if(PlayerPrefsManager.ClassicModeProgress == (int)currentModeSetting.level)
+			PlayerPrefsManager.ClassicModeProgress += 1;
+
+		if(PlayerPrefsManager.UnlockMode == 0)
+			PlayerPrefsManager.UnlockMode = 3;
+
+		if(PlayerPrefsManager.TimeModeProgress < 0)
+			PlayerPrefsManager.TimeModeProgress = 0;
 
 		base.GameOver(values);
 		int moveTimes = values[0];
@@ -79,7 +85,7 @@ public class ClassicModeJudgement : GameModeJudgement
 		if(currentState != GameState.GameOver)
 		{
 			++moveTimes;
-			classicModeView.SetFailTimes(moveTimes);
+			classicModeGameView.SetFailTimes(moveTimes);
 		}
 	}
 }

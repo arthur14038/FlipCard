@@ -3,7 +3,7 @@ using System.Collections;
 using DG.Tweening;
 using UnityEngine.UI;
 
-public class ClassicModeView : AbstractView
+public class ClassicModeGameView : AbstractView
 {
 	public IEnumeratorNoneParameter onGameStart;
 	public VoidNoneParameter onClickPause;

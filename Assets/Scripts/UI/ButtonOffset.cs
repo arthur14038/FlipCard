@@ -23,7 +23,6 @@ public class ButtonOffset : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 			shouldWork = false;
 		}else
 		{
-			oriPos = thisRectTransform.anchoredPosition;
 			if(duration > 0f)
 			{
 				if(offset == Vector2.zero && scale == Vector3.one)
@@ -54,6 +53,8 @@ public class ButtonOffset : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 	{
 		if(shouldWork)
 		{
+			oriPos = thisRectTransform.anchoredPosition;
+
 			if(doOffset)
 				thisRectTransform.DOAnchorPos(oriPos+offset, duration).SetEase(offsetEase);
 

@@ -19,3 +19,4 @@ public delegate void VoidPressButtonTool(PressButtonTool pressButton);
 public delegate bool BoolNoneParameter();
 public delegate bool BoolCard_Normal(Card_Normal card);
 public delegate IEnumerator IEnumeratorNoneParameter();
+public delegate Sprite SpriteCardArrayLevel(CardArrayLevel level);

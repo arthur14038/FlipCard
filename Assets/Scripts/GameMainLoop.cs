@@ -10,6 +10,7 @@ public class GameMainLoop : SingletonMonoBehavior<GameMainLoop> {
 	IController controller;
 	public LoadingPageManager loadingPage;
 	public int showView;
+	public int lastUnlockMode;
     VoidNoneParameter onSceneLoadComplete;
 
 	public void RegisterController(IController controller, VoidNoneParameter onSceneLoadComplete = null)
@@ -64,6 +65,8 @@ public class GameMainLoop : SingletonMonoBehavior<GameMainLoop> {
         ModelManager.Instance.Init();
         ScreenEffectManager.Instance.Init();
 		GameSettingManager.LoadData();
+
+		lastUnlockMode = PlayerPrefsManager.UnlockMode;
 
 		yield return StartCoroutine(InventoryManager.Instance.Init());
 		yield return new WaitForSeconds(0.5f);

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-public enum CardArrayLevel{TwoByThree = 0, ThreeByFour, FourByFive, FiveBySix}
+public enum CardArrayLevel{EASY = 0, NORMAL, HARD, CRAZY, Lock}
 public enum GameMode { LimitTime = 1, Classic, Competition, Cooperation}
 public class GameSettingManager{
 	static Dictionary<CardArrayLevel, CardArraySetting> cardArraySettings = new Dictionary<CardArrayLevel, CardArraySetting>();
@@ -87,9 +87,13 @@ public class GameSettingManager{
 			return null;
 	}
 
-	public static List<SinglePlayerLevel> GetAllSinglePlayerLevel()
+	public static List<SinglePlayerLevel> GetSinglePlayerLevel(GameMode mode)
 	{
-		return singlePlayerLevelList;
+		List<SinglePlayerLevel> tmp = new List<SinglePlayerLevel>();
+		foreach(SinglePlayerLevel level in singlePlayerLevelList)
+			if(level.gameMode == mode)
+				tmp.Add(level);
+		return tmp;
 	}
 }
 
@@ -135,11 +139,10 @@ public class ClassicModeSetting
 
 public class SinglePlayerLevel
 {
-	public int requireProgress;
 	public CardArrayLevel gameLevel;
 	public GameMode gameMode;
-	public string showContent;
-	public string levelTitle;
+	public string firstInformationTitle;
+	public string secondInformationTitle;
 	public string lockInstruction;
 	public string headerColor;
 }

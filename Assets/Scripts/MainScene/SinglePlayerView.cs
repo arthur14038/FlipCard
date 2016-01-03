@@ -17,17 +17,17 @@ public class SinglePlayerView : AbstractView {
 		escapeEvent = OnClickBack;
 		group_1P.gameObject.SetActive(true);
 
-		levelList = GameSettingManager.GetAllSinglePlayerLevel();
-		for(int i = 0 ; i < levelList.Count ; ++i)
-		{
-			GameObject tmp = Instantiate(levelUIPrefab) as GameObject;
-			tmp.transform.SetParent(levelParent);
-			tmp.transform.localScale = Vector3.one;
-            tmp.name = levelUIPrefab.name + i.ToString();
-			LevelUI levelUI = tmp.GetComponent<LevelUI>();
-			levelUI.Init(OnClickLevelPlay, levelList[i]);
-            levelUIList.Add(levelUI);
-        }
+		//levelList = GameSettingManager.GetAllSinglePlayerLevel();
+		//for(int i = 0 ; i < levelList.Count ; ++i)
+		//{
+		//	GameObject tmp = Instantiate(levelUIPrefab) as GameObject;
+		//	tmp.transform.SetParent(levelParent);
+		//	tmp.transform.localScale = Vector3.one;
+  //          tmp.name = levelUIPrefab.name + i.ToString();
+		//	LevelUI levelUI = tmp.GetComponent<LevelUI>();
+		//	levelUI.Init(OnClickLevelPlay, levelList[i]);
+  //          levelUIList.Add(levelUI);
+  //      }
         yield return 0;
 	}
 
@@ -35,10 +35,10 @@ public class SinglePlayerView : AbstractView {
 	{
 		for(int i = 0 ; i < levelUIList.Count ; ++i)
 		{
-			if(levelList[i].requireProgress > progress)
-				levelUIList[i].SetLockState(false);
-			else
-				levelUIList[i].SetLockState(true);
+			//if(levelList[i].requireProgress > progress)
+			//	levelUIList[i].SetLockState(false);
+			//else
+			//	levelUIList[i].SetLockState(true);
 		}
 	}
 

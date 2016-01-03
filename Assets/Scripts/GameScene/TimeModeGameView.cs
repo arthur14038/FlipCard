@@ -3,7 +3,7 @@ using System.Collections;
 using DG.Tweening;
 using UnityEngine.UI;
 
-public class TimeModeView : AbstractView
+public class TimeModeGameView : AbstractView
 {
 	public IEnumeratorNoneParameter onCountDownFinished;
 	public VoidNoneParameter onClickPause;
