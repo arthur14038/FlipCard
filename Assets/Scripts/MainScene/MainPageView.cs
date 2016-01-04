@@ -46,7 +46,7 @@ public class MainPageView : AbstractView {
 		for(int i = 0 ; i < modeButtons.Length ; ++i)
 		{
 			buttonsOriPos[i] = modeButtons[i].anchoredPosition;
-			if(i > PlayerPrefsManager.UnlockMode)
+			if(i > GameMainLoop.Instance.lastUnlockMode)
 			{
 				modeButtons[i].gameObject.SetActive(false);
             } else
@@ -242,6 +242,7 @@ public class MainPageView : AbstractView {
 			for(int i = GameMainLoop.Instance.lastUnlockMode + 1 ; i <= PlayerPrefsManager.UnlockMode ; ++i)
 			{
 				modeButtons[i].anchoredPosition = buttonsOriPos[i] + hideDown;
+				modeButtons[i].gameObject.SetActive(true);
                 modeButtons[i].DOAnchorPos(buttonsOriPos[i], 0.5f).SetDelay(0.1f*(i - GameMainLoop.Instance.lastUnlockMode + 1));
 			}
 			GameMainLoop.Instance.lastUnlockMode = PlayerPrefsManager.UnlockMode;

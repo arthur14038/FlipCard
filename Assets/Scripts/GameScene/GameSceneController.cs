@@ -37,9 +37,20 @@ public class GameSceneController : AbstractController
     void ExitGame()
 	{
 		AudioManager.Instance.StopMusic();
-		int returnView = 1;
-		if(GameSettingManager.currentMode == GameMode.Competition || GameSettingManager.currentMode == GameMode.Cooperation)
-			returnView = 2;
+		int returnView = 0;
+		switch(GameSettingManager.currentMode)
+		{
+			case GameMode.Classic:
+				returnView = 1;
+                break;
+			case GameMode.LimitTime:
+				returnView = 3;
+				break;
+			case GameMode.Competition:
+				returnView = 2;
+				break;
+		}
+
 		GameMainLoop.Instance.ChangeScene(SceneName.MainScene, returnView);
     }
 	

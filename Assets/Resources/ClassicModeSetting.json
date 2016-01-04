@@ -1,26 +1,30 @@
 ﻿[
    {
      "Level": 0, 
-     "TargetMove": 6,
-    "ExcellentMove": 3,
-    "TargetTime": 10
+     "TargetMove": 6, 
+     "ExcellentMove": 3, 
+     "TargetTime": 10.0, 
+     "MatchAddScore": 1
  },
-  {
-    "Level": 1,
-    "TargetMove": 12,
-    "ExcellentMove": 6,
-    "TargetTime": 15  
+   {
+     "Level": 1, 
+     "TargetMove": 12, 
+     "ExcellentMove": 6, 
+     "TargetTime": 15.0, 
+     "MatchAddScore": 1
  },
    {
      "Level": 2, 
      "TargetMove": 20, 
-     "ExcellentMove": 10,
-    "TargetTime": 20  
+     "ExcellentMove": 10, 
+     "TargetTime": 20.0, 
+     "MatchAddScore": 1
  },
    {
      "Level": 3, 
      "TargetMove": 30, 
-     "ExcellentMove": 15,
-    "TargetTime": 45  
+     "ExcellentMove": 15, 
+     "TargetTime": 45.0, 
+     "MatchAddScore": 1
  }
 ]

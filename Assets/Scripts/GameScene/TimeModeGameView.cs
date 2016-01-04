@@ -8,10 +8,12 @@ public class TimeModeGameView : AbstractView
 	public IEnumeratorNoneParameter onCountDownFinished;
 	public VoidNoneParameter onClickPause;
     public Slider timeBar;
+	public Slider feverTimeBar;
 	public Text text_CurrentScore;
 	public Text text_CurrentRound;
 	public Image group_Counting;
-	public RectTransform image_Counting3;
+	public Image image_FeverTimeGlow;
+    public RectTransform image_Counting3;
 	public RectTransform image_Counting2;
 	public RectTransform image_Counting1;
 	public RectTransform image_CountingGo;
@@ -31,6 +33,7 @@ public class TimeModeGameView : AbstractView
 		image_CountingGo.gameObject.SetActive(false);
 		group_FeverTime.gameObject.SetActive(false);
 		ToggleFeverTimeEffect(false);
+		SetFeverTimeBar(0f);
     }
 	
 	public void OnClickPause()
@@ -43,6 +46,11 @@ public class TimeModeGameView : AbstractView
 	public void SetTimeBar(float value)
 	{
 		timeBar.value = value;
+	}
+
+	public void SetFeverTimeBar(float value)
+	{
+		feverTimeBar.DOValue(value, 0.5f);
 	}
 
 	public void AddTimeEffect(float endValue)
@@ -86,6 +94,20 @@ public class TimeModeGameView : AbstractView
 	{
 		if(feverTimeEffect != null && feverTimeEffect.activeSelf != value)
 			feverTimeEffect.SetActive(value);
+		
+		if(value)
+		{
+			image_FeverTimeGlow.color = image_FeverTimeGlow.color - Color.black;
+			image_FeverTimeGlow.gameObject.SetActive(true);
+			image_FeverTimeGlow.DOFade(1f, 0.3f);
+		} else
+		{
+			image_FeverTimeGlow.DOFade(0f, 0.3f).OnComplete(
+			delegate () {
+				image_FeverTimeGlow.gameObject.SetActive(false);
+			}
+		);
+		}
 	}
 
 	IEnumerator FeverTimeEffect()

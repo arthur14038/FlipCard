@@ -41,7 +41,8 @@ public class ClassicModeJudgement : GameModeJudgement
 			if(currentState == GameState.Playing)
 			{
 				gameTime += Time.deltaTime;
-			}
+				classicModeGameView.SetGameTime(gameTime);
+            }
 		}
 	}
 
@@ -102,7 +103,25 @@ public class ClassicModeJudgement : GameModeJudgement
 		if(currentState != GameState.GameOver)
 		{
 			++moveTimes;
-			classicModeGameView.SetFailTimes(moveTimes);
+			classicModeGameView.SetMoveTimes(moveTimes);
+
+			if(match)
+			{
+				int scoreChangeAmount = currentModeSetting.matchAddScore * cards.Length;
+
+				if(scoreChangeAmount != 0)
+				{
+					score += scoreChangeAmount;
+					classicModeGameView.SetScore(score);
+
+					foreach(Card_Normal matchCard in cards)
+					{
+						Vector2 pos = matchCard.GetAnchorPosition();
+						pos.x += currentCardArraySetting.edgeLength / 2 - 20f;
+						gameMainView.ShowScoreText(currentModeSetting.matchAddScore, pos);
+					}
+				}
+			}
 		}
 	}
 }

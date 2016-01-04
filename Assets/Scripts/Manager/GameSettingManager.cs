@@ -115,11 +115,10 @@ public class TimeModeSetting
 	public float awardTime;
 	public int matchAddScore;
 	public int mismatchReduceScore;
-	public int comboAddScore;
-	public int unknownCardShowRound;
-	public int feverTimeComboThreshold;
-	public int targetRound;
-	public int targetComboCount;
+	public int feverTimeThreshold;
+    public float feverTimeDuration;
+    public int targetRound;
+	public int targetFeverTimeCount;
 	public int targetScore;
 }
 
@@ -137,7 +136,8 @@ public class ClassicModeSetting
 	public CardArrayLevel level;
 	public int excellentMove;
 	public int targetMove;
-	public int targetTime;
+	public float targetTime;
+	public int matchAddScore;
 }
 
 public class SinglePlayerLevel

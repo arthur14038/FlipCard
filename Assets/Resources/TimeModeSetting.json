@@ -6,12 +6,11 @@
      "AwardTime": 0.6, 
      "MatchAddScore": 1, 
      "MismatchReduceScore": -2, 
-     "ComboAddScore": 1, 
-     "UnknownCardShowRound": 3, 
-     "FeverTimeComboThreshold": 9, 
-     "TargetRound": 6,
-    "TargetComboCount": 3,
-    "TargetScore": 10
+     "FeverTimeThreshold": 6, 
+     "FeverTimeDuration": 4.0, 
+     "TargetRound": 20, 
+     "TargetFeverTimeCount": 6, 
+     "TargetScore": 900
  },
    {
      "Level": 1, 
@@ -20,12 +19,11 @@
      "AwardTime": 2.0, 
      "MatchAddScore": 1, 
      "MismatchReduceScore": -1, 
-     "ComboAddScore": 2, 
-     "UnknownCardShowRound": 2, 
-     "FeverTimeComboThreshold": 5, 
-     "TargetRound": 6,
-    "TargetComboCount": 3,
-    "TargetScore": 10
+     "FeverTimeThreshold": 5, 
+     "FeverTimeDuration": 12.0, 
+     "TargetRound": 10, 
+     "TargetFeverTimeCount": 5, 
+     "TargetScore": 450
  },
    {
      "Level": 2, 
@@ -34,25 +32,23 @@
      "AwardTime": 20.0, 
      "MatchAddScore": 2, 
      "MismatchReduceScore": 0, 
-     "ComboAddScore": 2, 
-     "UnknownCardShowRound": 1, 
-     "FeverTimeComboThreshold": 4, 
-     "TargetRound": 6,
-    "TargetComboCount": 3,
-    "TargetScore": 10
+     "FeverTimeThreshold": 4, 
+     "FeverTimeDuration": 30.0, 
+     "TargetRound": 5, 
+     "TargetFeverTimeCount": 4, 
+     "TargetScore": 225
  },
    {
      "Level": 3, 
-     "GameTime": 90.0, 
-     "ShowCardTime": 10.0, 
-     "AwardTime": 10.0, 
+     "GameTime": 60.0, 
+     "ShowCardTime": 12.0, 
+     "AwardTime": 40.0, 
      "MatchAddScore": 2, 
      "MismatchReduceScore": 0, 
-     "ComboAddScore": 3, 
-     "UnknownCardShowRound": 1, 
-     "FeverTimeComboThreshold": 3, 
-     "TargetRound": 6,
-    "TargetComboCount": 3,
-    "TargetScore": 10
+     "FeverTimeThreshold": 3, 
+     "FeverTimeDuration": 48.0, 
+     "TargetRound": 4, 
+     "TargetFeverTimeCount": 3, 
+     "TargetScore": 225
  }
 ]
