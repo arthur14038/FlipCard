@@ -1,22 +1,26 @@
 ﻿[
    {
      "Level": 0, 
-     "GradeGap": 6, 
-     "ExcellentMove": 3
+     "TargetMove": 6,
+    "ExcellentMove": 3,
+    "TargetTime": 10
  },
-   {
-     "Level": 1, 
-     "GradeGap": 12, 
-     "ExcellentMove": 6
+  {
+    "Level": 1,
+    "TargetMove": 12,
+    "ExcellentMove": 6,
+    "TargetTime": 15  
  },
    {
      "Level": 2, 
-     "GradeGap": 20, 
-     "ExcellentMove": 10
+     "TargetMove": 20, 
+     "ExcellentMove": 10,
+    "TargetTime": 20  
  },
    {
      "Level": 3, 
-     "GradeGap": 30, 
-     "ExcellentMove": 15
+     "TargetMove": 30, 
+     "ExcellentMove": 15,
+    "TargetTime": 45  
  }
 ]

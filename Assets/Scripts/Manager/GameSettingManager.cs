@@ -118,7 +118,9 @@ public class TimeModeSetting
 	public int comboAddScore;
 	public int unknownCardShowRound;
 	public int feverTimeComboThreshold;
-	public int gradeGap;
+	public int targetRound;
+	public int targetComboCount;
+	public int targetScore;
 }
 
 public class CompetitionModeSetting
@@ -133,8 +135,9 @@ public class CompetitionModeSetting
 public class ClassicModeSetting
 {
 	public CardArrayLevel level;
-	public int gradeGap;
 	public int excellentMove;
+	public int targetMove;
+	public int targetTime;
 }
 
 public class SinglePlayerLevel

@@ -7,9 +7,8 @@ public class TimeModeJudgement : GameModeJudgement
 	float gameTime;
 	int currentRound;
 	int currentCombo;
+	int maxCombo;
 	int score;
-	int failedTimes;
-	int complimentTimes;
 	int feverTimeStartRound;
 	bool lastTimeHadMatch = false;
 	bool unknownCardActive = false;
@@ -39,9 +38,7 @@ public class TimeModeJudgement : GameModeJudgement
 		gameMainView.FlipAllCard();
 		yield return new WaitForSeconds(0.35f);
 		gameMainView.ToggleMask(false);
-
-		failedTimes = 0;
-		complimentTimes = 0;
+		
         if(currentState == GameState.Waiting)
 			currentState = GameState.Playing;
 		AudioManager.Instance.PlayMusic("GamePlayBGM", true);
@@ -92,6 +89,8 @@ public class TimeModeJudgement : GameModeJudgement
 					gameMainView.ToggleCardGlow(true);
 				}
 
+				maxCombo = Mathf.Max(maxCombo, currentCombo);
+
 				if(cards[0].IsGoldCard())
 					scoreChangeAmount *= 2;
 
@@ -122,7 +121,6 @@ public class TimeModeJudgement : GameModeJudgement
 					gameMainView.SetGoldCard(0);
 				}
 				currentCombo = 0;
-				++failedTimes;
 			}
 			if(scoreChangeAmount != 0)
 			{
@@ -148,10 +146,6 @@ public class TimeModeJudgement : GameModeJudgement
 
 	void NextRound()
 	{
-		if(failedTimes == 0)
-		{
-			++complimentTimes;
-		}
 		if(currentState == GameState.Playing)
 			currentState = GameState.Waiting;
 		++currentRound;
@@ -181,7 +175,15 @@ public class TimeModeJudgement : GameModeJudgement
 	{
 		base.GameOver(values);
 		int score = values[0];
-		int grade = 1 + score / currentModeSetting.gradeGap;
+		int grade = 1;
+		if(currentRound >= currentModeSetting.targetRound)
+			grade += 1;
+
+		if(maxCombo >= currentModeSetting.targetComboCount)
+			grade += 1;
+
+		if(score >= currentModeSetting.targetScore)
+			grade += 1;
 		
 		GameRecord record = ModelManager.Instance.GetGameRecord(currentModeSetting.level, GameMode.LimitTime);
 		bool recordBreak = false;
@@ -225,7 +227,6 @@ public class TimeModeJudgement : GameModeJudgement
 		if(unknownCardActive)
 			gameMainView.ResetUnknownCard();
 		gameMainView.ToggleMask(false);
-		failedTimes = 0;
 		if(currentState == GameState.Waiting)
 			currentState = GameState.Playing;
 

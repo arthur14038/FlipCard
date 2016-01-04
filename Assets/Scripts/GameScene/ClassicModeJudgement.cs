@@ -6,6 +6,8 @@ public class ClassicModeJudgement : GameModeJudgement
 	ClassicModeGameView classicModeGameView;
 	ClassicModeSetting currentModeSetting;
 	int moveTimes;
+	int score;
+	float gameTime;
 
 	public override IEnumerator Init(GameMainView gameMainView, GameSettingView gameSettingView, AbstractView modeView)
 	{
@@ -23,11 +25,24 @@ public class ClassicModeJudgement : GameModeJudgement
 	protected override IEnumerator StartGame()
 	{
 		yield return null;
-		moveTimes = 0;
 		gameMainView.ToggleMask(false);
+		moveTimes = 0;
+		score = 0;
+		gameTime = 0f;
 		if(currentState == GameState.Waiting)
 			currentState = GameState.Playing;
 		AudioManager.Instance.PlayMusic("GamePlayBGM", true);
+	}
+
+	public override void JudgementUpdate()
+	{
+		if(classicModeGameView != null)
+		{
+			if(currentState == GameState.Playing)
+			{
+				gameTime += Time.deltaTime;
+			}
+		}
 	}
 
 	void RoundComplete()
@@ -37,6 +52,8 @@ public class ClassicModeJudgement : GameModeJudgement
 
 	protected override void GameOver(params int[] values)
 	{
+		base.GameOver(values);
+
 		if(PlayerPrefsManager.ClassicModeProgress == (int)currentModeSetting.level)
 			PlayerPrefsManager.ClassicModeProgress += 1;
 
@@ -46,17 +63,17 @@ public class ClassicModeJudgement : GameModeJudgement
 		if(PlayerPrefsManager.TimeModeProgress < 0)
 			PlayerPrefsManager.TimeModeProgress = 0;
 
-		base.GameOver(values);
 		int moveTimes = values[0];
 		int grade = 1;
+
+		if(moveTimes <= currentModeSetting.targetMove)
+			grade += 1;
+
+		if(gameTime <= currentModeSetting.targetTime)
+			grade += 1;
+
 		if(moveTimes == currentModeSetting.excellentMove)
-			grade = 4;
-
-		if(moveTimes > currentModeSetting.excellentMove && moveTimes <= currentModeSetting.gradeGap)
-			grade = 3;
-
-		if(moveTimes > currentModeSetting.gradeGap && moveTimes <= currentModeSetting.gradeGap * 2)
-			grade = 2;
+			grade += 1;			
 
 		bool recordBreak = false;
 		GameRecord record = ModelManager.Instance.GetGameRecord(currentModeSetting.level, GameMode.Classic);
