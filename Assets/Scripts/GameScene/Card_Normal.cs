@@ -278,8 +278,8 @@ public class Card_Normal : MonoBehaviour
 						SetCardImage(unknownSprite);
 						break;
 					default:
-						//SetCardImage(cardBackImageSprite);
-						SetCardImage(cardFaceImageSprite);
+						SetCardImage(cardBackImageSprite);
+						//SetCardImage(cardFaceImageSprite);
 						break;
 				}
 				if(isGoldCard)

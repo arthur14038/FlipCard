@@ -62,23 +62,37 @@ public class ClassicModeJudgement : GameModeJudgement
 		if(PlayerPrefsManager.TimeModeProgress < 0)
 			PlayerPrefsManager.TimeModeProgress = 0;
 
+		bool[] achieveCondition = new bool[4];
 		int moveTimes = values[0];
 		int grade = 1;
-		int additionScore = 0;
-
-		if(moveTimes < currentModeSetting.targetMove*2)
-			additionScore += currentModeSetting.targetMove - moveTimes;
+		achieveCondition[0] = true;
 
 		if(moveTimes <= currentModeSetting.targetMove)
+		{
 			grade += 1;
+			achieveCondition[1] = true;
+		}else
+		{
+			achieveCondition[1] = false;
+		}
 
 		if(gameTime <= currentModeSetting.targetTime)
+		{
 			grade += 1;
+			achieveCondition[2] = true;
+		} else
+		{
+			achieveCondition[2] = false;
+		}
 
-		if(moveTimes == currentModeSetting.excellentMove)
+		if(moveTimes <= currentModeSetting.excellentMove)
+		{
 			grade += 1;
-
-		Debug.LogFormat("moveTimes: {0}, gameTime: {1}:{2:00}", moveTimes, (int)gameTime / 60, (int)gameTime % 60);
+			achieveCondition[3] = true;
+		} else
+		{
+			achieveCondition[3] = false;
+		}
 
 		bool recordBreak = false;
 		GameRecord record = ModelManager.Instance.GetGameRecord(currentModeSetting.level, GameMode.Classic);
@@ -94,7 +108,17 @@ public class ClassicModeJudgement : GameModeJudgement
 
 		ModelManager.Instance.SaveGameRecord(record);
 		gameMainView.ToggleMask(true);
-		gameSettingView.ShowSinglePlayerGameOver(grade, 0, ".SCORE.", "LEVEL COMPLETE", recordBreak);
+
+		string[] conditionContent = new string[4];
+		string gameTimeContent = string.Format("{0}:{1:00}", (int)gameTime / 60, (int)gameTime % 60);
+		conditionContent[0] = "LEVEL COMPLETE";
+		conditionContent[1] = string.Format("LESS THAN {0} MOVE", currentModeSetting.targetMove);
+		conditionContent[2] = string.Format("COMPLETE IN {0} SECOND", currentModeSetting.targetTime);
+		if(grade == 4)
+			conditionContent[3] = string.Format("LESS THAN {0} MOVE", currentModeSetting.excellentMove);
+		else
+			conditionContent[3] = "?????????";
+		gameSettingView.ShowSinglePlayerGameOver(achieveCondition, "LEVEL COMPLETE", "CLASSIC MODE", ".GAME TIME.", gameTimeContent, conditionContent, recordBreak);
 	}
 
 	void CardMatch(bool match, params Card_Normal[] cards)

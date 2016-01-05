@@ -137,7 +137,6 @@ public class ClassicModeSetting
 	public int excellentMove;
 	public int targetMove;
 	public float targetTime;
-	public int matchAddScore;
 }
 
 public class SinglePlayerLevel

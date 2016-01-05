@@ -14,7 +14,8 @@ public class MainPageView : AbstractView {
 	public RectTransform image_UnderConstructionWindow;
 	public Toggle toggle_Music;
 	public Toggle toggle_Sound;
-	public RectTransform[] modeButtons;
+	public GridLayoutGroup gridLayoutGroup;
+    public RectTransform[] modeButtons;
 	public VoidNoneParameter onClickRate;
 	public VoidNoneParameter onClickMail;
 	public VoidNoneParameter onClickShop;
@@ -24,7 +25,6 @@ public class MainPageView : AbstractView {
 	public VoidNoneParameter onClick2P;
 	public VoidNoneParameter onClickTimeMode;
 	public VoidNoneParameter onClickComingSoon;
-	Vector2[] buttonsOriPos;
 
 	public override IEnumerator Init ()
 	{
@@ -41,11 +41,9 @@ public class MainPageView : AbstractView {
 		toggle_Music.isOn = !PlayerPrefsManager.MusicSetting;
 		toggle_Sound.isOn = !PlayerPrefsManager.SoundSetting;
 		AudioManager.Instance.SetListenToToggle(true);
-
-		buttonsOriPos = new Vector2[modeButtons.Length];
+		
 		for(int i = 0 ; i < modeButtons.Length ; ++i)
 		{
-			buttonsOriPos[i] = modeButtons[i].anchoredPosition;
 			if(i > GameMainLoop.Instance.lastUnlockMode)
 			{
 				modeButtons[i].gameObject.SetActive(false);
@@ -219,6 +217,16 @@ public class MainPageView : AbstractView {
 		}
 	}
 
+	IEnumerator EnterEffect(RectTransform shakeItem, float enterDuration)
+	{
+		shakeItem.rotation = Quaternion.Euler(Vector3.zero);
+		yield return shakeItem.DORotate(Vector3.back * 10f, enterDuration).SetEase(Ease.OutBounce).WaitForCompletion();
+		yield return shakeItem.DORotate(Vector3.forward * 7.5f, 0.125f).SetEase(Ease.OutQuad).WaitForCompletion();
+		yield return shakeItem.DORotate(Vector3.back * 5.0f, 0.125f).SetEase(Ease.OutQuad).WaitForCompletion();
+		yield return shakeItem.DORotate(Vector3.forward * 2.5f, 0.125f).SetEase(Ease.OutQuad).WaitForCompletion();
+		yield return shakeItem.DORotate(Vector3.zero, 0.125f).SetEase(Ease.OutQuad).WaitForCompletion();
+	}
+
 	protected override IEnumerator HideUIAnimation ()
 	{
 		currentState = ViewState.Close;
@@ -235,18 +243,41 @@ public class MainPageView : AbstractView {
 		group_Main.gameObject.SetActive(true);
 		image_Mask.gameObject.SetActive(false);
 
+		gridLayoutGroup.enabled = true;
+		for(int i = 0 ; i <= PlayerPrefsManager.UnlockMode ; ++i)
+		{
+			modeButtons[i].gameObject.SetActive(true);
+		}
+		yield return null;
+		gridLayoutGroup.enabled = false;
+
+		for(int i = 0 ; i <= PlayerPrefsManager.UnlockMode ; ++i)
+		{
+			if(i > GameMainLoop.Instance.lastUnlockMode)
+			{
+				modeButtons[i].gameObject.SetActive(false);
+			} else
+			{
+				StartCoroutine(EnterEffect(modeButtons[i], 0.5f));
+			}
+		}
+
 		yield return group_Main.DOAnchorPos(Vector2.zero, 0.5f).SetEase(Ease.OutCubic).WaitForCompletion();
 
 		if(GameMainLoop.Instance.lastUnlockMode < PlayerPrefsManager.UnlockMode)
-		{
-			for(int i = GameMainLoop.Instance.lastUnlockMode + 1 ; i <= PlayerPrefsManager.UnlockMode ; ++i)
+		{			
+			gridLayoutGroup.enabled = false;
+            for(int i = GameMainLoop.Instance.lastUnlockMode + 1 ; i <= PlayerPrefsManager.UnlockMode ; ++i)
 			{
-				modeButtons[i].anchoredPosition = buttonsOriPos[i] + hideDown;
+				Vector2 buttonsOriPos = modeButtons[i].anchoredPosition;
+                modeButtons[i].anchoredPosition = buttonsOriPos + hideDown;
 				modeButtons[i].gameObject.SetActive(true);
-                modeButtons[i].DOAnchorPos(buttonsOriPos[i], 0.5f).SetDelay(0.1f*(i - GameMainLoop.Instance.lastUnlockMode + 1));
+				modeButtons[i].DOAnchorPos(buttonsOriPos, 0.5f).SetDelay(0.1f*(i - GameMainLoop.Instance.lastUnlockMode + 1));
 			}
 			GameMainLoop.Instance.lastUnlockMode = PlayerPrefsManager.UnlockMode;
-        }
+			yield return new WaitForSeconds(0.5f + 0.1f*(PlayerPrefsManager.UnlockMode + 1));
+			gridLayoutGroup.enabled = true;
+		}
 
 		currentState = ViewState.Main;
 		showCoroutine = null;

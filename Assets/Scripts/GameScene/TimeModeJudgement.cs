@@ -153,8 +153,6 @@ public class TimeModeJudgement : GameModeJudgement
 			currentState = GameState.Waiting;
 		++currentRound;
 
-		Debug.LogFormat("gamePassTime: {0}", gamePassTime);
-
 		float awardTime = currentModeSetting.awardTime;
 		
 		timeModeGameView.SetRound(currentRound);
@@ -177,17 +175,38 @@ public class TimeModeJudgement : GameModeJudgement
 		if(PlayerPrefsManager.TimeModeProgress == (int)currentModeSetting.level)
 			PlayerPrefsManager.TimeModeProgress += 1;
 
+		bool[] achieveCondition = new bool[4];
 		int score = values[0];
 		int grade = 1;
-		if(currentRound >= currentModeSetting.targetRound)
+		achieveCondition[0] = true;
+
+        if(currentRound >= currentModeSetting.targetRound)
+		{
 			grade += 1;
+			achieveCondition[1] = true;
+		} else
+		{
+			achieveCondition[1] = false;
+		}
 
 		if(activeFeverTimeCount >= currentModeSetting.targetFeverTimeCount)
+		{
 			grade += 1;
+			achieveCondition[2] = true;
+		} else
+		{
+			achieveCondition[2] = false;
+		}
 
 		if(score >= currentModeSetting.targetScore)
+		{
 			grade += 1;
-		
+			achieveCondition[3] = true;
+		} else
+		{
+			achieveCondition[3] = false;
+		}
+
 		GameRecord record = ModelManager.Instance.GetGameRecord(currentModeSetting.level, GameMode.LimitTime);
 		bool recordBreak = false;
 		if(score > record.highScore)
@@ -207,7 +226,15 @@ public class TimeModeJudgement : GameModeJudgement
 
 		ModelManager.Instance.SaveGameRecord(record);
 
-		gameSettingView.ShowSinglePlayerGameOver(grade, score, ".SCORE.", "TIME'S UP", recordBreak);
+		string[] conditionContent = new string[4];
+		conditionContent[0] = "LEVEL COMPLETE";
+		conditionContent[1] = string.Format("OVER {0} ROUND", currentModeSetting.targetRound);
+		conditionContent[2] = string.Format("FEVER {0} TIMES", currentModeSetting.targetFeverTimeCount);
+		if(grade == 4)
+			conditionContent[3] = string.Format("REACH {0} SCORE", currentModeSetting.targetScore);
+		else
+			conditionContent[3] = "?????????";
+		gameSettingView.ShowSinglePlayerGameOver(achieveCondition, "TIME'S UP", "TIME MODE", ".SCORE.", score.ToString(), conditionContent, recordBreak);
 	}
 	
 	IEnumerator NextRoundRoutine()
