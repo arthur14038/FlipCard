@@ -77,10 +77,9 @@ public class GameSettingView : AbstractView {
 	{
 		AudioManager.Instance.SoundChangeValue(!value);
 	}
-	
+
 	public void ShowTwoPlayersGameOver(int player1Score, int player2Score)
 	{
-		ToggleMask(true, 0.3f);
 		base.ShowUI(false);
 		AudioManager.Instance.StopMusic();
 		AudioManager.Instance.PlayOneShot("GameResult");
@@ -105,6 +104,8 @@ public class GameSettingView : AbstractView {
 
 	IEnumerator CompetitionGameOverEffect(int player1Score, int player2Score)
 	{
+		yield return StartCoroutine(ToggleMask(true, 0.7f));
+
 		image_WinnerBoard.gameObject.SetActive(false);
 		image_Player1.gameObject.SetActive(false);
 		image_Player2.gameObject.SetActive(false);
@@ -132,7 +133,6 @@ public class GameSettingView : AbstractView {
 
 	public void ShowSinglePlayerGameOver(int grade, int score, string scoreTitle, string headerTitle, bool recordBreak)
 	{
-		ToggleMask(true, 0.3f);
 		base.ShowUI(false);
 		AudioManager.Instance.StopMusic();
 		AudioManager.Instance.PlayOneShot("GameResult");
@@ -161,6 +161,8 @@ public class GameSettingView : AbstractView {
 
 	IEnumerator SinglePlayerGameOverEffect(int score, bool recordBreak)
 	{
+		yield return StartCoroutine(ToggleMask(true, 0.7f));
+
 		image_CharacterLeft.gameObject.SetActive(false);
 		image_CharacterRight.gameObject.SetActive(false);
 		image_SinglePlayerScoreBoard.gameObject.SetActive(false);
@@ -232,31 +234,29 @@ public class GameSettingView : AbstractView {
 		}
 	}
 
-	void OnClickEscape()
-	{
-		OnClickResume();
-	}
-
-	void ToggleMask(bool turnOn, float fadeDuration)
+	IEnumerator ToggleMask(bool turnOn, float fadeDuration)
 	{
 		if(turnOn)
 		{
 			image_Mask.gameObject.SetActive(true);
 			image_Mask.color = Color.clear;
-			image_Mask.DOColor(Color.black * 0.7f, fadeDuration);
-		} else
+			yield return image_Mask.DOColor(Color.black * 0.7f, fadeDuration).WaitForCompletion();
+		}
+		else
 		{
-			image_Mask.DOFade(0f, fadeDuration).OnComplete(
-			delegate () {
-				image_Mask.gameObject.SetActive(false);
-			}
-		);
+			yield return image_Mask.DOFade(0f, fadeDuration).WaitForCompletion();
+			image_Mask.gameObject.SetActive(false);
 		}
 	}
-	
+
+	void OnClickEscape()
+	{
+		OnClickResume();
+	}
+
 	protected override IEnumerator HideUIAnimation ()
 	{
-		ToggleMask(false, 0.3f);
+		StartCoroutine(ToggleMask(false, 0.3f));
 		group_Pause.DOFade(0f, 0.3f);
 		yield return image_PauseWindow.DOScale(0f, 0.3f).SetEase(Ease.InBack).WaitForCompletion();
 		if(onClickResume != null)
@@ -267,7 +267,7 @@ public class GameSettingView : AbstractView {
 
 	protected override IEnumerator ShowUIAnimation ()
 	{
-		ToggleMask(true, 0.3f);
+		StartCoroutine(ToggleMask(true, 0.3f));
         group_Pause.gameObject.SetActive(true);
         group_Pause.alpha = 0f;
 		group_Pause.DOFade(1f, 0.3f);

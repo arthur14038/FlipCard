@@ -11,6 +11,7 @@ public class Card_Normal : MonoBehaviour
 	public Image image_CardBody;
 	public Image image_CardImage;
 	public Image image_GoldCardFrame;
+	public Text text_CardId;
 	public Color glowColor = new Color(1f, 0.85f, 0f);
 	public Sprite unknownSprite;
 	CardType currentType;
@@ -277,7 +278,8 @@ public class Card_Normal : MonoBehaviour
 						SetCardImage(unknownSprite);
 						break;
 					default:
-						SetCardImage(cardBackImageSprite);
+						//SetCardImage(cardBackImageSprite);
+						SetCardImage(cardFaceImageSprite);
 						break;
 				}
 				if(isGoldCard)

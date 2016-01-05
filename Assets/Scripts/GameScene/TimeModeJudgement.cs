@@ -153,6 +153,8 @@ public class TimeModeJudgement : GameModeJudgement
 			currentState = GameState.Waiting;
 		++currentRound;
 
+		Debug.LogFormat("gamePassTime: {0}", gamePassTime);
+
 		float awardTime = currentModeSetting.awardTime;
 		
 		timeModeGameView.SetRound(currentRound);

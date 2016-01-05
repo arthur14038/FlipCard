@@ -6,7 +6,6 @@ public class ClassicModeJudgement : GameModeJudgement
 	ClassicModeGameView classicModeGameView;
 	ClassicModeSetting currentModeSetting;
 	int moveTimes;
-	int score;
 	float gameTime;
 
 	public override IEnumerator Init(GameMainView gameMainView, GameSettingView gameSettingView, AbstractView modeView)
@@ -27,7 +26,6 @@ public class ClassicModeJudgement : GameModeJudgement
 		yield return null;
 		gameMainView.ToggleMask(false);
 		moveTimes = 0;
-		score = 0;
 		gameTime = 0f;
 		if(currentState == GameState.Waiting)
 			currentState = GameState.Playing;
@@ -66,6 +64,10 @@ public class ClassicModeJudgement : GameModeJudgement
 
 		int moveTimes = values[0];
 		int grade = 1;
+		int additionScore = 0;
+
+		if(moveTimes < currentModeSetting.targetMove*2)
+			additionScore += currentModeSetting.targetMove - moveTimes;
 
 		if(moveTimes <= currentModeSetting.targetMove)
 			grade += 1;
@@ -74,18 +76,15 @@ public class ClassicModeJudgement : GameModeJudgement
 			grade += 1;
 
 		if(moveTimes == currentModeSetting.excellentMove)
-			grade += 1;			
+			grade += 1;
+
+		Debug.LogFormat("moveTimes: {0}, gameTime: {1}:{2:00}", moveTimes, (int)gameTime / 60, (int)gameTime % 60);
 
 		bool recordBreak = false;
 		GameRecord record = ModelManager.Instance.GetGameRecord(currentModeSetting.level, GameMode.Classic);
 		if(record.grade < grade)
 		{
 			record.grade = grade;
-			recordBreak = true;
-		}
-		if(moveTimes < record.highScore || record.highScore == 0)
-		{
-			record.highScore = moveTimes;
 			recordBreak = true;
 		}
 		record.playTimes += 1;
@@ -95,7 +94,7 @@ public class ClassicModeJudgement : GameModeJudgement
 
 		ModelManager.Instance.SaveGameRecord(record);
 		gameMainView.ToggleMask(true);
-		gameSettingView.ShowSinglePlayerGameOver(grade, moveTimes, ".MOVE.", "LEVEL COMPLETE", recordBreak);
+		gameSettingView.ShowSinglePlayerGameOver(grade, 0, ".SCORE.", "LEVEL COMPLETE", recordBreak);
 	}
 
 	void CardMatch(bool match, params Card_Normal[] cards)
@@ -105,23 +104,23 @@ public class ClassicModeJudgement : GameModeJudgement
 			++moveTimes;
 			classicModeGameView.SetMoveTimes(moveTimes);
 
-			if(match)
-			{
-				int scoreChangeAmount = currentModeSetting.matchAddScore * cards.Length;
+			//if(match)
+			//{
+			//	int scoreChangeAmount = currentModeSetting.matchAddScore * cards.Length;
 
-				if(scoreChangeAmount != 0)
-				{
-					score += scoreChangeAmount;
-					classicModeGameView.SetScore(score);
+			//	if(scoreChangeAmount != 0)
+			//	{
+			//		score += scoreChangeAmount;
+			//		classicModeGameView.SetScore(score);
 
-					foreach(Card_Normal matchCard in cards)
-					{
-						Vector2 pos = matchCard.GetAnchorPosition();
-						pos.x += currentCardArraySetting.edgeLength / 2 - 20f;
-						gameMainView.ShowScoreText(currentModeSetting.matchAddScore, pos);
-					}
-				}
-			}
+			//		foreach(Card_Normal matchCard in cards)
+			//		{
+			//			Vector2 pos = matchCard.GetAnchorPosition();
+			//			pos.x += currentCardArraySetting.edgeLength / 2 - 20f;
+			//			gameMainView.ShowScoreText(currentModeSetting.matchAddScore, pos);
+			//		}
+			//	}
+			//}
 		}
 	}
 }

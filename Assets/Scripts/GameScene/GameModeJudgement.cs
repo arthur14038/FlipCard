@@ -32,7 +32,8 @@ public abstract class GameModeJudgement{
 	protected virtual void GameOver(params int[] values)
 	{
 		currentState = GameState.GameOver;
-    }
+		gameMainView.ToggleMask(true);
+	}
 
 	protected virtual void PauseGame()
 	{
