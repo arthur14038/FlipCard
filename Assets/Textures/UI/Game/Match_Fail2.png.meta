@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: d20f0da60c9ad2f4d935ae9663cb7686
-timeCreated: 1449379945
+guid: de9750b43427a764da2c79d2826f95a3
+timeCreated: 1451960324
 licenseType: Pro
 TextureImporter:
   fileIDToRecycleName: {}
@@ -36,7 +36,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   rGBM: 0
-  compressionQuality: 100
+  compressionQuality: 50
   allowsAlphaSplitting: 0
   spriteMode: 1
   spriteExtrude: 1
@@ -50,7 +50,7 @@ TextureImporter:
   buildTargetSettings: []
   spriteSheet:
     sprites: []
-  spritePackingTag: 
+  spritePackingTag: Game
   userData: 
   assetBundleName: 
   assetBundleVariant: 

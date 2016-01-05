@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 052efb6ee26f275478337cb8d29428d3
-timeCreated: 1449411647
+guid: 74140963db2a3074390ff430af79baf8
+timeCreated: 1451960324
 licenseType: Pro
 TextureImporter:
   fileIDToRecycleName: {}
@@ -36,21 +36,21 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   rGBM: 0
-  compressionQuality: 100
+  compressionQuality: 50
   allowsAlphaSplitting: 0
   spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 0
   alignment: 0
   spritePivot: {x: .5, y: .5}
-  spriteBorder: {x: 25, y: 0, z: 25, w: 0}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 100
   alphaIsTransparency: 1
   textureType: 5
   buildTargetSettings: []
   spriteSheet:
     sprites: []
-  spritePackingTag: General
+  spritePackingTag: Game
   userData: 
   assetBundleName: 
   assetBundleVariant: 
