@@ -220,11 +220,15 @@ public class MainPageView : AbstractView {
 	IEnumerator EnterEffect(RectTransform shakeItem, float enterDuration)
 	{
 		shakeItem.rotation = Quaternion.Euler(Vector3.zero);
-		yield return shakeItem.DORotate(Vector3.back * 10f, enterDuration).SetEase(Ease.OutBounce).WaitForCompletion();
-		yield return shakeItem.DORotate(Vector3.forward * 7.5f, 0.125f).SetEase(Ease.OutQuad).WaitForCompletion();
-		yield return shakeItem.DORotate(Vector3.back * 5.0f, 0.125f).SetEase(Ease.OutQuad).WaitForCompletion();
-		yield return shakeItem.DORotate(Vector3.forward * 2.5f, 0.125f).SetEase(Ease.OutQuad).WaitForCompletion();
-		yield return shakeItem.DORotate(Vector3.zero, 0.125f).SetEase(Ease.OutQuad).WaitForCompletion();
+		yield return shakeItem.DORotate(Vector3.back * (10f + Random.Range(-2f, 2f)), enterDuration).SetEase(Ease.OutBounce).WaitForCompletion();
+		float noise = Random.Range(0f, 0.125f);
+		yield return shakeItem.DORotate(Vector3.forward * 7.5f, 0.125f + noise).SetEase(Ease.OutQuad).WaitForCompletion();
+		noise = Random.Range(0f, 0.125f);
+		yield return shakeItem.DORotate(Vector3.back * 5.0f, 0.125f + noise).SetEase(Ease.OutQuad).WaitForCompletion();
+		noise = Random.Range(0f, 0.125f);
+		yield return shakeItem.DORotate(Vector3.forward * 2.5f, 0.125f + noise).SetEase(Ease.OutQuad).WaitForCompletion();
+		noise = Random.Range(0f, 0.125f);
+		yield return shakeItem.DORotate(Vector3.zero, 0.125f + noise).SetEase(Ease.OutQuad).WaitForCompletion();
 	}
 
 	protected override IEnumerator HideUIAnimation ()

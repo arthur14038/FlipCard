@@ -9,6 +9,7 @@ public delegate void VoidGameObject(GameObject go);
 public delegate void VoidTransform(Transform target);
 public delegate void VoidCardArrayLevelGameMode(CardArrayLevel level, GameMode mode);
 public delegate void VoidString(string value);
+public delegate void VoidTwoString(string value, string value2);
 public delegate void VoidCard_Normal(Card_Normal card);
 public delegate void VoidVector2(Vector2 vec2);
 public delegate void VoidVector3(Vector3 vec3);

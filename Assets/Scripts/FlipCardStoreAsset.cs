@@ -21,9 +21,13 @@ public class FlipCardStoreAsset : IStoreAssets
 
     public VirtualGood[] GetGoods()
     {
-        return new VirtualGood[] { CardBack_000, CardBack_001, CardBack_002,
-			CardFace_000, CardFace_001, CardFace_002,
-			Theme_00, Theme_01, Theme_02 };
+        return new VirtualGood[] { CardBack_000, CardBack_001, CardBack_002, CardBack_003,
+			CardBack_004, CardBack_005, CardBack_006, CardBack_007, CardBack_008,
+			CardFace_000, CardFace_001, CardFace_002, CardFace_003, CardFace_004,
+			CardFace_005, CardFace_006, CardFace_007, CardFace_008, Theme_00,
+			Theme_01, Theme_02, Theme_03, Theme_04, Theme_05, Theme_06,
+			Theme_07, Theme_08
+		};
     }
 
     public int GetVersion()
@@ -55,14 +59,32 @@ public class FlipCardStoreAsset : IStoreAssets
 	public const string CARD_BACK_000_ITEM_ID = "CardBack_000";
 	public const string CARD_BACK_001_ITEM_ID = "CardBack_001";
 	public const string CARD_BACK_002_ITEM_ID = "CardBack_002";
+	public const string CARD_BACK_003_ITEM_ID = "CardBack_003";
+	public const string CARD_BACK_004_ITEM_ID = "CardBack_004";
+	public const string CARD_BACK_005_ITEM_ID = "CardBack_005";
+	public const string CARD_BACK_006_ITEM_ID = "CardBack_006";
+	public const string CARD_BACK_007_ITEM_ID = "CardBack_007";
+	public const string CARD_BACK_008_ITEM_ID = "CardBack_008";
 
 	public const string CARD_FACE_000_ITEM_ID = "CardFace_000";
 	public const string CARD_FACE_001_ITEM_ID = "CardFace_001";
 	public const string CARD_FACE_002_ITEM_ID = "CardFace_002";
+	public const string CARD_FACE_003_ITEM_ID = "CardFace_003";
+	public const string CARD_FACE_004_ITEM_ID = "CardFace_004";
+	public const string CARD_FACE_005_ITEM_ID = "CardFace_005";
+	public const string CARD_FACE_006_ITEM_ID = "CardFace_006";
+	public const string CARD_FACE_007_ITEM_ID = "CardFace_007";
+	public const string CARD_FACE_008_ITEM_ID = "CardFace_008";
 
 	public const string THEME_00_ITEM_ID = "Theme_00";
 	public const string THEME_01_ITEM_ID = "Theme_01";
 	public const string THEME_02_ITEM_ID = "Theme_02";
+	public const string THEME_03_ITEM_ID = "Theme_03";
+	public const string THEME_04_ITEM_ID = "Theme_04";
+	public const string THEME_05_ITEM_ID = "Theme_05";
+	public const string THEME_06_ITEM_ID = "Theme_06";
+	public const string THEME_07_ITEM_ID = "Theme_07";
+	public const string THEME_08_ITEM_ID = "Theme_08";
 	#endregion
 
 	#region Virtual Currency
@@ -85,26 +107,49 @@ public class FlipCardStoreAsset : IStoreAssets
 
 	#region Virtual Goods
 	public static VirtualGood CardBack_000 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Default Card Back", "Default Card Back", CARD_BACK_000_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 0));
-	public static VirtualGood CardBack_001 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Card Back 001", "Default Card Back", CARD_BACK_001_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
-	public static VirtualGood CardBack_002 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Card Back 002", "Default Card Back", CARD_BACK_002_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
+	public static VirtualGood CardBack_001 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Card Back 001", "Card Back 001", CARD_BACK_001_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
+	public static VirtualGood CardBack_002 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Card Back 002", "Card Back 002", CARD_BACK_002_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
+	public static VirtualGood CardBack_003 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Card Back 003", "Card Back 003", CARD_BACK_003_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
+	public static VirtualGood CardBack_004 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Card Back 004", "Card Back 004", CARD_BACK_004_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
+	public static VirtualGood CardBack_005 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Card Back 005", "Card Back 005", CARD_BACK_005_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
+	public static VirtualGood CardBack_006 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Card Back 006", "Card Back 006", CARD_BACK_006_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
+	public static VirtualGood CardBack_007 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Card Back 007", "Card Back 007", CARD_BACK_007_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
+	public static VirtualGood CardBack_008 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Card Back 008", "Card Back 008", CARD_BACK_008_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
 
 	public static VirtualGood CardFace_000 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Default Card Face", "Default Card Face", CARD_FACE_000_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 0));
-	public static VirtualGood CardFace_001 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Default Card Face", "Default Card Face", CARD_FACE_001_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
-	public static VirtualGood CardFace_002 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Default Card Face", "Default Card Face", CARD_FACE_002_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
+	public static VirtualGood CardFace_001 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Card Face 001", "Card Face 001", CARD_FACE_001_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
+	public static VirtualGood CardFace_002 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Card Face 002", "Card Face 002", CARD_FACE_002_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
+	public static VirtualGood CardFace_003 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Card Face 003", "Card Face 003", CARD_FACE_003_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
+	public static VirtualGood CardFace_004 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Card Face 004", "Card Face 004", CARD_FACE_004_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
+	public static VirtualGood CardFace_005 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Card Face 005", "Card Face 005", CARD_FACE_005_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
+	public static VirtualGood CardFace_006 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Card Face 006", "Card Face 006", CARD_FACE_006_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
+	public static VirtualGood CardFace_007 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Card Face 007", "Card Face 007", CARD_FACE_007_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
+	public static VirtualGood CardFace_008 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Card Face 008", "Card Face 008", CARD_FACE_008_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
 
 	public static VirtualGood Theme_00 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Default Theme", "Default Theme", THEME_00_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 0));
-	public static VirtualGood Theme_01 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Default Theme", "Default Theme", THEME_01_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
-	public static VirtualGood Theme_02 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Default Theme", "Default Theme", THEME_02_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
+	public static VirtualGood Theme_01 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Theme 001", "Theme 001", THEME_01_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
+	public static VirtualGood Theme_02 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Theme 002", "Theme 002", THEME_02_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
+	public static VirtualGood Theme_03 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Theme 003", "Theme 003", THEME_03_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
+	public static VirtualGood Theme_04 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Theme 004", "Theme 004", THEME_04_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
+	public static VirtualGood Theme_05 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Theme 005", "Theme 005", THEME_05_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
+	public static VirtualGood Theme_06 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Theme 006", "Theme 006", THEME_06_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
+	public static VirtualGood Theme_07 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Theme 007", "Theme 007", THEME_07_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
+	public static VirtualGood Theme_08 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Theme 008", "Theme 008", THEME_08_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
 	#endregion
 
 	#region Virtual Categories
 	public static VirtualCategory CardBackCategory = new VirtualCategory(
-        "Card Back", new List<string>(new string[] { CARD_BACK_000_ITEM_ID, CARD_BACK_001_ITEM_ID, CARD_BACK_002_ITEM_ID }));
+        "Card Back", new List<string>(new string[] { CARD_BACK_000_ITEM_ID, CARD_BACK_001_ITEM_ID, CARD_BACK_002_ITEM_ID,
+		CARD_BACK_003_ITEM_ID, CARD_BACK_004_ITEM_ID, CARD_BACK_005_ITEM_ID, CARD_BACK_006_ITEM_ID,
+		CARD_BACK_007_ITEM_ID, CARD_BACK_008_ITEM_ID}));
     
     public static VirtualCategory CardFaceCategory = new VirtualCategory(
-        "Card Face", new List<string>(new string[] { CARD_FACE_000_ITEM_ID, CARD_FACE_001_ITEM_ID, CARD_FACE_002_ITEM_ID }));
+        "Card Face", new List<string>(new string[] { CARD_FACE_000_ITEM_ID, CARD_FACE_001_ITEM_ID, CARD_FACE_002_ITEM_ID,
+		CARD_FACE_003_ITEM_ID, CARD_FACE_004_ITEM_ID, CARD_FACE_005_ITEM_ID, CARD_FACE_006_ITEM_ID,
+		CARD_FACE_007_ITEM_ID, CARD_FACE_008_ITEM_ID}));
 
     public static VirtualCategory ThemeCategory = new VirtualCategory(
-        "Theme", new List<string>(new string[] { THEME_00_ITEM_ID, THEME_01_ITEM_ID, THEME_02_ITEM_ID }));
+        "Theme", new List<string>(new string[] { THEME_00_ITEM_ID, THEME_01_ITEM_ID, THEME_02_ITEM_ID,
+		THEME_03_ITEM_ID, THEME_04_ITEM_ID, THEME_05_ITEM_ID, THEME_06_ITEM_ID, THEME_07_ITEM_ID, THEME_08_ITEM_ID}));
     #endregion
 }

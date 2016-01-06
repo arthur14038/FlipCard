@@ -20,6 +20,7 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 	EquippableVG equipCardFace = null;
 	EquippableVG equipTheme = null;
 	Dictionary<string, Sprite> spritesWithItemId = new Dictionary<string, Sprite>();
+	List<ThemePack> themePackList = new List<ThemePack>();
 	InventoryInfo inventoryInfo;
 
 	public IEnumerator Init()
@@ -77,6 +78,20 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 		List<InventoryInfo> tmp = JsonConvert.DeserializeObject<List<InventoryInfo>>(jsonString);
 		inventoryInfo = tmp[0];
 
+		for(int i = 0 ; i < inventoryInfo.themeCount ; ++i)
+		{
+			string themeItemId = string.Format("Theme_{0}", i.ToString("D2"));
+			string cardBackItemId = string.Format("CardBack_{0}", i.ToString("D3"));
+			string cardFaceItemId = string.Format("CardFace_{0}", i.ToString("D3"));
+
+			ThemePack pack = new ThemePack();
+			pack.theme = (VirtualGood)StoreInfo.GetItemByItemId(themeItemId);
+			pack.cardBack = (VirtualGood)StoreInfo.GetItemByItemId(cardBackItemId);
+			pack.cardFace = (VirtualGood)StoreInfo.GetItemByItemId(cardFaceItemId);
+
+			themePackList.Add(pack);
+		}
+
 		for(int i = 0 ; i < inventoryInfo.cardBackCount ; ++i)
 		{
 			ResourceRequest request = Resources.LoadAsync<Sprite>(string.Format(inventoryInfo.cardBackPath, i.ToString("D3")));
@@ -97,6 +112,11 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 			yield return request;
 			spritesWithItemId.Add(request.asset.name, (Sprite)request.asset);
 		}
+	}
+	
+	public List<ThemePack> GetAllThemePack()
+	{
+		return themePackList;
 	}
 
 	public Sprite GetSpriteById(string itemId)
@@ -121,4 +141,27 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 	{
 		return GetSpriteById(equipCardFace.ItemId);
 	}
+
+	public bool IsCardEquip(string cardBackItemId)
+	{
+		if(cardBackItemId == equipCardBack.ItemId)
+			return true;
+		else
+			return false;
+	}
+
+	public bool IsThemeEquiped(string themeItemId)
+	{
+		if(themeItemId == equipTheme.ItemId)
+			return true;
+		else
+			return false;
+	}
+}
+
+public class ThemePack
+{
+	public VirtualGood theme;
+	public VirtualGood cardBack;
+	public VirtualGood cardFace;
 }
