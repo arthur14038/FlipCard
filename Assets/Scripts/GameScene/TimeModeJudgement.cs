@@ -198,7 +198,7 @@ public class TimeModeJudgement : GameModeJudgement
 			achieveCondition[2] = false;
 		}
 
-		if(score >= currentModeSetting.targetScore)
+		if(grade == 3 && score >= currentModeSetting.targetScore)
 		{
 			grade += 1;
 			achieveCondition[3] = true;
@@ -230,7 +230,7 @@ public class TimeModeJudgement : GameModeJudgement
 		conditionContent[0] = "LEVEL COMPLETE";
 		conditionContent[1] = string.Format("OVER {0} ROUND", currentModeSetting.targetRound);
 		conditionContent[2] = string.Format("FEVER {0} TIMES", currentModeSetting.targetFeverTimeCount);
-		if(grade == 4)
+		if(grade >= 3)
 			conditionContent[3] = string.Format("REACH {0} SCORE", currentModeSetting.targetScore);
 		else
 			conditionContent[3] = "?????????";

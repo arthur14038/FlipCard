@@ -85,7 +85,7 @@ public class ClassicModeJudgement : GameModeJudgement
 			achieveCondition[2] = false;
 		}
 
-		if(moveTimes <= currentModeSetting.excellentMove)
+		if(grade == 3 && moveTimes <= currentModeSetting.excellentMove)
 		{
 			grade += 1;
 			achieveCondition[3] = true;
@@ -114,7 +114,7 @@ public class ClassicModeJudgement : GameModeJudgement
 		conditionContent[0] = "LEVEL COMPLETE";
 		conditionContent[1] = string.Format("LESS THAN {0} MOVE", currentModeSetting.targetMove);
 		conditionContent[2] = string.Format("COMPLETE IN {0} SECOND", currentModeSetting.targetTime);
-		if(grade == 4)
+		if(grade >= 3)
 			conditionContent[3] = string.Format("LESS THAN {0} MOVE", currentModeSetting.excellentMove);
 		else
 			conditionContent[3] = "?????????";

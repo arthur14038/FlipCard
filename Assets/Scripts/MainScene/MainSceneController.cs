@@ -36,6 +36,9 @@ public class MainSceneController : AbstractController {
 		timeModeView.onClickBack = ShowMainPage;
 		timeModeView.onClickPlay = GoToGameScene;
 		shopView.onClickBack = ShowMainPage;
+		shopView.onClickBuyTheme = BuyTheme;
+		shopView.onClickEquipCard = EquipCard;
+		shopView.onClickEquipTheme = EquipTheme;
 
 		shopView.HideUI(false);
         mainPageView.HideUI(false);
@@ -142,6 +145,26 @@ public class MainSceneController : AbstractController {
 		string email = "playclaystudio@gmail.com";
 		string subject = MyEscapeURL("User Feedback");
 		Application.OpenURL("mailto:" + email + "?subject=" + subject);
+	}
+
+	void EquipTheme(string themeItemId)
+	{
+		InventoryManager.Instance.EquipItem(themeItemId);
+		mainPageView.UpdateTheme();
+	}
+
+	void EquipCard(string cardBackItemId, string cardFaceItemId)
+	{
+		InventoryManager.Instance.EquipItem(cardBackItemId);
+		InventoryManager.Instance.EquipItem(cardFaceItemId);
+	}
+
+	void BuyTheme(string themeItemId)
+	{		
+		if(InventoryManager.Instance.CanAfford(themeItemId))
+			shopView.ShowConfirmBuy(themeItemId);
+		else
+			shopView.ShowMoniNotEnough();
 	}
 
 	void LeaveGame()

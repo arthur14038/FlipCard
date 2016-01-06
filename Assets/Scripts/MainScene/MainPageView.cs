@@ -36,12 +36,13 @@ public class MainPageView : AbstractView {
 		group_Main.gameObject.SetActive(true);
 		escapeEvent = OnClickEscape;
 
-		image_Theme.sprite = InventoryManager.Instance.GetCurrentThemeSprite();
 		AudioManager.Instance.SetListenToToggle(false);
 		toggle_Music.isOn = !PlayerPrefsManager.MusicSetting;
 		toggle_Sound.isOn = !PlayerPrefsManager.SoundSetting;
 		AudioManager.Instance.SetListenToToggle(true);
-		
+
+		UpdateTheme();
+
 		for(int i = 0 ; i < modeButtons.Length ; ++i)
 		{
 			if(i > GameMainLoop.Instance.lastUnlockMode)
@@ -189,6 +190,11 @@ public class MainPageView : AbstractView {
 	public void OnSoundValueChange(bool value)
 	{
 		AudioManager.Instance.SoundChangeValue(!value);
+	}
+
+	public void UpdateTheme()
+	{
+		image_Theme.sprite = InventoryManager.Instance.GetCurrentThemeSprite();
 	}
 
 	void OnClickEscape()

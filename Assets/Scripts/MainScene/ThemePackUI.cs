@@ -20,6 +20,7 @@ public class ThemePackUI : MonoBehaviour {
 	ThemePackUIState currentState;
 	VoidString onEquipTheme;
 	VoidTwoString onEquipCard;
+	VoidString onBuyTheme;
 	ThemePack themePack;
 	bool inBag;
 	public bool IsInBag {
@@ -43,11 +44,12 @@ public class ThemePackUI : MonoBehaviour {
 		}
 	}
 
-	public void Init(ThemePack themePack, VoidString onEquipTheme, VoidTwoString onEquipCard)
+	public void Init(ThemePack themePack, VoidString onEquipTheme, VoidTwoString onEquipCard, VoidString onBuyTheme)
 	{
 		this.themePack = themePack;
 		this.onEquipTheme = onEquipTheme;
 		this.onEquipCard = onEquipCard;
+		this.onBuyTheme = onBuyTheme;
 		text_ItemName.text = themePack.theme.Name;
 		image_Theme.sprite = InventoryManager.Instance.GetSpriteById(themePack.theme.ItemId);
 		image_CardFace.sprite = InventoryManager.Instance.GetSpriteById(themePack.cardFace.ItemId);
@@ -133,6 +135,15 @@ public class ThemePackUI : MonoBehaviour {
 		{
 			Debug.Log("OnClickEquipCard");
 			onEquipCard(themePack.cardFace.ItemId, themePack.cardBack.ItemId);
+		}
+	}
+
+	public void OnClickBuy()
+	{
+		if(!IsInBag)
+		{
+			if(onBuyTheme != null)
+				onBuyTheme(themePack.theme.ItemId);
 		}
 	}
 }

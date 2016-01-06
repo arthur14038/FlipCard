@@ -15,10 +15,7 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 		public string cardFacePath;
 		public string themePath;
 	}
-
-	EquippableVG equipCardBack = null;
-	EquippableVG equipCardFace = null;
-	EquippableVG equipTheme = null;
+	
 	Dictionary<string, Sprite> spritesWithItemId = new Dictionary<string, Sprite>();
 	List<ThemePack> themePackList = new List<ThemePack>();
 	InventoryInfo inventoryInfo;
@@ -38,38 +35,26 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 		if(cardBackBalance == 0)
 		{
 			StoreInventory.GiveItem(FlipCardStoreAsset.CARD_BACK_000_ITEM_ID, 1);
-			StoreInventory.EquipVirtualGood(FlipCardStoreAsset.CARD_BACK_000_ITEM_ID);
+			EquipItem(FlipCardStoreAsset.CARD_BACK_000_ITEM_ID);
 		}
-		equipCardBack = StoreInventory.GetEquippedVirtualGood(FlipCardStoreAsset.CardBackCategory.Name);
-		if(equipCardBack == null)
-		{
-			StoreInventory.EquipVirtualGood(FlipCardStoreAsset.CARD_BACK_000_ITEM_ID);
-			equipCardBack = StoreInventory.GetEquippedVirtualGood(FlipCardStoreAsset.CardBackCategory.Name);
-		}
+		if(StoreInventory.GetEquippedVirtualGood(FlipCardStoreAsset.CardBackCategory.Name) == null)
+			EquipItem(FlipCardStoreAsset.CARD_BACK_000_ITEM_ID);
 
 		if(cardBackBalance == 0)
 		{
 			StoreInventory.GiveItem(FlipCardStoreAsset.CARD_FACE_000_ITEM_ID, 1);
-			StoreInventory.EquipVirtualGood(FlipCardStoreAsset.CARD_FACE_000_ITEM_ID);
+			EquipItem(FlipCardStoreAsset.CARD_FACE_000_ITEM_ID);
 		}
-		equipCardFace = StoreInventory.GetEquippedVirtualGood(FlipCardStoreAsset.CardFaceCategory.Name);
-		if(equipCardFace == null)
-		{
-			StoreInventory.EquipVirtualGood(FlipCardStoreAsset.CARD_FACE_000_ITEM_ID);
-			equipCardFace = StoreInventory.GetEquippedVirtualGood(FlipCardStoreAsset.CardFaceCategory.Name);
-		}
+		if(StoreInventory.GetEquippedVirtualGood(FlipCardStoreAsset.CardFaceCategory.Name) == null)
+			EquipItem(FlipCardStoreAsset.CARD_FACE_000_ITEM_ID);
 
 		if(cardBackBalance == 0)
 		{
 			StoreInventory.GiveItem(FlipCardStoreAsset.THEME_00_ITEM_ID, 1);
-			StoreInventory.EquipVirtualGood(FlipCardStoreAsset.THEME_00_ITEM_ID);
+			EquipItem(FlipCardStoreAsset.THEME_00_ITEM_ID);
 		}
-		equipTheme = StoreInventory.GetEquippedVirtualGood(FlipCardStoreAsset.ThemeCategory.Name);
-		if(equipTheme == null)
-		{
-			StoreInventory.EquipVirtualGood(FlipCardStoreAsset.THEME_00_ITEM_ID);
-			equipTheme = StoreInventory.GetEquippedVirtualGood(FlipCardStoreAsset.ThemeCategory.Name);
-		}
+		if(StoreInventory.GetEquippedVirtualGood(FlipCardStoreAsset.ThemeCategory.Name) == null)
+			EquipItem(FlipCardStoreAsset.THEME_00_ITEM_ID);
 	}
 
 	IEnumerator LoadInventoryTexture()
@@ -119,6 +104,11 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 		return themePackList;
 	}
 
+	public VirtualGood GetVirtualGood(string itemId)
+	{
+		return (VirtualGood)StoreInfo.GetItemByItemId(itemId); ;
+	}
+
 	public Sprite GetSpriteById(string itemId)
 	{
 		if(spritesWithItemId.ContainsKey(itemId))
@@ -129,21 +119,30 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 
 	public Sprite GetCurrentThemeSprite()
 	{
+		EquippableVG equipTheme = StoreInventory.GetEquippedVirtualGood(FlipCardStoreAsset.ThemeCategory.Name);
 		return GetSpriteById(equipTheme.ItemId);
 	}
 
 	public Sprite GetCurrentCardBack()
 	{
+		EquippableVG equipCardBack = StoreInventory.GetEquippedVirtualGood(FlipCardStoreAsset.CardBackCategory.Name);
 		return GetSpriteById(equipCardBack.ItemId);
 	}
 
 	public Sprite GetCurrentCardFace()
 	{
+		EquippableVG equipCardFace = StoreInventory.GetEquippedVirtualGood(FlipCardStoreAsset.CardFaceCategory.Name);
 		return GetSpriteById(equipCardFace.ItemId);
+	}
+
+	public void EquipItem(string itemId)
+	{
+		StoreInventory.EquipVirtualGood(itemId);
 	}
 
 	public bool IsCardEquip(string cardBackItemId)
 	{
+		EquippableVG equipCardBack = StoreInventory.GetEquippedVirtualGood(FlipCardStoreAsset.CardBackCategory.Name);
 		if(cardBackItemId == equipCardBack.ItemId)
 			return true;
 		else
@@ -152,10 +151,22 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 
 	public bool IsThemeEquiped(string themeItemId)
 	{
+		EquippableVG equipTheme = StoreInventory.GetEquippedVirtualGood(FlipCardStoreAsset.ThemeCategory.Name);
 		if(themeItemId == equipTheme.ItemId)
 			return true;
 		else
 			return false;
+	}
+
+	public bool CanAfford(string themeItemId)
+	{
+		VirtualGood good = (VirtualGood)StoreInfo.GetItemByItemId(themeItemId);
+		if(good == null)
+		{
+			Debug.LogError("theTheme == null");
+			return false;
+		}
+		return good.CanAfford();
 	}
 }
 

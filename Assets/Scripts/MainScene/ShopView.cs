@@ -9,8 +9,11 @@ public class ShopView : AbstractView
 {
 	enum ShopGroup {Theme, Shop, Moni, None}
 	ShopGroup currentGroup = ShopGroup.None;
+	enum MsgWindowState {Close, ConfirmBuy, NotEnoughMoni}
+	MsgWindowState currentMsgWindowState;
 	public VoidNoneParameter onClickBack;
 	public VoidString onClickEquipTheme;
+	public VoidString onClickBuyTheme;
 	public VoidTwoString onClickEquipCard;
 	public GameObject themePackUIPrefab;
 	public Text text_CurrentMoni;
@@ -18,6 +21,11 @@ public class ShopView : AbstractView
 	public RectTransform content_ThemeUI;
 	public RectTransform group_Theme;
 	public RectTransform group_Moni;
+	public Image image_PopUpMask;
+	public RectTransform image_MsgWindow;
+	public Text text_MsgTitle;
+	public Text text_MsgContent;
+	public Toggle[] swithToggle;
 	List<ThemePackUI> themePackUIList = new List<ThemePackUI>();
 
 	public override IEnumerator Init()
@@ -33,10 +41,12 @@ public class ShopView : AbstractView
 			tmp.transform.localScale = Vector3.one;
 			tmp.name = themePackUIPrefab.name + i.ToString();
 			ThemePackUI themePackUI = tmp.GetComponent<ThemePackUI>();
-			themePackUI.Init(themePackList[i], OnClickEquipTheme, OnClickEquipCard);
+			themePackUI.Init(themePackList[i], OnClickEquipTheme, OnClickEquipCard, OnClickBuyTheme);
 			themePackUIList.Add(themePackUI);
 		}
 
+		image_PopUpMask.gameObject.SetActive(false);
+		currentMsgWindowState = MsgWindowState.Close;
 		SetCurrentGroup(ShopGroup.Theme);
 		yield return null;
 	}
@@ -48,6 +58,27 @@ public class ShopView : AbstractView
 			onClickBack();
 	}
 
+	public void OnClickCancelMsg()
+	{
+		AudioManager.Instance.PlayOneShot("Button_Click2");
+		StartCoroutine(CloseMsgWindow());
+	}
+
+	public void OnClickYesMsg()
+	{
+		AudioManager.Instance.PlayOneShot("Button_Click2");
+		switch(currentMsgWindowState)
+		{
+			case MsgWindowState.ConfirmBuy:
+				break;
+			case MsgWindowState.NotEnoughMoni:
+				swithToggle[(int)ShopGroup.Moni].isOn = true;
+				SetCurrentGroup(ShopGroup.Moni);
+				break;
+		}
+		StartCoroutine(CloseMsgWindow());
+	}
+
 	public void BuyMoniPack(int tier)
 	{
 		Debug.LogFormat("BuyMoniPack Tier {0}", tier);
@@ -57,6 +88,40 @@ public class ShopView : AbstractView
 	{
 		AudioManager.Instance.PlayOneShot("Button_Click");
 		SetCurrentGroup((ShopGroup)groupIndex);
+	}
+
+	public void ShowMoniNotEnough()
+	{
+		currentMsgWindowState = MsgWindowState.NotEnoughMoni;
+		ShowMsgWindow("Your Moni is not enough", "You don't have enough \nMoni to buy this theme.\nDo you want to buy some Moni?");
+	}
+
+	public void ShowConfirmBuy(string itemId)
+	{
+		currentMsgWindowState = MsgWindowState.ConfirmBuy;
+		VirtualGood good = InventoryManager.Instance.GetVirtualGood(itemId);
+		string content = string.Format("Buying this theme will cost \n{0} Moni.\nAre you sure?", good.PurchaseType.GetPrice());
+		ShowMsgWindow("Confirm Buy", content);
+	}
+
+	void ShowMsgWindow(string title, string content)
+	{
+		text_MsgTitle.text = title;
+		text_MsgContent.text = content;
+
+		image_PopUpMask.gameObject.SetActive(true);
+		image_PopUpMask.color = Color.clear;
+		image_PopUpMask.DOColor(Color.black * 0.7f, 0.3f);
+		image_MsgWindow.localScale = Vector3.zero;
+		image_MsgWindow.DOScale(1f, 0.3f).SetEase(Ease.OutBack);
+	}
+
+	IEnumerator CloseMsgWindow()
+	{
+		image_MsgWindow.DOScale(0f, 0.3f).SetEase(Ease.InBack);
+		yield return image_PopUpMask.DOFade(0f, 0.3f).WaitForCompletion();
+		image_PopUpMask.gameObject.SetActive(false);
+		currentMsgWindowState = MsgWindowState.Close;
 	}
 
 	void SetCurrentGroup(ShopGroup value)
@@ -106,6 +171,13 @@ public class ShopView : AbstractView
 		if(onClickEquipCard != null)
 			onClickEquipCard(cardFaceItemId, cardBackItemId);
 	}
+
+	void OnClickBuyTheme(string themeItemId)
+	{
+		AudioManager.Instance.PlayOneShot("Button_Click");
+		if(onClickBuyTheme != null)
+			onClickBuyTheme(themeItemId);
+    }
 
 	protected override IEnumerator HideUIAnimation()
 	{
