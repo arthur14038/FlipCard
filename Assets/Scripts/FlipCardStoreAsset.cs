@@ -32,7 +32,7 @@ public class FlipCardStoreAsset : IStoreAssets
 
     public int GetVersion()
     {
-        return 2;
+        return 3;
     }
 
     #region const strings
@@ -126,15 +126,15 @@ public class FlipCardStoreAsset : IStoreAssets
 	public static VirtualGood CardFace_007 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Card Face 007", "Card Face 007", CARD_FACE_007_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
 	public static VirtualGood CardFace_008 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Card Face 008", "Card Face 008", CARD_FACE_008_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
 
-	public static VirtualGood Theme_00 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Default Theme", "Default Theme", THEME_00_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 0));
-	public static VirtualGood Theme_01 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Theme 001", "Theme 001", THEME_01_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
-	public static VirtualGood Theme_02 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Theme 002", "Theme 002", THEME_02_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
-	public static VirtualGood Theme_03 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Theme 003", "Theme 003", THEME_03_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
-	public static VirtualGood Theme_04 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Theme 004", "Theme 004", THEME_04_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
-	public static VirtualGood Theme_05 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Theme 005", "Theme 005", THEME_05_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
-	public static VirtualGood Theme_06 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Theme 006", "Theme 006", THEME_06_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
-	public static VirtualGood Theme_07 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Theme 007", "Theme 007", THEME_07_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
-	public static VirtualGood Theme_08 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "Theme 008", "Theme 008", THEME_08_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
+	public static VirtualGood Theme_00 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "北國(夜)", "Default Theme", THEME_00_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 0));
+	public static VirtualGood Theme_01 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "北國(夏)", "Theme 001", THEME_01_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 200));
+	public static VirtualGood Theme_02 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "三角塔(日)", "Theme 002", THEME_02_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
+	public static VirtualGood Theme_03 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "三角塔(夜)", "Theme 003", THEME_03_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 500));
+	public static VirtualGood Theme_04 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "美麗的陷阱", "Theme 004", THEME_04_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 250));
+	public static VirtualGood Theme_05 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "宇宙", "Theme 005", THEME_05_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 1250));
+	public static VirtualGood Theme_06 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "小廟", "Theme 006", THEME_06_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 850));
+	public static VirtualGood Theme_07 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "三瓣花", "Theme 007", THEME_07_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 150));
+	public static VirtualGood Theme_08 = new EquippableVG(EquippableVG.EquippingModel.CATEGORY, "白蓮花", "Theme 008", THEME_08_ITEM_ID, new PurchaseWithVirtualItem(MONI_ITEM_ID, 200));
 	#endregion
 
 	#region Virtual Categories

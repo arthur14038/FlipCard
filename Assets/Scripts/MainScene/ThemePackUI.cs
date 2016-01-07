@@ -8,7 +8,8 @@ public class ThemePackUI : MonoBehaviour {
 	ThemePackUIState currentState;
 	public Text text_ItemName;
 	public Text text_ItemInfo;
-    public Image image_Theme;
+	public Text text_ThemePrice;
+	public Image image_Theme;
 	public Image image_CardFace;
 	public Image image_CardBack;
 	public GameObject image_CardEquiped;
@@ -54,7 +55,8 @@ public class ThemePackUI : MonoBehaviour {
 		image_Theme.sprite = InventoryManager.Instance.GetSpriteById(themePack.theme.ItemId);
 		image_CardFace.sprite = InventoryManager.Instance.GetSpriteById(themePack.cardFace.ItemId);
 		image_CardBack.sprite = InventoryManager.Instance.GetSpriteById(themePack.cardBack.ItemId);
-		image_InfoBG.SetActive(false);
+		text_ThemePrice.text = themePack.theme.PurchaseType.GetPrice();
+        image_InfoBG.SetActive(false);
 
 		CheckUIState();
 	}

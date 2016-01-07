@@ -144,19 +144,19 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 
 	public Sprite GetCurrentThemeSprite()
 	{
-		EquippableVG equipTheme = StoreInventory.GetEquippedVirtualGood(FlipCardStoreAsset.ThemeCategory.Name);
+		EquippableVG equipTheme = GetEquippedVirtualGood(FlipCardStoreAsset.ThemeCategory.Name);
 		return GetSpriteById(equipTheme.ItemId);
 	}
 
 	public Sprite GetCurrentCardBack()
 	{
-		EquippableVG equipCardBack = StoreInventory.GetEquippedVirtualGood(FlipCardStoreAsset.CardBackCategory.Name);
+		EquippableVG equipCardBack = GetEquippedVirtualGood(FlipCardStoreAsset.CardBackCategory.Name);
 		return GetSpriteById(equipCardBack.ItemId);
 	}
 
 	public Sprite GetCurrentCardFace()
 	{
-		EquippableVG equipCardFace = StoreInventory.GetEquippedVirtualGood(FlipCardStoreAsset.CardFaceCategory.Name);
+		EquippableVG equipCardFace = GetEquippedVirtualGood(FlipCardStoreAsset.CardFaceCategory.Name);
 		return GetSpriteById(equipCardFace.ItemId);
 	}
 
@@ -167,7 +167,7 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 
 	public bool IsCardEquip(string cardBackItemId)
 	{
-		EquippableVG equipCardBack = StoreInventory.GetEquippedVirtualGood(FlipCardStoreAsset.CardBackCategory.Name);
+		EquippableVG equipCardBack = GetEquippedVirtualGood(FlipCardStoreAsset.CardBackCategory.Name);
 		if(cardBackItemId == equipCardBack.ItemId)
 			return true;
 		else
@@ -176,7 +176,7 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 
 	public bool IsThemeEquiped(string themeItemId)
 	{
-		EquippableVG equipTheme = StoreInventory.GetEquippedVirtualGood(FlipCardStoreAsset.ThemeCategory.Name);
+		EquippableVG equipTheme = GetEquippedVirtualGood(FlipCardStoreAsset.ThemeCategory.Name);
 		if(themeItemId == equipTheme.ItemId)
 			return true;
 		else
@@ -197,6 +197,25 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 		StoreInventory.BuyItem(buyingThemePack.theme.ItemId);
 	}
 
+	/// <summary>
+	/// Checks currently equipped good in given <c>category</c>
+	/// </summary>
+	/// <param name="string">Name of the category we want to check</param>
+	/// <returns>EquippableVG otherwise null</returns>
+	public static EquippableVG GetEquippedVirtualGood(string categoryName)
+	{
+		foreach(VirtualCategory category in StoreInfo.Categories)
+		{
+			if(category.Name == categoryName)
+			{
+				return StoreInventory.GetEquippedVirtualGood(category);
+			}
+		}
+
+		Debug.LogError("There is no category named " + categoryName);
+		return null;
+	}
+
 	void SetEquipItem()
 	{
 		int cardBackBalance = StoreInventory.GetItemBalance(FlipCardStoreAsset.CARD_BACK_000_ITEM_ID);
@@ -208,7 +227,7 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 			StoreInventory.GiveItem(FlipCardStoreAsset.CARD_BACK_000_ITEM_ID, 1);
 			EquipItem(FlipCardStoreAsset.CARD_BACK_000_ITEM_ID);
 		}
-		if(StoreInventory.GetEquippedVirtualGood(FlipCardStoreAsset.CardBackCategory.Name) == null)
+		if(GetEquippedVirtualGood(FlipCardStoreAsset.CardBackCategory.Name) == null)
 			EquipItem(FlipCardStoreAsset.CARD_BACK_000_ITEM_ID);
 
 		if(cardFackBalance == 0)
@@ -216,7 +235,7 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 			StoreInventory.GiveItem(FlipCardStoreAsset.CARD_FACE_000_ITEM_ID, 1);
 			EquipItem(FlipCardStoreAsset.CARD_FACE_000_ITEM_ID);
 		}
-		if(StoreInventory.GetEquippedVirtualGood(FlipCardStoreAsset.CardFaceCategory.Name) == null)
+		if(GetEquippedVirtualGood(FlipCardStoreAsset.CardFaceCategory.Name) == null)
 			EquipItem(FlipCardStoreAsset.CARD_FACE_000_ITEM_ID);
 
 		if(themeBalance == 0)
@@ -224,7 +243,7 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 			StoreInventory.GiveItem(FlipCardStoreAsset.THEME_00_ITEM_ID, 1);
 			EquipItem(FlipCardStoreAsset.THEME_00_ITEM_ID);
 		}
-		if(StoreInventory.GetEquippedVirtualGood(FlipCardStoreAsset.ThemeCategory.Name) == null)
+		if(GetEquippedVirtualGood(FlipCardStoreAsset.ThemeCategory.Name) == null)
 			EquipItem(FlipCardStoreAsset.THEME_00_ITEM_ID);
 	}
 
