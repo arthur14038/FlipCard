@@ -8,7 +8,6 @@ public class ClassicModeGameView : AbstractView
 	public IEnumeratorNoneParameter onGameStart;
 	public VoidNoneParameter onClickPause;
 	public Text text_MoveTimes;
-	public Text text_CurrentScore;
 	public Text text_GameTime;
 	public Image group_Counting;
 	public RectTransform image_Counting3;
@@ -21,23 +20,12 @@ public class ClassicModeGameView : AbstractView
 		group_Counting.gameObject.SetActive(true);
 		yield return null;
 		SetMoveTimes(0);
-		SetScore(0);
 		SetGameTime(0);
 	}
-
-	public void SetScore(int score)
-	{
-		text_CurrentScore.text = string.Format("Score: {0}", score);
-		text_CurrentScore.rectTransform.DOScale(1.2f, 0.15f).SetEase(Ease.InOutQuad).OnComplete(
-			delegate () {
-				text_CurrentScore.rectTransform.DOScale(1f, 0.15f).SetEase(Ease.InOutQuad);
-			}
-		);
-	}
-
+	
 	public void SetGameTime(float gameTime)
 	{
-		string minSec = string.Format("{0}:{1:00}", (int)gameTime / 60, (int)gameTime % 60);
+		string minSec = string.Format("{0:00}:{1:00}", (int)gameTime / 60, (int)gameTime % 60);
 		text_GameTime.text = minSec;
 	}
 
@@ -50,7 +38,7 @@ public class ClassicModeGameView : AbstractView
 
 	public void SetMoveTimes(int value)
 	{
-		text_MoveTimes.text = string.Format("Move: {0}", value);
+		text_MoveTimes.text = value.ToString();
 		text_MoveTimes.rectTransform.DOScale(1.2f, 0.15f).SetEase(Ease.InOutQuad).OnComplete(
 			delegate () {
 				text_MoveTimes.rectTransform.DOScale(1f, 0.15f).SetEase(Ease.InOutQuad);

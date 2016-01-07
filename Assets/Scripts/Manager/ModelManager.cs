@@ -11,7 +11,6 @@ public class ModelManager : SingletonMonoBehavior<ModelManager> {
 	string classicModeRecordFileName = "ClassicModeRecord.json";
 	string encodeKey = "FlipCard";
 	string encodeIV = "VeryGood";
-	const int version = 1;
 
 	public void Init()
 	{

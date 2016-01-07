@@ -8,11 +8,10 @@ public class TimeModeGameView : AbstractView
 	public IEnumeratorNoneParameter onCountDownFinished;
 	public VoidNoneParameter onClickPause;
     public Slider timeBar;
-	public Slider feverTimeBar;
 	public Text text_CurrentScore;
 	public Text text_CurrentRound;
 	public Image group_Counting;
-	public Image image_FeverTimeGlow;
+	public Image image_FeverTimeCircle;
     public RectTransform image_Counting3;
 	public RectTransform image_Counting2;
 	public RectTransform image_Counting1;
@@ -33,7 +32,7 @@ public class TimeModeGameView : AbstractView
 		image_CountingGo.gameObject.SetActive(false);
 		group_FeverTime.gameObject.SetActive(false);
 		ToggleFeverTimeEffect(false);
-		SetFeverTimeBar(0f);
+		SetFeverTimeCircle(0f);
     }
 	
 	public void OnClickPause()
@@ -48,9 +47,9 @@ public class TimeModeGameView : AbstractView
 		timeBar.value = value;
 	}
 
-	public void SetFeverTimeBar(float value)
+	public void SetFeverTimeCircle(float value)
 	{
-		feverTimeBar.DOValue(value, 0.5f);
+		image_FeverTimeCircle.DOFillAmount(value, 0.5f);
 	}
 
 	public void AddTimeEffect(float endValue)
@@ -60,7 +59,7 @@ public class TimeModeGameView : AbstractView
 
 	public void SetScore(int score)
 	{
-		text_CurrentScore.text = string.Format("Score: {0}", score);
+		text_CurrentScore.text = score.ToString();
 		text_CurrentScore.rectTransform.DOScale(1.2f, 0.15f).SetEase(Ease.InOutQuad).OnComplete(
 			delegate () {
 				text_CurrentScore.rectTransform.DOScale(1f, 0.15f).SetEase(Ease.InOutQuad);
@@ -70,7 +69,7 @@ public class TimeModeGameView : AbstractView
 
 	public void SetRound(int round)
 	{
-		text_CurrentRound.text = string.Format("Round: {0}", round);
+		text_CurrentRound.text = round.ToString();
 		text_CurrentRound.rectTransform.DOScale(1.2f, 0.15f).SetEase(Ease.InOutQuad).OnComplete(
 			delegate () {
 				text_CurrentRound.rectTransform.DOScale(1f, 0.15f).SetEase(Ease.InOutQuad);
@@ -95,19 +94,19 @@ public class TimeModeGameView : AbstractView
 		if(feverTimeEffect != null && feverTimeEffect.activeSelf != value)
 			feverTimeEffect.SetActive(value);
 		
-		if(value)
-		{
-			image_FeverTimeGlow.color = image_FeverTimeGlow.color - Color.black;
-			image_FeverTimeGlow.gameObject.SetActive(true);
-			image_FeverTimeGlow.DOFade(1f, 0.3f);
-		} else
-		{
-			image_FeverTimeGlow.DOFade(0f, 0.3f).OnComplete(
-			delegate () {
-				image_FeverTimeGlow.gameObject.SetActive(false);
-			}
-		);
-		}
+		//if(value)
+		//{
+		//	image_FeverTimeGlow.color = image_FeverTimeGlow.color - Color.black;
+		//	image_FeverTimeGlow.gameObject.SetActive(true);
+		//	image_FeverTimeGlow.DOFade(1f, 0.3f);
+		//} else
+		//{
+		//	image_FeverTimeGlow.DOFade(0f, 0.3f).OnComplete(
+		//	delegate () {
+		//		image_FeverTimeGlow.gameObject.SetActive(false);
+		//	}
+		//);
+		//}
 	}
 
 	IEnumerator FeverTimeEffect()

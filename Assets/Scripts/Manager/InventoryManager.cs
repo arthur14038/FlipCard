@@ -258,19 +258,19 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 		List<InventoryInfo> tmp = JsonConvert.DeserializeObject<List<InventoryInfo>>(jsonString);
 		inventoryInfo = tmp[0];
 
-		for(int i = 0 ; i < inventoryInfo.themeCount ; ++i)
-		{
-			string themeItemId = string.Format("Theme_{0}", i.ToString("D2"));
-			string cardBackItemId = string.Format("CardBack_{0}", i.ToString("D3"));
-			string cardFaceItemId = string.Format("CardFace_{0}", i.ToString("D3"));
+		//for(int i = 0 ; i < inventoryInfo.themeCount ; ++i)
+		//{
+		//	string themeItemId = string.Format("Theme_{0}", i.ToString("D2"));
+		//	string cardBackItemId = string.Format("CardBack_{0}", i.ToString("D3"));
+		//	string cardFaceItemId = string.Format("CardFace_{0}", i.ToString("D3"));
 
-			ThemePack pack = new ThemePack();
-			pack.theme = (VirtualGood)StoreInfo.GetItemByItemId(themeItemId);
-			pack.cardBack = (VirtualGood)StoreInfo.GetItemByItemId(cardBackItemId);
-			pack.cardFace = (VirtualGood)StoreInfo.GetItemByItemId(cardFaceItemId);
+		//	ThemePack pack = new ThemePack();
+		//	pack.theme = (VirtualGood)StoreInfo.GetItemByItemId(themeItemId);
+		//	pack.cardBack = (VirtualGood)StoreInfo.GetItemByItemId(cardBackItemId);
+		//	pack.cardFace = (VirtualGood)StoreInfo.GetItemByItemId(cardFaceItemId);
 
-			themePackList.Add(pack);
-		}
+		//	themePackList.Add(pack);
+		//}
 
 		for(int i = 0 ; i < inventoryInfo.cardBackCount ; ++i)
 		{

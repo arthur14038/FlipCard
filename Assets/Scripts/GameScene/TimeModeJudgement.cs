@@ -66,7 +66,7 @@ public class TimeModeJudgement : GameModeJudgement
 				if(feverTimeOn)
 				{
 					feverTimePassTime += Time.deltaTime;
-					timeModeGameView.SetFeverTimeBar(1f - feverTimePassTime/ currentModeSetting.feverTimeDuration);
+					timeModeGameView.SetFeverTimeCircle(1f - feverTimePassTime/ currentModeSetting.feverTimeDuration);
 
 					if(feverTimePassTime >= currentModeSetting.feverTimeDuration)
 					{
@@ -95,7 +95,7 @@ public class TimeModeJudgement : GameModeJudgement
 				if(!feverTimeOn)
 				{
 					++currentCombo;
-					timeModeGameView.SetFeverTimeBar((float)currentCombo / currentModeSetting.feverTimeThreshold);
+					timeModeGameView.SetFeverTimeCircle((float)currentCombo / currentModeSetting.feverTimeThreshold);
                 }
 
 				if(cards[0].IsGoldCard())
@@ -122,7 +122,7 @@ public class TimeModeJudgement : GameModeJudgement
 				if(!feverTimeOn)
 				{
 					currentCombo = 0;
-					timeModeGameView.SetFeverTimeBar((float)currentCombo / currentModeSetting.feverTimeThreshold);
+					timeModeGameView.SetFeverTimeCircle((float)currentCombo / currentModeSetting.feverTimeThreshold);
 				}
 			}
 			if(scoreChangeAmount != 0)

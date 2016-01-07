@@ -101,6 +101,11 @@ public class ClassicModeJudgement : GameModeJudgement
 			record.grade = grade;
 			recordBreak = true;
 		}
+		if(record.highScore == 0 || gameTime < record.highScore)
+		{
+			record.highScore = (int)gameTime;
+			recordBreak = true;
+		}
 		record.playTimes += 1;
 		
 		if(record.playTimes % 3 == 1)

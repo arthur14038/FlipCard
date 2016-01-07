@@ -59,7 +59,23 @@ public class FlipCardEditor : EditorWindow
 		if(GUILayout.Button("清除PlayerPrefs"))
 		{
 			PlayerPrefs.DeleteAll();
-		}
+			DeleteGameRecord();
+        }
 		GUILayout.EndHorizontal();
+	}
+
+	void DeleteGameRecord()
+	{
+		string filePath = GetSaveFilePath("GameRecord.json");
+		string timeModeRecordPath = GetSaveFilePath("TimeModeRecord.json");
+		string classicModeRecordPath = GetSaveFilePath("ClassicModeRecord.json");
+		WriteFileTool.DeleteFile(filePath);
+		WriteFileTool.DeleteFile(timeModeRecordPath);
+		WriteFileTool.DeleteFile(classicModeRecordPath);
+	}
+
+	string GetSaveFilePath(string fileName)
+	{
+		return Application.persistentDataPath + "/" + fileName;
 	}
 }

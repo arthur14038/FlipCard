@@ -39,12 +39,16 @@ public class GameSettingView : AbstractView {
 	public RectTransform button_CompetitionGameOverExit;
 	public RectTransform image_Player1;
 	public RectTransform image_Player2;
-	
-	Color player1Color = new Color(9f/255f, 147f / 255f, 147f / 255f, 178f / 255f);
-	Color player2Color = new Color(255f / 255f, 73f / 255f, 73f / 255f, 178f / 255f);
+	string player1ColorCode = "#02A887FF";
+	string player2ColorCode = "#FF4D88FF";
+	Color player1Color;
+	Color player2Color;
 
 	public override IEnumerator Init ()
 	{
+		ColorUtility.TryParseHtmlString(player1ColorCode, out player1Color);
+		ColorUtility.TryParseHtmlString(player2ColorCode, out player2Color);
+
 		AudioManager.Instance.SetListenToToggle(false);
 		toggle_Music.isOn = !PlayerPrefsManager.MusicSetting;
 		toggle_Sound.isOn = !PlayerPrefsManager.SoundSetting;
@@ -84,8 +88,8 @@ public class GameSettingView : AbstractView {
 		base.ShowUI(false);
 		AudioManager.Instance.StopMusic();
 		AudioManager.Instance.PlayOneShot("GameResult");
-		text_Player1ResultScore.text = string.Format("SCORE: {0}", player1Score);
-		text_Player2ResultScore.text = string.Format("SCORE: {0}", player2Score);
+		text_Player1ResultScore.text = player1Score.ToString();
+		text_Player2ResultScore.text = player2Score.ToString();
 
 		if(player1Score > player2Score)
 		{
@@ -119,12 +123,12 @@ public class GameSettingView : AbstractView {
 		image_WinnerBoard.gameObject.SetActive(true);
 		yield return image_WinnerBoard.rectTransform.DOScale(1f, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
 
-		image_Player1.anchoredPosition = new Vector2(750f, -392f);
-		image_Player2.anchoredPosition = new Vector2(-750f, -392f);
+		image_Player1.anchoredPosition = new Vector2(760f, -256f);
+		image_Player2.anchoredPosition = new Vector2(-760f, -256f);
 		image_Player1.gameObject.SetActive(true);
 		image_Player2.gameObject.SetActive(true);
-		image_Player1.DOAnchorPos(new Vector2(217f, -392f), 0.2f).SetEase(Ease.OutCubic);
-		yield return image_Player2.DOAnchorPos(new Vector2(-217f, -392f), 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
+		image_Player1.DOAnchorPos(new Vector2(213f, -256f), 0.2f).SetEase(Ease.OutCubic);
+		yield return image_Player2.DOAnchorPos(new Vector2(-213f, -256f), 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
 
 		button_CompetitionGameOverExit.gameObject.SetActive(true);
 		button_CompetitionGameOverExit.localScale = new Vector3(1f, 0f, 1f);

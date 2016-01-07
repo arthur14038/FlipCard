@@ -9,12 +9,11 @@ public class LevelUI : MonoBehaviour {
     public Text text_LevelTitle;
 	public Text text_FirstInformation;
 	public Text text_FirstInformationTitle;
-	public Text text_SecondInformation;
-	public Text text_SecondInformationTitle;
 	public Text text_LockInstruction;
 	public Button button_Play;
 	public RectTransform image_Mask;
 	public RectTransform image_ShakeCircle;
+	public Image[] image_Stars;
 	VoidTwoInt onClickPlay;
 	SinglePlayerLevel theLevel;
 	SpriteCardArrayLevel getSpriteIcon;
@@ -29,7 +28,6 @@ public class LevelUI : MonoBehaviour {
 		text_LockInstruction.text = theLevel.lockInstruction;
 		text_LevelTitle.text = theLevel.gameLevel.ToString();
 		text_FirstInformationTitle.text = theLevel.firstInformationTitle;
-		text_SecondInformationTitle.text = theLevel.secondInformationTitle;
 
 		Color headerColor;
 		ColorUtility.TryParseHtmlString(theLevel.headerColor, out headerColor);
@@ -51,7 +49,6 @@ public class LevelUI : MonoBehaviour {
 		if(isLock)
 		{
 			text_FirstInformationTitle.gameObject.SetActive(false);
-			text_SecondInformationTitle.gameObject.SetActive(false);
 			button_Play.gameObject.SetActive(false);
 			text_LevelTitle.gameObject.SetActive(false);
 			image_Mask.gameObject.SetActive(true);
@@ -60,7 +57,6 @@ public class LevelUI : MonoBehaviour {
         } else
 		{
 			text_FirstInformationTitle.gameObject.SetActive(true);
-			text_SecondInformationTitle.gameObject.SetActive(true);
 			button_Play.gameObject.SetActive(true);
 			text_LevelTitle.gameObject.SetActive(true);
 			image_Mask.gameObject.SetActive(false);
@@ -75,14 +71,30 @@ public class LevelUI : MonoBehaviour {
 	void SetGameRecord(GameRecord record)
 	{
 		text_FirstInformation.text = "-- --";
-		text_SecondInformation.text = "-- --";
+
+		for(int i = 0 ; i < image_Stars.Length ; ++i)
+			image_Stars[i].color = Color.gray;
+
 		if(record == null)
 			return;
 
-		if(record.highScore > 0)
-			text_FirstInformation.text = record.highScore.ToString();
-		if(record.secondInformation > 0)
-			text_SecondInformation.text = record.secondInformation.ToString();
+		switch(record.mode)
+		{
+			case GameMode.LimitTime:
+				if(record.highScore > 0)
+					text_FirstInformation.text = record.highScore.ToString();
+				break;
+			case GameMode.Classic:
+				if(record.highScore > 0)
+					text_FirstInformation.text = string.Format("{0:00}:{1:00}", record.highScore / 60, record.highScore % 60); ;
+				break;
+		}
+
+		for(int i = 0 ; i < image_Stars.Length ; ++i)
+		{
+			if(i < record.grade)
+				image_Stars[i].color = Color.white;
+		}
 	}
 
 	void OnClickPlay()
