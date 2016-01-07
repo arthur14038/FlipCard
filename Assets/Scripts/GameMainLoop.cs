@@ -3,7 +3,6 @@ using System.Collections;
 using Soomla.Profile;
 using Grow.Highway;
 using Grow.Sync;
-using Soomla.Store;
 
 public enum SceneName{FirstScene = 0, MainScene, GameScene}
 public class GameMainLoop : SingletonMonoBehavior<GameMainLoop> {
@@ -45,7 +44,7 @@ public class GameMainLoop : SingletonMonoBehavior<GameMainLoop> {
 
 		if(controller != null)
 			yield return StartCoroutine(controller.Init());
-
+		
 		yield return new WaitForSeconds(0.5f);
 
 		yield return StartCoroutine(loadingPage.FadeOutLoadingPage());
@@ -58,10 +57,13 @@ public class GameMainLoop : SingletonMonoBehavior<GameMainLoop> {
 	IEnumerator Start () {
 		DontDestroyOnLoad(this.gameObject);
 		loadingPage.Init();
-        GrowHighway.Initialize();
+
+		#if !UNITY_EDITOR
+		GrowHighway.Initialize();
         GrowSync.Initialize(true, true);
-        SoomlaStore.Initialize(new FlipCardStoreAsset());
-        SoomlaProfile.Initialize();
+		#endif
+
+		SoomlaProfile.Initialize();
         ModelManager.Instance.Init();
         ScreenEffectManager.Instance.Init();
 		GameSettingManager.LoadData();

@@ -17,6 +17,7 @@ public delegate void VoidParticleListener(ParticleListener pl);
 public delegate void VoidScoreText(ScoreText st);
 public delegate void VoidBoolAndCards(bool value, params Card_Normal[] cards);
 public delegate void VoidPressButtonTool(PressButtonTool pressButton);
+public delegate void VoidThemePack(ThemePack themePack);
 public delegate bool BoolNoneParameter();
 public delegate bool BoolCard_Normal(Card_Normal card);
 public delegate IEnumerator IEnumeratorNoneParameter();

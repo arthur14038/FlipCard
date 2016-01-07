@@ -3,14 +3,7 @@ using System.Collections;
 
 public abstract class GameModeJudgement{
 	public enum GameState { Waiting, Playing, Pausing, GameOver}
-	public static GameState CurrentGameState
-	{
-		get
-		{
-			return currentState;
-		}
-	}
-	protected static GameState currentState;
+	protected GameState currentState;
 	protected GameMainView gameMainView;
 	protected GameSettingView gameSettingView;
 	protected CardArraySetting currentCardArraySetting;

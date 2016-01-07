@@ -10,6 +10,7 @@ public class MainSceneController : AbstractController {
 	public TimeModeView timeModeView;
 	public ShopView shopView;
 	string notifyMessage;
+	ThemePack wantedThemePack;
 		
 	public override IEnumerator Init ()
 	{
@@ -36,9 +37,11 @@ public class MainSceneController : AbstractController {
 		timeModeView.onClickBack = ShowMainPage;
 		timeModeView.onClickPlay = GoToGameScene;
 		shopView.onClickBack = ShowMainPage;
-		shopView.onClickBuyTheme = BuyTheme;
+		shopView.onClickThemePrice = CheckCanAfford;
 		shopView.onClickEquipCard = EquipCard;
 		shopView.onClickEquipTheme = EquipTheme;
+		shopView.onClickBuyMoniPack = BuyMoniPack;
+		shopView.onClickConfirmBuyTheme = BuyThemePack;
 
 		shopView.HideUI(false);
         mainPageView.HideUI(false);
@@ -151,20 +154,75 @@ public class MainSceneController : AbstractController {
 	{
 		InventoryManager.Instance.EquipItem(themeItemId);
 		mainPageView.UpdateTheme();
+		shopView.UpdateThemePackList();
 	}
 
 	void EquipCard(string cardBackItemId, string cardFaceItemId)
 	{
 		InventoryManager.Instance.EquipItem(cardBackItemId);
 		InventoryManager.Instance.EquipItem(cardFaceItemId);
+		shopView.UpdateThemePackList();
 	}
 
-	void BuyTheme(string themeItemId)
-	{		
-		if(InventoryManager.Instance.CanAfford(themeItemId))
-			shopView.ShowConfirmBuy(themeItemId);
+	void CheckCanAfford(ThemePack themePack)
+	{
+		wantedThemePack = themePack;
+		if(wantedThemePack.theme.CanAfford())
+			shopView.ShowConfirmBuy(wantedThemePack.theme);
 		else
 			shopView.ShowMoniNotEnough();
+	}
+
+	void BuyThemePack()
+	{
+		InventoryManager.Instance.BuyThemePack(wantedThemePack, BuyThemePackCallBack);
+		shopView.ShowLoadingWindow();
+	}
+
+	void BuyThemePackCallBack(bool success)
+	{
+		if(success)
+			shopView.UpdateThemePackList();
+
+		shopView.ShowBuyMsg(success);
+	}
+
+	void BuyMoniPack(int tier)
+	{
+		string moniPackItemId = "";
+		switch(tier)
+		{
+			case 3:
+				moniPackItemId = FlipCardStoreAsset.MONI_PACK_TIER3_ITEM_ID;
+				break;
+			case 4:
+				moniPackItemId = FlipCardStoreAsset.MONI_PACK_TIER4_ITEM_ID;
+				break;
+			case 5:
+				moniPackItemId = FlipCardStoreAsset.MONI_PACK_TIER5_ITEM_ID;
+				break;
+			case 11:
+				moniPackItemId = FlipCardStoreAsset.MONI_PACK_TIER11_ITEM_ID;
+				break;
+			case 23:
+				moniPackItemId = FlipCardStoreAsset.MONI_PACK_TIER23_ITEM_ID;
+				break;
+			case 45:
+				moniPackItemId = FlipCardStoreAsset.MONI_PACK_TIER45_ITEM_ID;
+				break;
+		}
+		InventoryManager.Instance.BuyCurrencyPack(moniPackItemId, BuyCurrencyPackResult, BuyCurrencyPackCancel);
+		shopView.ShowLoadingWindow();
+	}
+
+	void BuyCurrencyPackResult(bool success)
+	{
+		shopView.ShowBuyMsg(success);
+	}
+
+	void BuyCurrencyPackCancel()
+	{
+		shopView.CloseLoadingWindow();
 	}
 
 	void LeaveGame()

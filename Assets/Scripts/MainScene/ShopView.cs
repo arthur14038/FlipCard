@@ -13,8 +13,10 @@ public class ShopView : AbstractView
 	MsgWindowState currentMsgWindowState;
 	public VoidNoneParameter onClickBack;
 	public VoidString onClickEquipTheme;
-	public VoidString onClickBuyTheme;
+	public VoidThemePack onClickThemePrice;
 	public VoidTwoString onClickEquipCard;
+	public VoidInt onClickBuyMoniPack;
+	public VoidNoneParameter onClickConfirmBuyTheme;
 	public GameObject themePackUIPrefab;
 	public Text text_CurrentMoni;
 	public RectTransform group_Shop;
@@ -26,11 +28,25 @@ public class ShopView : AbstractView
 	public Text text_MsgTitle;
 	public Text text_MsgContent;
 	public Toggle[] swithToggle;
-	List<ThemePackUI> themePackUIList = new List<ThemePackUI>();
+	public Image group_LoadingWindow;
+	public RectTransform image_LoadingWindowBG;
+	public Image image_Green;
+	public Image image_Orange;
+	public Image image_Pink;
+	public Image image_Blue;
+	public Image image_Move;
+	public Text text_Loading;
+	public RectTransform group_Loading;
+	public RectTransform group_ResultMsg;
+	public Text text_ResultMsg;
+	Coroutine loadingAnimation;
+	Dictionary<int, ThemePackUI> themePackUIDictionary = new Dictionary<int, ThemePackUI>();
+	Vector3 rotateAngle = new Vector3(0f, 0f, 120f);
 
 	public override IEnumerator Init()
 	{
-		text_CurrentMoni.text = StoreInventory.GetItemBalance(FlipCardStoreAsset.MONI_ITEM_ID).ToString();
+		InventoryManager.Instance.updateCurrency += UpdateMoniCount;
+		UpdateMoniCount();
 
 		List<ThemePack> themePackList = InventoryManager.Instance.GetAllThemePack();
 
@@ -41,11 +57,13 @@ public class ShopView : AbstractView
 			tmp.transform.localScale = Vector3.one;
 			tmp.name = themePackUIPrefab.name + i.ToString();
 			ThemePackUI themePackUI = tmp.GetComponent<ThemePackUI>();
-			themePackUI.Init(themePackList[i], OnClickEquipTheme, OnClickEquipCard, OnClickBuyTheme);
-			themePackUIList.Add(themePackUI);
+			themePackUI.Init(themePackList[i], OnClickEquipTheme, OnClickEquipCard, OnClickThemePrice);
+			themePackUIDictionary.Add(i, themePackUI);
 		}
+		themePackUIPrefab = null;
 
 		image_PopUpMask.gameObject.SetActive(false);
+		group_LoadingWindow.gameObject.SetActive(false);
 		currentMsgWindowState = MsgWindowState.Close;
 		SetCurrentGroup(ShopGroup.Theme);
 		yield return null;
@@ -70,6 +88,8 @@ public class ShopView : AbstractView
 		switch(currentMsgWindowState)
 		{
 			case MsgWindowState.ConfirmBuy:
+				if(onClickConfirmBuyTheme != null)
+					onClickConfirmBuyTheme();
 				break;
 			case MsgWindowState.NotEnoughMoni:
 				swithToggle[(int)ShopGroup.Moni].isOn = true;
@@ -78,10 +98,12 @@ public class ShopView : AbstractView
 		}
 		StartCoroutine(CloseMsgWindow());
 	}
-
+	
 	public void BuyMoniPack(int tier)
 	{
-		Debug.LogFormat("BuyMoniPack Tier {0}", tier);
+		AudioManager.Instance.PlayOneShot("Button_Click");
+		if(onClickBuyMoniPack != null)
+			onClickBuyMoniPack(tier);
 	}
 
 	public void ToggleGroup(int groupIndex)
@@ -96,12 +118,72 @@ public class ShopView : AbstractView
 		ShowMsgWindow("Your Moni is not enough", "You don't have enough \nMoni to buy this theme.\nDo you want to buy some Moni?");
 	}
 
-	public void ShowConfirmBuy(string itemId)
+	public void ShowConfirmBuy(VirtualGood good)
 	{
 		currentMsgWindowState = MsgWindowState.ConfirmBuy;
-		VirtualGood good = InventoryManager.Instance.GetVirtualGood(itemId);
 		string content = string.Format("Buying this theme will cost \n{0} Moni.\nAre you sure?", good.PurchaseType.GetPrice());
 		ShowMsgWindow("Confirm Buy", content);
+	}
+
+	public void ShowBuyMsg(bool success)
+	{
+		if(loadingAnimation != null)
+		{
+			StopCoroutine(loadingAnimation);
+			loadingAnimation = null;
+		}
+		string content = "";
+		if(success)
+		{
+			content = "BUYING SUCCESS!";
+		}else
+		{
+			content = "SOME ERROR OCCUR";
+		}
+		text_ResultMsg.text = content;
+		group_Loading.gameObject.SetActive(false);
+		group_ResultMsg.gameObject.SetActive(true);
+	}
+
+	public void ShowLoadingWindow()
+	{
+		group_Loading.gameObject.SetActive(true);
+		group_ResultMsg.gameObject.SetActive(false);
+		group_LoadingWindow.gameObject.SetActive(true);
+		group_LoadingWindow.color = Color.clear;
+		group_LoadingWindow.DOColor(Color.black * 0.7f, 0.3f);
+		image_LoadingWindowBG.localScale = Vector3.zero;
+		image_LoadingWindowBG.DOScale(1f, 0.3f).SetEase(Ease.OutBack);
+		DoLoadingAnimation();
+	}
+
+	public void CloseLoadingWindow()
+	{
+		image_LoadingWindowBG.DOScale(0f, 0.3f).SetEase(Ease.InBack);
+		group_LoadingWindow.DOFade(0f, 0.3f).OnComplete(
+			delegate () {
+				group_LoadingWindow.gameObject.SetActive(false);
+			}
+		);
+		if(loadingAnimation != null)
+		{
+			StopCoroutine(loadingAnimation);
+			loadingAnimation = null;
+		}
+	}
+
+	public void UpdateThemePackList()
+	{
+		foreach(KeyValuePair<int, ThemePackUI> kvp in themePackUIDictionary)
+		{
+			kvp.Value.CheckUIState();
+		}
+		SetCurrentGroup(currentGroup);
+	}
+
+	void UpdateMoniCount()
+	{
+		text_CurrentMoni.text = StoreInventory.GetItemBalance(FlipCardStoreAsset.MONI_ITEM_ID).ToString();
 	}
 
 	void ShowMsgWindow(string title, string content)
@@ -124,29 +206,78 @@ public class ShopView : AbstractView
 		currentMsgWindowState = MsgWindowState.Close;
 	}
 
+	void DoLoadingAnimation()
+	{
+		loadingAnimation = StartCoroutine(LoadingAnimation());
+	}
+
+	IEnumerator LoadingAnimation()
+	{
+		image_Move.rectTransform.anchoredPosition = image_Green.rectTransform.anchoredPosition;
+		image_Move.color = image_Green.color;
+
+		text_Loading.DOFade(0.6f, 0.5f).OnComplete(delegate () {
+			text_Loading.DOFade(1f, 0.5f);
+		}
+		);
+
+		image_Move.rectTransform.DOAnchorPos(image_Orange.rectTransform.anchoredPosition, 0.25f);
+		image_Move.DOColor(image_Orange.color, 0.25f);
+		yield return image_Green.rectTransform.DOScaleX(0f, 3 / 24f).WaitForCompletion();
+		yield return image_Green.rectTransform.DOScaleX(1.3f, 2 / 24f).WaitForCompletion();
+		yield return image_Green.rectTransform.DOScaleX(1f, 1 / 24f).WaitForCompletion();
+
+		image_Move.rectTransform.DOAnchorPos(image_Blue.rectTransform.anchoredPosition, 0.25f);
+		image_Move.DOColor(image_Blue.color, 0.25f).WaitForCompletion();
+		yield return image_Orange.rectTransform.DOScaleX(0f, 3 / 24f).WaitForCompletion();
+		yield return image_Orange.rectTransform.DOScaleX(1.3f, 2 / 24f).WaitForCompletion();
+		yield return image_Orange.rectTransform.DOScaleX(1f, 1 / 24f).WaitForCompletion();
+
+		image_Move.rectTransform.DOAnchorPos(image_Pink.rectTransform.anchoredPosition, 0.25f);
+		image_Move.DOColor(image_Pink.color, 0.25f).WaitForCompletion();
+		yield return image_Blue.rectTransform.DOScaleX(0f, 3 / 24f).WaitForCompletion();
+		yield return image_Blue.rectTransform.DOScaleX(1.3f, 2 / 24f).WaitForCompletion();
+		yield return image_Blue.rectTransform.DOScaleX(1f, 1 / 24f).WaitForCompletion();
+
+		image_Move.rectTransform.DOAnchorPos(image_Green.rectTransform.anchoredPosition, 0.25f);
+		image_Move.DOColor(image_Green.color, 0.25f).WaitForCompletion();
+		image_Pink.rectTransform.DOScale(1.3f, 1 / 24f).OnComplete(
+			delegate () {
+				image_Pink.rectTransform.DOScale(1f, 3 / 24f);
+			}
+		);
+		image_Pink.rectTransform.DORotate(-rotateAngle, 3 / 24f).OnComplete(delegate () {
+			image_Pink.rectTransform.DORotate(Vector3.zero, 7 / 24f);
+		}
+		);
+		yield return new WaitForSeconds(0.25f);
+
+		DoLoadingAnimation();
+	}
+
 	void SetCurrentGroup(ShopGroup value)
 	{
 		currentGroup = value;
 		switch(currentGroup)
 		{
 			case ShopGroup.Theme:
-				foreach(ThemePackUI themePackUI in themePackUIList)
+				foreach(KeyValuePair<int, ThemePackUI> kvp in themePackUIDictionary)
 				{
-					if(themePackUI.IsInBag)
-						themePackUI.gameObject.SetActive(true);
+					if(kvp.Value.IsInBag)
+						kvp.Value.gameObject.SetActive(true);
 					else
-						themePackUI.gameObject.SetActive(false);
+						kvp.Value.gameObject.SetActive(false);
 				}
 				group_Moni.gameObject.SetActive(false);
 				group_Theme.gameObject.SetActive(true);
 				break;
 			case ShopGroup.Shop:
-				foreach(ThemePackUI themePackUI in themePackUIList)
+				foreach(KeyValuePair<int, ThemePackUI> kvp in themePackUIDictionary)
 				{
-					if(themePackUI.IsInBag)
-						themePackUI.gameObject.SetActive(false);
+					if(kvp.Value.IsInBag)
+						kvp.Value.gameObject.SetActive(false);
 					else
-						themePackUI.gameObject.SetActive(true);
+						kvp.Value.gameObject.SetActive(true);
 				}
 				group_Moni.gameObject.SetActive(false);
 				group_Theme.gameObject.SetActive(true);
@@ -172,11 +303,11 @@ public class ShopView : AbstractView
 			onClickEquipCard(cardFaceItemId, cardBackItemId);
 	}
 
-	void OnClickBuyTheme(string themeItemId)
+	void OnClickThemePrice(ThemePack themePack)
 	{
 		AudioManager.Instance.PlayOneShot("Button_Click");
-		if(onClickBuyTheme != null)
-			onClickBuyTheme(themeItemId);
+		if(onClickThemePrice != null)
+			onClickThemePrice(themePack);
     }
 
 	protected override IEnumerator HideUIAnimation()
@@ -194,4 +325,9 @@ public class ShopView : AbstractView
 		yield return group_Shop.DOAnchorPos(Vector2.zero, 0.5f).SetEase(Ease.OutCubic).WaitForCompletion();
 		showCoroutine = null;
 	}	
+
+	void OnDestroy()
+	{
+		InventoryManager.Instance.updateCurrency -= UpdateMoniCount;
+	}
 }

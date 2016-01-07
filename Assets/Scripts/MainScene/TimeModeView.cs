@@ -28,7 +28,7 @@ public class TimeModeView : AbstractView {
 			levelUI.Init(OnClickLevelPlay, GetLevelIcon, levelList[i]);
 			levelUIList.Add(levelUI);
 		}
-
+		levelUIPrefab = null;
 		yield return null;
 	}
 

@@ -39,8 +39,7 @@ public class GameSettingView : AbstractView {
 	public RectTransform button_CompetitionGameOverExit;
 	public RectTransform image_Player1;
 	public RectTransform image_Player2;
-
-	float countSoundTime = 0.05f;
+	
 	Color player1Color = new Color(9f/255f, 147f / 255f, 147f / 255f, 178f / 255f);
 	Color player2Color = new Color(255f / 255f, 73f / 255f, 73f / 255f, 178f / 255f);
 
@@ -212,7 +211,9 @@ public class GameSettingView : AbstractView {
 		{
 			toggle_Condition[activeCondition[i]].isOn = true;
 			image_Star[i].gameObject.SetActive(true);
-			yield return image_Star[i].DOScale(1f, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
+			image_Star[i].DOScale(1f, 0.3f).SetEase(Ease.OutBack);
+			yield return toggle_Condition[activeCondition[i]].transform.DOScale(1.2f, 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
+			yield return toggle_Condition[activeCondition[i]].transform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
 		}
 
 		button_SinglePlayerGameOverExit.localScale = new Vector3(1f, 0f, 1f);

@@ -2,8 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 public abstract class SingletonMonoBehavior<T> : MonoBehaviour
-{
-	
+{	
 	protected static T _instance;
 
 	public virtual void Awake() {
@@ -15,6 +14,5 @@ public abstract class SingletonMonoBehavior<T> : MonoBehaviour
 	public static T Instance {
 		get { return _instance; }
 	}
-	
 }
 

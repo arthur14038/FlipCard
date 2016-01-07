@@ -92,17 +92,17 @@ public class FlipCardStoreAsset : IStoreAssets
     #endregion
 
     #region Virtual Currency Packs
-    public static VirtualCurrencyPack Tier3MoniPack = new VirtualCurrencyPack("150 Moni", "150 Moni in a pack", MONI_PACK_TIER3_ITEM_ID, 150, MONI_ITEM_ID, new PurchaseWithMarket(MONI_PACK_TIER3_PRODUCT_ID, 2.99));
+    public static VirtualCurrencyPack Tier3MoniPack = new VirtualCurrencyPack("150 Moni", "150 Moni in a pack", MONI_PACK_TIER3_ITEM_ID, 150, MONI_ITEM_ID, new PurchaseWithMarket(MONI_PACK_TIER3_PRODUCT_ID, 90));
 
-	public static VirtualCurrencyPack Tier4MoniPack = new VirtualCurrencyPack("200 Moni", "200 Moni in a pack", MONI_PACK_TIER4_ITEM_ID, 200, MONI_ITEM_ID, new PurchaseWithMarket(MONI_PACK_TIER4_PRODUCT_ID, 3.99));
+	public static VirtualCurrencyPack Tier4MoniPack = new VirtualCurrencyPack("200 Moni", "200 Moni in a pack", MONI_PACK_TIER4_ITEM_ID, 200, MONI_ITEM_ID, new PurchaseWithMarket(MONI_PACK_TIER4_PRODUCT_ID, 120));
 
-	public static VirtualCurrencyPack Tier5MoniPack = new VirtualCurrencyPack("250 Moni", "250 Moni in a pack", MONI_PACK_TIER5_ITEM_ID, 250, MONI_ITEM_ID, new PurchaseWithMarket(MONI_PACK_TIER5_PRODUCT_ID, 4.99));
+	public static VirtualCurrencyPack Tier5MoniPack = new VirtualCurrencyPack("250 Moni", "250 Moni in a pack", MONI_PACK_TIER5_ITEM_ID, 250, MONI_ITEM_ID, new PurchaseWithMarket(MONI_PACK_TIER5_PRODUCT_ID, 150));
 	
-	public static VirtualCurrencyPack Tier11MoniPack = new VirtualCurrencyPack("650 Moni", "650 Moni in a pack", MONI_PACK_TIER11_ITEM_ID, 650, MONI_ITEM_ID, new PurchaseWithMarket(MONI_PACK_TIER11_PRODUCT_ID, 10.99));
+	public static VirtualCurrencyPack Tier11MoniPack = new VirtualCurrencyPack("650 Moni", "650 Moni in a pack", MONI_PACK_TIER11_ITEM_ID, 650, MONI_ITEM_ID, new PurchaseWithMarket(MONI_PACK_TIER11_PRODUCT_ID, 330));
 	
-	public static VirtualCurrencyPack Tier23MoniPack = new VirtualCurrencyPack("1600 Moni", "1600 Moni in a pack", MONI_PACK_TIER23_ITEM_ID, 1600, MONI_ITEM_ID, new PurchaseWithMarket(MONI_PACK_TIER23_PRODUCT_ID, 22.99));
+	public static VirtualCurrencyPack Tier23MoniPack = new VirtualCurrencyPack("1600 Moni", "1600 Moni in a pack", MONI_PACK_TIER23_ITEM_ID, 1600, MONI_ITEM_ID, new PurchaseWithMarket(MONI_PACK_TIER23_PRODUCT_ID, 690));
 
-	public static VirtualCurrencyPack Tier45MoniPack = new VirtualCurrencyPack("3250 Moni", "3250 Moni in a pack", MONI_PACK_TIER45_ITEM_ID, 3250, MONI_ITEM_ID, new PurchaseWithMarket(MONI_PACK_TIER45_PRODUCT_ID, 44.99));
+	public static VirtualCurrencyPack Tier45MoniPack = new VirtualCurrencyPack("3250 Moni", "3250 Moni in a pack", MONI_PACK_TIER45_ITEM_ID, 3250, MONI_ITEM_ID, new PurchaseWithMarket(MONI_PACK_TIER45_PRODUCT_ID, 1350));
 	#endregion
 
 	#region Virtual Goods

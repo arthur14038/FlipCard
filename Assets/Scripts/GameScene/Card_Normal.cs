@@ -28,7 +28,6 @@ public class Card_Normal : MonoBehaviour
 	CanvasGroup thisCanvasGroup;
     BoolCard_Normal checkCanFlipCard;
 	VoidCard_Normal flipFinish;
-	Color transparentColor = new Color(1, 1, 1, 0);
 	Vector3 flipDown = new Vector3(0f, 0.9f, 1f);
 	string cardId;
 	bool isGoldCard;
