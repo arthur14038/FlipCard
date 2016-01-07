@@ -23,10 +23,12 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 	VoidBool lastPurchaseCallback;
 	ThemePack buyingThemePack;
 	VoidNoneParameter purchaseCancelCallBack;
+	bool storeInitialized;
 
 	public IEnumerator Init()
 	{
-		StoreEvents.OnSoomlaStoreInitialized += OnSoomlaStoreInitialized;
+		storeInitialized = false;
+        StoreEvents.OnSoomlaStoreInitialized += OnSoomlaStoreInitialized;
 		StoreEvents.OnCurrencyBalanceChanged += onCurrencyBalanceChanged;
 		StoreEvents.OnMarketPurchase += OnMarketPurchase;
 		StoreEvents.OnMarketPurchaseCancelled += OnMarketPurchaseCancelled;
@@ -40,6 +42,7 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 
 	public void OnSoomlaStoreInitialized()
 	{
+		storeInitialized = true;
 		SetEquipItem();
 	}
 
@@ -227,6 +230,11 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 
 	IEnumerator LoadInventoryTexture()
 	{
+		while(!storeInitialized)
+		{
+			yield return null;
+		}
+
 		string jsonString = ((TextAsset)Resources.Load("InventoryInfo")).text;
 		List<InventoryInfo> tmp = JsonConvert.DeserializeObject<List<InventoryInfo>>(jsonString);
 		inventoryInfo = tmp[0];

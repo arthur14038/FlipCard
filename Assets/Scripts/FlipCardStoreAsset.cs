@@ -32,7 +32,7 @@ public class FlipCardStoreAsset : IStoreAssets
 
     public int GetVersion()
     {
-        return 1;
+        return 2;
     }
 
     #region const strings
