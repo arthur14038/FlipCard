@@ -116,9 +116,9 @@ public class ClassicModeJudgement : GameModeJudgement
 
 		string[] conditionContent = new string[4];
 		string gameTimeContent = string.Format("{0}:{1:00}", (int)gameTime / 60, (int)gameTime % 60);
-		conditionContent[0] = "LEVEL COMPLETE";
+		conditionContent[0] = string.Format("COMPLETE {0} LEVEL", currentModeSetting.level.ToString());
 		conditionContent[1] = string.Format("LESS THAN {0} MOVE", currentModeSetting.targetMove);
-		conditionContent[2] = string.Format("COMPLETE IN {0} SECOND", currentModeSetting.targetTime);
+		conditionContent[2] = string.Format("COMPLETE IN {0} SECOND", currentModeSetting.targetTime+1);
 		if(grade >= 3)
 			conditionContent[3] = string.Format("LESS THAN {0} MOVE", currentModeSetting.excellentMove);
 		else

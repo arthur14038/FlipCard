@@ -227,7 +227,7 @@ public class TimeModeJudgement : GameModeJudgement
 		ModelManager.Instance.SaveGameRecord(record);
 
 		string[] conditionContent = new string[4];
-		conditionContent[0] = "LEVEL COMPLETE";
+		conditionContent[0] = string.Format("COMPLETE {0} LEVEL", currentModeSetting.level.ToString());
 		conditionContent[1] = string.Format("OVER {0} ROUND", currentModeSetting.targetRound);
 		conditionContent[2] = string.Format("FEVER {0} TIMES", currentModeSetting.targetFeverTimeCount);
 		if(grade >= 3)
