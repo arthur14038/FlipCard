@@ -2,25 +2,25 @@
    {
      "Level": 0, 
      "TargetMove": 10, 
-     "ExcellentMove": 5, 
-     "TargetTime": 8.0
+     "TargetTime": 8.0, 
+     "ExcellentMove": 5
  },
    {
      "Level": 1, 
      "TargetMove": 20, 
-     "ExcellentMove": 10, 
-     "TargetTime": 15.0
+     "TargetTime": 16.0, 
+     "ExcellentMove": 10
  },
    {
      "Level": 2, 
      "TargetMove": 32, 
-     "ExcellentMove": 16, 
-     "TargetTime": 24.0
+     "TargetTime": 28.0, 
+     "ExcellentMove": 17
  },
    {
      "Level": 3, 
      "TargetMove": 46, 
-     "ExcellentMove": 23, 
-     "TargetTime": 35.0
+     "TargetTime": 41.0, 
+     "ExcellentMove": 25
  }
 ]

@@ -8,9 +8,7 @@ public class TimeModeView : AbstractView {
 	public VoidCardArrayLevelGameMode onClickPlay;
 	public RectTransform group_TimeMode;
 	public Sprite[] levelIconSprites;
-	public GameObject levelUIPrefab;
-	public Transform levelParent;
-	List<LevelUI> levelUIList = new List<LevelUI>();
+	public List<LevelUI> levelUIList;
 
 	public override IEnumerator Init()
 	{
@@ -18,17 +16,21 @@ public class TimeModeView : AbstractView {
 
 		List<SinglePlayerLevel> levelList = GameSettingManager.GetSinglePlayerLevel(GameMode.LimitTime);
 
+		//for(int i = 0 ; i < levelList.Count ; ++i)
+		//{
+		//	GameObject tmp = Instantiate(levelUIPrefab) as GameObject;
+		//	tmp.transform.SetParent(levelParent);
+		//	tmp.transform.localScale = Vector3.one;
+		//	tmp.name = levelUIPrefab.name + i.ToString();
+		//	LevelUI levelUI = tmp.GetComponent<LevelUI>();
+		//	levelUI.Init(OnClickLevelPlay, GetLevelIcon, levelList[i]);
+		//	levelUIList.Add(levelUI);
+		//}
+		//levelUIPrefab = null;
 		for(int i = 0 ; i < levelList.Count ; ++i)
 		{
-			GameObject tmp = Instantiate(levelUIPrefab) as GameObject;
-			tmp.transform.SetParent(levelParent);
-			tmp.transform.localScale = Vector3.one;
-			tmp.name = levelUIPrefab.name + i.ToString();
-			LevelUI levelUI = tmp.GetComponent<LevelUI>();
-			levelUI.Init(OnClickLevelPlay, GetLevelIcon, levelList[i]);
-			levelUIList.Add(levelUI);
+			levelUIList[i].Init(OnClickLevelPlay, GetLevelIcon, levelList[i]);
 		}
-		levelUIPrefab = null;
 		yield return null;
 	}
 
