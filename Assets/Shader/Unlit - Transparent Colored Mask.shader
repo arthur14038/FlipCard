@@ -2,7 +2,7 @@ Shader "Unlit/Transparent Colored Mask"
 {
 	Properties
 	{
-		_MainTex ("Base (RGB), Alpha (A)", 2D) = "black" {}
+		[PerRendererData] _MainTex ("Base (RGB), Alpha (A)", 2D) = "black" {}
 
 		_StencilComp("Stencil Comparison", Float) = 8
 		_Stencil("Stencil ID", Float) = 0
@@ -15,8 +15,6 @@ Shader "Unlit/Transparent Colored Mask"
 	
 	SubShader
 	{
-		LOD 200
-
 		Tags
 		{
 			"Queue" = "Transparent"
@@ -32,16 +30,15 @@ Shader "Unlit/Transparent Colored Mask"
 			ReadMask[_StencilReadMask]
 			WriteMask[_StencilWriteMask]
 		}
-		ColorMask[_ColorMask]
 
 		Pass
 		{
 			Cull Off
 			Lighting Off
 			ZWrite Off
-			Fog { Mode Off }
-			Offset -1, -1
+			ZTest[unity_GUIZTestMode]
 			Blend SrcAlpha OneMinusSrcAlpha
+			ColorMask[_ColorMask]
 
 			CGPROGRAM
 			#pragma vertex vert
@@ -54,18 +51,20 @@ Shader "Unlit/Transparent Colored Mask"
 			struct appdata_t
 			{
 				float4 vertex : POSITION;
-				float2 texcoord : TEXCOORD0;
 				fixed4 color : COLOR;
+				float2 texcoord : TEXCOORD0;
 			};
 	
 			struct v2f
 			{
 				float4 vertex : SV_POSITION;
-				half2 texcoord : TEXCOORD0;
 				fixed4 color : COLOR;
+				half2 texcoord : TEXCOORD0;
 			};
 	
 			v2f o;
+
+			bool _UseAlphaClip;
 
 			v2f vert (appdata_t v)
 			{
@@ -77,38 +76,14 @@ Shader "Unlit/Transparent Colored Mask"
 				
 			fixed4 frag (v2f IN) : COLOR
 			{
-				return tex2D(_MainTex, IN.texcoord) * IN.color;
+				half4 color = tex2D(_MainTex, IN.texcoord) * IN.color;
+				
+				if (_UseAlphaClip)
+					clip(color.a - 0.001);
+
+				return color;
 			}
 			ENDCG
-		}
-	}
-
-	SubShader
-	{
-		LOD 100
-
-		Tags
-		{
-			"Queue" = "Transparent"
-			"IgnoreProjector" = "True"
-			"RenderType" = "Transparent"
-		}
-		
-		Pass
-		{
-			Cull Off
-			Lighting Off
-			ZWrite Off
-			Fog { Mode Off }
-			Offset -1, -1
-			ColorMask RGB
-			Blend SrcAlpha OneMinusSrcAlpha
-			ColorMaterial AmbientAndDiffuse
-			
-			SetTexture [_MainTex]
-			{
-				Combine Texture * Primary
-			}
 		}
 	}
 }

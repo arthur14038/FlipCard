@@ -163,18 +163,18 @@ public class MainPageView : AbstractView {
 		currentState = ViewState.UnderConstructionWindow;
 		image_Mask.gameObject.SetActive(true);
 		image_Mask.color = Color.clear;
-		image_Mask.DOColor(Color.black * 0.7f, 0.3f);
+		image_Mask.DOColor(Color.black * 0.7f, 0.5f);
 		image_UnderConstructionWindow.gameObject.SetActive(true);
 		image_UnderConstructionWindow.localScale = Vector3.zero;
-		image_UnderConstructionWindow.DOScale(1f, 0.3f).SetEase(Ease.OutBack);
+		image_UnderConstructionWindow.DOScale(1f, 0.5f).SetEase(Ease.OutBack);
 	}
 
 	public void OnClickExitUnderConstruction()
 	{
 		AudioManager.Instance.PlayOneShot("Button_Click2");
 		currentState = ViewState.Main;
-		image_UnderConstructionWindow.DOScale(0f, 0.3f).SetEase(Ease.InBack);
-		image_Mask.DOColor(Color.clear, 0.3f).OnComplete(
+		image_UnderConstructionWindow.DOScale(0f, 0.5f).SetEase(Ease.InBack);
+		image_Mask.DOColor(Color.clear, 0.5f).OnComplete(
 			delegate () {
 				image_Mask.gameObject.SetActive(false);
 				image_UnderConstructionWindow.gameObject.SetActive(false);

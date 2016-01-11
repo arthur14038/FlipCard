@@ -44,6 +44,7 @@ public class ShopView : AbstractView
 
 	public override IEnumerator Init()
 	{
+		escapeEvent = OnClickBack;
 		InventoryManager.Instance.updateCurrency += UpdateMoniCount;
 		UpdateMoniCount();
 

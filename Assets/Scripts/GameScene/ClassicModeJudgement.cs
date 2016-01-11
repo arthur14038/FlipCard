@@ -107,11 +107,10 @@ public class ClassicModeJudgement : GameModeJudgement
 			recordBreak = true;
 		}
 		record.playTimes += 1;
-		
-		if(record.playTimes % 3 == 1)
-			UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.GameRecord, ModelManager.Instance.GetGameRecordForSendEvent(GameMode.Classic));
 
-		ModelManager.Instance.SaveGameRecord(record);
+		if(saveGameRecord != null)
+			saveGameRecord(record);
+		
 		gameMainView.ToggleMask(true);
 
 		string[] conditionContent = new string[4];

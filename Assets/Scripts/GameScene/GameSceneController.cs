@@ -7,6 +7,7 @@ public class GameSceneController : AbstractController
 	public GameMainView gameMainView;
 	AbstractView modeView;
 	GameModeJudgement judgement;
+	GameRecord thisTimeRecord;
 
     protected override void Start()
     {
@@ -19,6 +20,7 @@ public class GameSceneController : AbstractController
 		modeView = GetModeView();
 		judgement = GetJudgement();
 		judgement.exitGame = ExitGame;
+		judgement.saveGameRecord = SaveTmpGameRecord;
 		yield return StartCoroutine(gameSettingView.Init());
 		yield return StartCoroutine(gameMainView.Init());
 		yield return StartCoroutine(modeView.Init());
@@ -29,6 +31,11 @@ public class GameSceneController : AbstractController
 		modeView.ShowUI(false);
     }
 	
+	void SaveTmpGameRecord(GameRecord record)
+	{
+		thisTimeRecord = record;
+    }
+
     void LoadingComplete()
     {
 		modeView.ShowUI(true);
@@ -51,6 +58,14 @@ public class GameSceneController : AbstractController
 				break;
 		}
 
+		if(thisTimeRecord != null)
+		{
+			if(thisTimeRecord.playTimes % 3 == 1)
+				UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.GameRecord, ModelManager.Instance.GetGameRecordForSendEvent(GameMode.Classic));
+
+			ModelManager.Instance.SaveGameRecord(thisTimeRecord);
+		}
+
 		//GameMainLoop.Instance.ChangeScene(SceneName.TestMain, returnView);
 		GameMainLoop.Instance.ChangeScene(SceneName.MainScene, returnView);
     }
@@ -61,16 +76,19 @@ public class GameSceneController : AbstractController
 		{
 			case GameMode.LimitTime:
 				GameObject timeModeView = Instantiate(Resources.Load("UI/TimeModeView")) as GameObject;
+				//GameObject timeModeView = Instantiate(Resources.Load("UI/TimeModeView_NoM")) as GameObject;
 				Canvas timeModeViewCanvas = timeModeView.GetComponent<Canvas>();
 				timeModeViewCanvas.worldCamera = Camera.main;
 				return timeModeView.GetComponent<AbstractView>();
 			case GameMode.Competition:
 				GameObject competitionModeView = Instantiate(Resources.Load("UI/CompetitionModeView")) as GameObject;
+				//GameObject competitionModeView = Instantiate(Resources.Load("UI/CompetitionModeView_NoM")) as GameObject;
 				Canvas competitionModeViewCanvas = competitionModeView.GetComponent<Canvas>();
 				competitionModeViewCanvas.worldCamera = Camera.main;
 				return competitionModeView.GetComponent<AbstractView>();
 			case GameMode.Classic:
 				GameObject classicModeView = Instantiate(Resources.Load("UI/ClassicModeView")) as GameObject;
+				//GameObject classicModeView = Instantiate(Resources.Load("UI/ClassicModeView_NoM")) as GameObject;
 				Canvas classicModeViewCanvas = classicModeView.GetComponent<Canvas>();
 				classicModeViewCanvas.worldCamera = Camera.main;
 				return classicModeView.GetComponent<AbstractView>();

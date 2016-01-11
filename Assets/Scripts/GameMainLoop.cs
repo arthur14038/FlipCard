@@ -4,7 +4,7 @@ using Soomla.Profile;
 using Grow.Highway;
 using Grow.Sync;
 
-public enum SceneName{FirstScene = 0, MainScene, GameScene, TestMain}
+public enum SceneName{FirstScene = 0, MainScene, GameScene, TestMain, TestGame}
 public class GameMainLoop : SingletonMonoBehavior<GameMainLoop> {
 	IController controller;
 	public LoadingPageManager loadingPage;

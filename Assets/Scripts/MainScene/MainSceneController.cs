@@ -30,7 +30,8 @@ public class MainSceneController : AbstractController {
 		mainPageView.onClickRate = ShowRatePage;
 		mainPageView.onClickLeaveGame = LeaveGame;
 		mainPageView.onClickNotify = SendNotifyMail;
-		classicModeView.onClickBack = ShowMainPage;
+		mainPageView.onClickComingSoon = StillInProgress;
+        classicModeView.onClickBack = ShowMainPage;
 		classicModeView.onClickPlay = GoToGameScene;
 		twoPlayerView.onClickBack = ShowMainPage;
 		twoPlayerView.onClickPlay = GoToGameScene;
@@ -79,6 +80,7 @@ public class MainSceneController : AbstractController {
         GameSettingManager.currentLevel = level;
 		GameSettingManager.currentMode = mode;
 		GameMainLoop.Instance.ChangeScene(SceneName.GameScene);
+		//GameMainLoop.Instance.ChangeScene(SceneName.TestGame);
 	}
 
 	void ShowMainPage()
@@ -141,6 +143,13 @@ public class MainSceneController : AbstractController {
 	void ShowRatePage()
 	{
 
+	}
+
+	void StillInProgress()
+	{
+		UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.OnClick2P);
+		mainPageView.ShowUnderConstruction();
+		notifyMessage = "Please notify me when \"New Mode\" feature is launches.";
 	}
 
 	void SendMailToUs()

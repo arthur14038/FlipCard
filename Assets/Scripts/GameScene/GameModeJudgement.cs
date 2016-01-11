@@ -8,6 +8,7 @@ public abstract class GameModeJudgement{
 	protected GameSettingView gameSettingView;
 	protected CardArraySetting currentCardArraySetting;
 	public VoidNoneParameter exitGame;
+	public VoidGameRecord saveGameRecord;
 
 	public virtual IEnumerator Init(GameMainView gameMainView, GameSettingView gameSettingView, AbstractView modeView)
 	{
