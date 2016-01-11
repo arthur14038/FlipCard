@@ -17,7 +17,6 @@ public class ShopView : AbstractView
 	public VoidTwoString onClickEquipCard;
 	public VoidInt onClickBuyMoniPack;
 	public VoidNoneParameter onClickConfirmBuyTheme;
-	public GameObject themePackUIPrefab;
 	public Text text_CurrentMoni;
 	public RectTransform group_Shop;
 	public RectTransform content_ThemeUI;
@@ -39,8 +38,8 @@ public class ShopView : AbstractView
 	public RectTransform group_Loading;
 	public RectTransform group_ResultMsg;
 	public Text text_ResultMsg;
+	public List<ThemePackUI> themePackUIList = new List<ThemePackUI>();
 	Coroutine loadingAnimation;
-	Dictionary<int, ThemePackUI> themePackUIDictionary = new Dictionary<int, ThemePackUI>();
 	Vector3 rotateAngle = new Vector3(0f, 0f, 120f);
 
 	public override IEnumerator Init()
@@ -52,15 +51,19 @@ public class ShopView : AbstractView
 
 		for(int i = 0 ; i < themePackList.Count ; ++i)
 		{
-			GameObject tmp = Instantiate(themePackUIPrefab) as GameObject;
-			tmp.transform.SetParent(content_ThemeUI);
-			tmp.transform.localScale = Vector3.one;
-			tmp.name = themePackUIPrefab.name + i.ToString();
-			ThemePackUI themePackUI = tmp.GetComponent<ThemePackUI>();
-			themePackUI.Init(themePackList[i], OnClickEquipTheme, OnClickEquipCard, OnClickThemePrice);
-			themePackUIDictionary.Add(i, themePackUI);
+			themePackUIList[i].Init(themePackList[i], OnClickEquipTheme, OnClickEquipCard, OnClickThemePrice);
 		}
-		themePackUIPrefab = null;
+		//for(int i = 0 ; i < themePackList.Count ; ++i)
+		//{
+		//	GameObject tmp = Instantiate(themePackUIPrefab) as GameObject;
+		//	tmp.transform.SetParent(content_ThemeUI);
+		//	tmp.transform.localScale = Vector3.one;
+		//	tmp.name = themePackUIPrefab.name + i.ToString();
+		//	ThemePackUI themePackUI = tmp.GetComponent<ThemePackUI>();
+		//	themePackUI.Init(themePackList[i], OnClickEquipTheme, OnClickEquipCard, OnClickThemePrice);
+		//	themePackUIDictionary.Add(i, themePackUI);
+		//}
+		//themePackUIPrefab = null;
 
 		image_PopUpMask.gameObject.SetActive(false);
 		group_LoadingWindow.gameObject.SetActive(false);
@@ -174,9 +177,9 @@ public class ShopView : AbstractView
 
 	public void UpdateThemePackList()
 	{
-		foreach(KeyValuePair<int, ThemePackUI> kvp in themePackUIDictionary)
+		foreach(ThemePackUI themePackUI in themePackUIList)
 		{
-			kvp.Value.CheckUIState();
+			themePackUI.CheckUIState();
 		}
 		SetCurrentGroup(currentGroup);
 	}
@@ -261,23 +264,23 @@ public class ShopView : AbstractView
 		switch(currentGroup)
 		{
 			case ShopGroup.Theme:
-				foreach(KeyValuePair<int, ThemePackUI> kvp in themePackUIDictionary)
+				foreach(ThemePackUI themePackUI in themePackUIList)
 				{
-					if(kvp.Value.IsInBag)
-						kvp.Value.gameObject.SetActive(true);
+					if(themePackUI.IsInBag)
+						themePackUI.gameObject.SetActive(true);
 					else
-						kvp.Value.gameObject.SetActive(false);
+						themePackUI.gameObject.SetActive(false);
 				}
 				group_Moni.gameObject.SetActive(false);
 				group_Theme.gameObject.SetActive(true);
 				break;
 			case ShopGroup.Shop:
-				foreach(KeyValuePair<int, ThemePackUI> kvp in themePackUIDictionary)
+				foreach(ThemePackUI themePackUI in themePackUIList)
 				{
-					if(kvp.Value.IsInBag)
-						kvp.Value.gameObject.SetActive(false);
+					if(themePackUI.IsInBag)
+						themePackUI.gameObject.SetActive(false);
 					else
-						kvp.Value.gameObject.SetActive(true);
+						themePackUI.gameObject.SetActive(true);
 				}
 				group_Moni.gameObject.SetActive(false);
 				group_Theme.gameObject.SetActive(true);
@@ -328,6 +331,7 @@ public class ShopView : AbstractView
 
 	void OnDestroy()
 	{
-		InventoryManager.Instance.updateCurrency -= UpdateMoniCount;
+		if(InventoryManager.Instance != null)
+			InventoryManager.Instance.updateCurrency -= UpdateMoniCount;
 	}
 }

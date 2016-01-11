@@ -6,7 +6,8 @@ public class FirstSceneController : AbstractController {
 	{
 		yield return new WaitForSeconds(0.5f);
 		GameMainLoop.Instance.ChangeScene(SceneName.MainScene);
-        yield return new WaitForSeconds(0.3f);
+		//GameMainLoop.Instance.ChangeScene(SceneName.TestMain);
+		yield return new WaitForSeconds(0.3f);
         this.gameObject.SetActive(false);
     }
 }

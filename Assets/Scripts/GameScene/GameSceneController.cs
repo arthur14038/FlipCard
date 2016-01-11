@@ -51,6 +51,7 @@ public class GameSceneController : AbstractController
 				break;
 		}
 
+		//GameMainLoop.Instance.ChangeScene(SceneName.TestMain, returnView);
 		GameMainLoop.Instance.ChangeScene(SceneName.MainScene, returnView);
     }
 	
