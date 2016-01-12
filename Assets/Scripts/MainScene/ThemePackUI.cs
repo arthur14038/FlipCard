@@ -19,6 +19,7 @@ public class ThemePackUI : MonoBehaviour {
 	public GameObject image_InfoBG;
 	public Toggle toggle_Scene;
 	public Toggle toggle_Card;
+	VoidString onClickThemeInfo;
 	VoidString onEquipTheme;
 	VoidTwoString onEquipCard;
 	VoidThemePack onClickThemePrice;
@@ -45,12 +46,13 @@ public class ThemePackUI : MonoBehaviour {
 		}
 	}
 
-	public void Init(ThemePack themePack, VoidString onEquipTheme, VoidTwoString onEquipCard, VoidThemePack onClickThemePrice)
+	public void Init(ThemePack themePack, VoidString onEquipTheme, VoidTwoString onEquipCard, VoidThemePack onClickThemePrice, VoidString onClickThemeInfo)
 	{
 		this.themePack = themePack;
 		this.onEquipTheme = onEquipTheme;
 		this.onEquipCard = onEquipCard;
 		this.onClickThemePrice = onClickThemePrice;
+		this.onClickThemeInfo = onClickThemeInfo;
 		text_ItemName.text = themePack.theme.Name;
 		image_Theme.sprite = InventoryManager.Instance.GetSpriteById(themePack.theme.ItemId);
 		image_CardFace.sprite = InventoryManager.Instance.GetSpriteById(themePack.cardFace.ItemId);
@@ -63,7 +65,8 @@ public class ThemePackUI : MonoBehaviour {
 
 	public void OnClickInfo()
 	{
-		Debug.Log("OnClickInfo");
+		if(onClickThemeInfo != null)
+			onClickThemeInfo(themePack.theme.ItemId);
 	}
 
 	public void OnClickEquipTheme()

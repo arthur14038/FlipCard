@@ -43,6 +43,7 @@ public class MainSceneController : AbstractController {
 		shopView.onClickEquipTheme = EquipTheme;
 		shopView.onClickBuyMoniPack = BuyMoniPack;
 		shopView.onClickConfirmBuyTheme = BuyThemePack;
+		shopView.onClickThemeInfo = ShowThemeInfo;
 
 		shopView.HideUI(false);
         mainPageView.HideUI(false);
@@ -232,6 +233,11 @@ public class MainSceneController : AbstractController {
 	void BuyCurrencyPackCancel()
 	{
 		shopView.CloseLoadingWindow();
+	}
+
+	void ShowThemeInfo(string themeItemId)
+	{
+		shopView.ShowThemeInfo();
 	}
 
 	void LeaveGame()

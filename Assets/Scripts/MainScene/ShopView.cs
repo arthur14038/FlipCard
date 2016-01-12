@@ -9,9 +9,10 @@ public class ShopView : AbstractView
 {
 	enum ShopGroup {Theme, Shop, Moni, None}
 	ShopGroup currentGroup = ShopGroup.None;
-	enum MsgWindowState {Close, ConfirmBuy, NotEnoughMoni}
+	enum MsgWindowState {Close, ConfirmBuy, NotEnoughMoni, ThemeInfo}
 	MsgWindowState currentMsgWindowState;
 	public VoidNoneParameter onClickBack;
+	public VoidString onClickThemeInfo;
 	public VoidString onClickEquipTheme;
 	public VoidThemePack onClickThemePrice;
 	public VoidTwoString onClickEquipCard;
@@ -23,11 +24,14 @@ public class ShopView : AbstractView
 	public RectTransform group_Theme;
 	public RectTransform group_Moni;
 	public Image image_PopUpMask;
-	public RectTransform image_MsgWindow;
+	public RectTransform group_MsgWindow;
 	public Text text_MsgTitle;
 	public Text text_MsgContent;
 	public Toggle[] swithToggle;
 	public Image group_LoadingWindow;
+	public RectTransform group_ThemeInfoWindow;
+	public Text text_ThemeName;
+	public Text text_ThemeInfo;
 	public RectTransform image_LoadingWindowBG;
 	public Image image_Green;
 	public Image image_Orange;
@@ -52,7 +56,7 @@ public class ShopView : AbstractView
 
 		for(int i = 0 ; i < themePackList.Count ; ++i)
 		{
-			themePackUIList[i].Init(themePackList[i], OnClickEquipTheme, OnClickEquipCard, OnClickThemePrice);
+			themePackUIList[i].Init(themePackList[i], OnClickEquipTheme, OnClickEquipCard, OnClickThemePrice, OnClickThemeInfo);
 		}
 		//for(int i = 0 ; i < themePackList.Count ; ++i)
 		//{
@@ -129,6 +133,12 @@ public class ShopView : AbstractView
 		ShowMsgWindow("Confirm Buy", content);
 	}
 
+	public void ShowThemeInfo()
+	{
+		currentMsgWindowState = MsgWindowState.ThemeInfo;
+		ShowMsgWindow("Theme Name", ".......................................................................................");
+	}
+
 	public void ShowBuyMsg(bool success)
 	{
 		if(loadingAnimation != null)
@@ -190,21 +200,46 @@ public class ShopView : AbstractView
 		text_CurrentMoni.text = StoreInventory.GetItemBalance(FlipCardStoreAsset.MONI_ITEM_ID).ToString();
 	}
 
-	void ShowMsgWindow(string title, string content)
+	void ShowMsgWindow(string title, string content, int group = 0)
 	{
-		text_MsgTitle.text = title;
-		text_MsgContent.text = content;
+		switch(currentMsgWindowState)
+		{
+			case MsgWindowState.ThemeInfo:
+				text_ThemeName.text = title;
+				text_ThemeInfo.text = content;
+				group_MsgWindow.gameObject.SetActive(false);
+				group_ThemeInfoWindow.gameObject.SetActive(true);
+				group_ThemeInfoWindow.localScale = Vector3.zero;
+				group_ThemeInfoWindow.DOScale(1f, 0.3f).SetEase(Ease.OutBack);
+				break;
+			case MsgWindowState.ConfirmBuy:
+			case MsgWindowState.NotEnoughMoni:
+				text_MsgTitle.text = title;
+				text_MsgContent.text = content;
+				group_ThemeInfoWindow.gameObject.SetActive(false);
+				group_MsgWindow.gameObject.SetActive(true);
+				group_MsgWindow.localScale = Vector3.zero;
+				group_MsgWindow.DOScale(1f, 0.3f).SetEase(Ease.OutBack);
+				break;
+		}
 
 		image_PopUpMask.gameObject.SetActive(true);
 		image_PopUpMask.color = Color.clear;
 		image_PopUpMask.DOColor(Color.black * 0.7f, 0.3f);
-		image_MsgWindow.localScale = Vector3.zero;
-		image_MsgWindow.DOScale(1f, 0.3f).SetEase(Ease.OutBack);
 	}
 
 	IEnumerator CloseMsgWindow()
 	{
-		image_MsgWindow.DOScale(0f, 0.3f).SetEase(Ease.InBack);
+		switch(currentMsgWindowState)
+		{
+			case MsgWindowState.ThemeInfo:
+				group_ThemeInfoWindow.DOScale(0f, 0.3f).SetEase(Ease.InBack);
+				break;
+			case MsgWindowState.ConfirmBuy:
+			case MsgWindowState.NotEnoughMoni:
+				group_MsgWindow.DOScale(0f, 0.3f).SetEase(Ease.InBack);
+				break;
+		}
 		yield return image_PopUpMask.DOFade(0f, 0.3f).WaitForCompletion();
 		image_PopUpMask.gameObject.SetActive(false);
 		currentMsgWindowState = MsgWindowState.Close;
@@ -313,6 +348,13 @@ public class ShopView : AbstractView
 		if(onClickThemePrice != null)
 			onClickThemePrice(themePack);
     }
+
+	void OnClickThemeInfo(string themeItemId)
+	{
+		AudioManager.Instance.PlayOneShot("Button_Click");
+		if(onClickThemeInfo != null)
+			onClickThemeInfo(themeItemId);
+	}
 
 	protected override IEnumerator HideUIAnimation()
 	{
