@@ -123,12 +123,12 @@ public class GameSettingView : AbstractView {
 		image_WinnerBoard.gameObject.SetActive(true);
 		yield return image_WinnerBoard.rectTransform.DOScale(1f, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
 
-		image_Player1.anchoredPosition = new Vector2(760f, -256f);
-		image_Player2.anchoredPosition = new Vector2(-760f, -256f);
+		image_Player1.anchoredPosition = new Vector2(-760f, -256f);
+		image_Player2.anchoredPosition = new Vector2(760f, -256f);
 		image_Player1.gameObject.SetActive(true);
 		image_Player2.gameObject.SetActive(true);
-		image_Player1.DOAnchorPos(new Vector2(213f, -256f), 0.2f).SetEase(Ease.OutCubic);
-		yield return image_Player2.DOAnchorPos(new Vector2(-213f, -256f), 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
+		image_Player1.DOAnchorPos(new Vector2(-213f, -256f), 0.2f).SetEase(Ease.OutCubic);
+		yield return image_Player2.DOAnchorPos(new Vector2(213f, -256f), 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
 
 		button_CompetitionGameOverExit.gameObject.SetActive(true);
 		button_CompetitionGameOverExit.localScale = new Vector3(1f, 0f, 1f);
