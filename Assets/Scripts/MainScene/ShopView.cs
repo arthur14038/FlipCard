@@ -133,10 +133,10 @@ public class ShopView : AbstractView
 		ShowMsgWindow("Confirm Buy", content);
 	}
 
-	public void ShowThemeInfo()
+	public void ShowThemeInfo(string themeName, string themeContent)
 	{
 		currentMsgWindowState = MsgWindowState.ThemeInfo;
-		ShowMsgWindow("Theme Name", ".......................................................................................");
+		ShowMsgWindow(themeName, themeContent);
 	}
 
 	public void ShowBuyMsg(bool success)

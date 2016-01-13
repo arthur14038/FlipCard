@@ -63,7 +63,7 @@ public class CompetitionModeJudgement : GameModeJudgement
 				if(player1Ready && player2Ready)
 				{
 					currentTurn = (WhosTurn)Random.Range((int)WhosTurn.Player1Playing, (int)WhosTurn.Player2Playing + 1);
-					competitionModeView.StartCoroutine(competitionModeView.PlayerReadyEffect(currentTurn));
+                    competitionModeView.StartCoroutine(competitionModeView.PlayerReadyEffect(currentTurn));
 				}
 				break;
 			case WhosTurn.WaitingPlayer1:
@@ -151,14 +151,18 @@ public class CompetitionModeJudgement : GameModeJudgement
 				if(comboCount == 0)
 					gameMainView.ToggleCardGlow(true);
 
-				scoreChangeAmount = currentModeSetting.matchAddScore * cards.Length + currentModeSetting.comboAddScore * cards.Length * comboCount;
+				scoreChangeAmount = currentModeSetting.matchAddScore * cards.Length;
 
+				if(comboCount > 0)
+					scoreChangeAmount *= 2;
+				
 				++comboCount;
 
-				if(cards[0].IsGoldCard() || cards[1].IsGoldCard())
-				{
+				if(cards[0].IsGoldCard())
 					scoreChangeAmount *= 2;
-                }
+
+				if(cards[1].IsGoldCard())
+					scoreChangeAmount *= 2;
 			} else
 			{
 				scoreChangeAmount = currentModeSetting.mismatchReduceScore * cards.Length;

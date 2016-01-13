@@ -6,8 +6,6 @@ using Soomla.Store;
 public class ThemePackUI : MonoBehaviour {
 	enum ThemePackUIState {EquipedCard, EquipedTheme, EquipedBoth, CanBeEquiped }
 	ThemePackUIState currentState;
-	public Text text_ItemName;
-	public Text text_ItemInfo;
 	public Text text_ThemePrice;
 	public Image image_Theme;
 	public Image image_CardFace;
@@ -16,7 +14,6 @@ public class ThemePackUI : MonoBehaviour {
 	public GameObject image_ThemeEquiped;
 	public GameObject group_Theme;
 	public GameObject group_Shop;
-	public GameObject image_InfoBG;
 	public Toggle toggle_Scene;
 	public Toggle toggle_Card;
 	VoidString onClickThemeInfo;
@@ -53,12 +50,10 @@ public class ThemePackUI : MonoBehaviour {
 		this.onEquipCard = onEquipCard;
 		this.onClickThemePrice = onClickThemePrice;
 		this.onClickThemeInfo = onClickThemeInfo;
-		text_ItemName.text = themePack.theme.Name;
 		image_Theme.sprite = InventoryManager.Instance.GetSpriteById(themePack.theme.ItemId);
 		image_CardFace.sprite = InventoryManager.Instance.GetSpriteById(themePack.cardFace.ItemId);
 		image_CardBack.sprite = InventoryManager.Instance.GetSpriteById(themePack.cardBack.ItemId);
 		text_ThemePrice.text = themePack.theme.PurchaseType.GetPrice();
-        image_InfoBG.SetActive(false);
 
 		CheckUIState();
 	}

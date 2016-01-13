@@ -1,0 +1,56 @@
+﻿[
+   {
+     "ThemeItemId": "Theme_00", 
+     "ThemeName": "Sea of Polilu- Dawn", 
+     "ThemeContent": "Most of the areas in the North Polilu are covered by sea, the towering snowy mountains formed two isolated islands above sea level. The folks of the North land are habituated to rise early and catch sunrise on these two islands. \n\nWhen the sunrises from the water, the whole sea will switch from a dark blue to silver color. This view will last until the sun completely pass over the tip of the island. \n\nNorthern folks believes that if a child born at the dawn with a silver white hair like the sea, he will be clever and lucky.", 
+     "RequireMoni": 0
+ },
+   {
+     "ThemeItemId": "Theme_01", 
+     "ThemeName": "Sea of Pililu- Summer", 
+     "ThemeContent": "Even in the summer time the snow will not melt on the northern islands in Polilu, and the tree grows here had also build up a strong resistance to the harsh cold weather. \n\nResidents here often shuttle between the two islands to remove the accumulated frost on the tree. Those frost among the leaves ares hined by the sun, the northern people call them: stars of frozen fir.", 
+     "RequireMoni": 200
+ },
+   {
+     "ThemeItemId": "Theme_02", 
+     "ThemeName": "The Secrets of Triangular Tower", 
+     "ThemeContent": "No one know since when, Polilu's central desert region stands two triangular towers, they seem to appear earlier than the inhabitants of this area. Nobody has been able to discover the secret of it, even under the triangular tower, there is no possible entry can be found. \n\nHowever, the area around the towers is rarely prosperous. Near the sufficient water source, many long slender leave trees grows. Desert dwellers see here as an important resource acquisition field.", 
+     "RequireMoni": 150
+ },
+   {
+     "ThemeItemId": "Theme_03", 
+     "ThemeName": "Princess Lace of Polilu", 
+     "ThemeContent": "Princess Lace in the desert region is very fond of lace. Her clothing and headgear are decorated with elegant and gorgeous lace, even the cutlery and bedding she uses can see the design painting of lace patterns. \n\nPrincess's dress is made from the leaves grows around the triangular towers. It only collect the newborn leaves within three days, and extract the softest finest fibers, immersed them in the lake next to triangular towers for thirty days, then a group of most skillful lace craftsmen in Polilu will complete it in three months.", 
+     "RequireMoni": 500
+ },
+   {
+     "ThemeItemId": "Theme_04", 
+     "ThemeName": "A Beautiful Trap", 
+     "ThemeContent": "A cerulean river flowing through Polilu's southeast prairie. \n\nThis vast grasslands is covered with colorful flowers. \n\nThe beauty has danger hidden behind. \n\nMany foolish creatures passing through this place have become nutrient of the grasses. \n\nThis prairie has Polilu's most beautiful view, it is the most beautiful scenery, but also a trap.", 
+     "RequireMoni": 1250
+ },
+   {
+     "ThemeItemId": "Theme_05", 
+     "ThemeName": "Universe Photographer", 
+     "ThemeContent": "There is a pilot, his job is to travel around Polilu to take photographs, so people can see the outside world. \n\nWhen the night comes, the pilot sees the vast expanse of thesky, he always imagine what is on those shinny stars in the universe. He wonder whether if they have a pilots just like him on those planets. He thought that one day he would build a rocket ship, fly to those stars and take some pictures to show to people back home.", 
+     "RequireMoni": 250
+ },
+   {
+     "ThemeItemId": "Theme_06", 
+     "ThemeName": "The Small Temple", 
+     "ThemeContent": "At beginning, the temple was built on the river bank to provide travelers a place to rest. After hundreds of years of change, the river dried up, this oldest temple in Polilu is now deserted. \n\nOne day a farmer pass this place, he carried a bag full of seeds that he bought from the merchant. He have to return them because it would not grow on his farm. But the farmer got lost in this place, so he simply discard the seeds in the temple. \n\nThis temple has been standing for hundreds of years, and it is feeling lonely, so the temple decided touse its magic power to flowering those seeds and keep it company.", 
+     "RequireMoni": 850
+ },
+   {
+     "ThemeItemId": "Theme_07", 
+     "ThemeName": "Three Petal Flower", 
+     "ThemeContent": "This ancient woods have been standing here for millions of years. It is said that in this woods have a rare plant; \n\nit flower once every ten years, and it has three orange petals on the receptacle. \n\nPolilu's residents called it three petal flower, they believe that if you drink the petal tea, your memory will improve.", 
+     "RequireMoni": 150
+ },
+   {
+     "ThemeItemId": "Theme_08", 
+     "ThemeName": "White Flower Pond", 
+     "ThemeContent": "The white flowers in this pondis belong to a little girl who love aquatic plant. Those flowers are her eight years birthday gift from her father. Her father told the little girl that it will blossom in many different colors, but no one has ever seen it other than white. \n\nEven so, the little girl still believe in her father, and determined to be a botanist when she grow up, so she can research with her father to make the white flower pond blossom with other colors.", 
+     "RequireMoni": 200
+ }
+]

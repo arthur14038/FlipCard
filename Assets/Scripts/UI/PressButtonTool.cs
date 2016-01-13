@@ -36,6 +36,8 @@ public class PressButtonTool : ButtonOffset
 		{
 			AudioManager.Instance.PlayOneShot("Button_Click");
 			base.OnPointerDown(eventData);
+			image_AdditionCircle.gameObject.SetActive(true);
+			image_AdditionCircle.fillAmount = 0f;
 			if(chargeTime > 0f)
 			{
 				if(thisTweener != null)
@@ -86,7 +88,7 @@ public class PressButtonTool : ButtonOffset
 		{
 			case PressButtonState.Disable:
 				clickableParticle.SetActive(false);
-				image_AdditionCircle.fillAmount = 0f;
+				image_AdditionCircle.gameObject.SetActive(false);
 				image_Back.fillAmount = 0f;
 				thisGroup.alpha = 0.5f;
 				break;

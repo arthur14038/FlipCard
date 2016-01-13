@@ -237,7 +237,8 @@ public class MainSceneController : AbstractController {
 
 	void ShowThemeInfo(string themeItemId)
 	{
-		shopView.ShowThemeInfo();
+		ThemeInfo themeInfo = InventoryManager.Instance.GetThemeInfo(themeItemId);
+		shopView.ShowThemeInfo(themeInfo.themeName, themeInfo.themeContent);
 	}
 
 	void LeaveGame()

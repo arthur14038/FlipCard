@@ -18,6 +18,7 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 
 	public VoidNoneParameter updateCurrency;
 	Dictionary<string, Sprite> spritesWithItemId = new Dictionary<string, Sprite>();
+	Dictionary<string, ThemeInfo> themeInfoDict = new Dictionary<string, ThemeInfo>();
 	List<ThemePack> themePackList = new List<ThemePack>();
 	InventoryInfo inventoryInfo;
 	VoidBool lastPurchaseCallback;
@@ -36,6 +37,7 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 		StoreEvents.OnGoodEquipped += OnGoodEquipped;
 		StoreEvents.OnUnexpectedStoreError += OnUnexpectedStoreError;
 
+		LoadThemeInfo();
 		SoomlaStore.Initialize(new FlipCardStoreAsset());
 		yield return StartCoroutine(LoadInventoryTexture());
 	}
@@ -128,6 +130,14 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 	{
 		return themePackList;
 	}
+
+	public ThemeInfo GetThemeInfo(string themeItemId)
+	{
+		if(themeInfoDict.ContainsKey(themeItemId))
+			return themeInfoDict[themeItemId];
+		else
+			return null;
+    }
 
 	public VirtualGood GetVirtualGood(string itemId)
 	{
@@ -293,6 +303,19 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 			spritesWithItemId.Add(request.asset.name, (Sprite)request.asset);
 		}
 	}
+
+	void LoadThemeInfo()
+	{
+		string jsonString = ((TextAsset)Resources.Load("ThemeInfo")).text;
+
+		List<ThemeInfo> tmpList = JsonConvert.DeserializeObject<List<ThemeInfo>>(jsonString);
+
+		foreach(ThemeInfo info in tmpList)
+		{
+			if(!themeInfoDict.ContainsKey(info.themeItemId))
+				themeInfoDict.Add(info.themeItemId, info);
+		}
+	}
 }
 
 public class ThemePack
@@ -300,4 +323,12 @@ public class ThemePack
 	public VirtualGood theme;
 	public VirtualGood cardBack;
 	public VirtualGood cardFace;
+}
+
+public class ThemeInfo
+{
+	public string themeItemId;
+	public string themeName;
+	public string themeContent;
+	public int requireMoni;
 }
