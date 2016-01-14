@@ -196,7 +196,7 @@ public class MainSceneController : AbstractController {
 		if(success)
 		{
 			shopView.UpdateThemePackList();
-			message = string.Format("Buying Success!\n<color=#007A80FF>{0}</color>\nnow in the theme list", info.themeName);
+			message = string.Format("Buying Success!\n<color=#007A80FF>{0}</color>\nnow in the theme list.", info.themeName);
 		} else
 		{
 			message = string.Format("<i>{0}</i>\nBuying Failed", info.themeName);

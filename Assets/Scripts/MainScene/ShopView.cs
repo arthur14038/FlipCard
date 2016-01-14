@@ -45,7 +45,8 @@ public class ShopView : AbstractView
 	public List<ThemePackUI> themePackUIList = new List<ThemePackUI>();
 	public GameObject group_ThemeBuyingInfo;
 	public ScrollRect scrollView;
-	Coroutine loadingAnimation;
+	public GameObject group_SoldOut;
+    Coroutine loadingAnimation;
 	Vector3 rotateAngle = new Vector3(0f, 0f, 120f);
 
 	public override IEnumerator Init()
@@ -316,21 +317,36 @@ public class ShopView : AbstractView
 				group_ThemeBuyingInfo.gameObject.SetActive(true);
 				group_Moni.gameObject.SetActive(false);
 				group_Theme.gameObject.SetActive(true);
-				break;
+				group_SoldOut.SetActive(false);
+                break;
 			case ShopGroup.Shop:
 				scrollView.normalizedPosition = Vector2.zero;
+				int availableCount = 0;
 				foreach(ThemePackUI themePackUI in themePackUIList)
 				{
 					if(themePackUI.IsInBag)
+					{
 						themePackUI.gameObject.SetActive(false);
-					else
+					}else
+					{
+						++availableCount;
 						themePackUI.gameObject.SetActive(true);
+					}
+				}
+				if(availableCount > 0)
+				{
+					group_SoldOut.SetActive(false);
+					group_Theme.gameObject.SetActive(true);
+				} else
+				{
+					group_SoldOut.SetActive(true);
+					group_Theme.gameObject.SetActive(false);
 				}
 				group_ThemeBuyingInfo.gameObject.SetActive(false);
 				group_Moni.gameObject.SetActive(false);
-				group_Theme.gameObject.SetActive(true);
 				break;
 			case ShopGroup.Moni:
+				group_SoldOut.SetActive(false);
 				group_Theme.gameObject.SetActive(false);
 				group_Moni.gameObject.SetActive(true);
 				break;
