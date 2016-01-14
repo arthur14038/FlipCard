@@ -185,18 +185,25 @@ public class MainSceneController : AbstractController {
 
 	void BuyThemePack()
 	{
-		InventoryManager.Instance.BuyThemePack(wantedThemePack, BuyThemePackCallBack);
+		InventoryManager.Instance.BuyThemePack(wantedThemePack, BuyThemePackCallback);
 		shopView.ShowLoadingWindow();
 	}
 
-	void BuyThemePackCallBack(bool success)
+	void BuyThemePackCallback(bool success)
 	{
+		string message = "";
+		ThemeInfo info = InventoryManager.Instance.GetThemeInfo(wantedThemePack.theme.ItemId);
 		if(success)
+		{
 			shopView.UpdateThemePackList();
-
-		shopView.ShowBuyMsg(success);
+			message = string.Format("Buying Success!\n<color=#007A80FF>{0}</color>\nnow in the theme list", info.themeName);
+		} else
+		{
+			message = string.Format("<i>{0}</i>\nBuying Failed", info.themeName);
+		}
+		shopView.ShowBuyMsg(message);
 	}
-
+	
 	void BuyMoniPack(int tier)
 	{
 		string moniPackItemId = "";
@@ -221,18 +228,13 @@ public class MainSceneController : AbstractController {
 				moniPackItemId = FlipCardStoreAsset.MONI_PACK_TIER45_ITEM_ID;
 				break;
 		}
-		InventoryManager.Instance.BuyCurrencyPack(moniPackItemId, BuyCurrencyPackResult, BuyCurrencyPackCancel);
+		InventoryManager.Instance.BuyCurrencyPack(moniPackItemId, shopView.ShowBuyMsg, BuyCurrencyPackCancel);
 		shopView.ShowLoadingWindow();
 	}
-
-	void BuyCurrencyPackResult(bool success)
-	{
-		shopView.ShowBuyMsg(success);
-	}
-
+	
 	void BuyCurrencyPackCancel()
 	{
-		shopView.CloseLoadingWindow();
+		shopView.ShowBuyMsg("Transaction Cancel");
 	}
 
 	void ShowThemeInfo(string themeItemId)

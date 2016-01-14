@@ -43,6 +43,8 @@ public class ShopView : AbstractView
 	public RectTransform group_ResultMsg;
 	public Text text_ResultMsg;
 	public List<ThemePackUI> themePackUIList = new List<ThemePackUI>();
+	public GameObject group_ThemeBuyingInfo;
+	public ScrollRect scrollView;
 	Coroutine loadingAnimation;
 	Vector3 rotateAngle = new Vector3(0f, 0f, 120f);
 
@@ -117,6 +119,9 @@ public class ShopView : AbstractView
 	public void ToggleGroup(int groupIndex)
 	{
 		AudioManager.Instance.PlayOneShot("Button_Click");
+		if(!swithToggle[groupIndex].isOn)
+			swithToggle[groupIndex].isOn = true;
+
 		SetCurrentGroup((ShopGroup)groupIndex);
 	}
 
@@ -139,24 +144,9 @@ public class ShopView : AbstractView
 		ShowMsgWindow(themeName, themeContent);
 	}
 
-	public void ShowBuyMsg(bool success)
+	public void ShowBuyMsg(string message)
 	{
-		if(loadingAnimation != null)
-		{
-			StopCoroutine(loadingAnimation);
-			loadingAnimation = null;
-		}
-		string content = "";
-		if(success)
-		{
-			content = "BUYING SUCCESS!";
-		}else
-		{
-			content = "SOME ERROR OCCUR";
-		}
-		text_ResultMsg.text = content;
-		group_Loading.gameObject.SetActive(false);
-		group_ResultMsg.gameObject.SetActive(true);
+		StartCoroutine(LoadingEndEffect(message));
 	}
 
 	public void ShowLoadingWindow()
@@ -294,12 +284,28 @@ public class ShopView : AbstractView
 		DoLoadingAnimation();
 	}
 
+	IEnumerator LoadingEndEffect(string message)
+	{
+		if(loadingAnimation != null)
+		{
+			StopCoroutine(loadingAnimation);
+			loadingAnimation = null;
+		}
+		text_ResultMsg.text = message;
+		yield return group_Loading.DOScale(0f, 0.3f).WaitForCompletion();
+		group_Loading.gameObject.SetActive(false);
+		group_ResultMsg.localScale = Vector3.zero;
+		group_ResultMsg.gameObject.SetActive(true);
+		yield return group_ResultMsg.DOScale(1f, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
+	}
+
 	void SetCurrentGroup(ShopGroup value)
 	{
 		currentGroup = value;
 		switch(currentGroup)
 		{
 			case ShopGroup.Theme:
+				scrollView.normalizedPosition = Vector2.zero;
 				foreach(ThemePackUI themePackUI in themePackUIList)
 				{
 					if(themePackUI.IsInBag)
@@ -307,10 +313,12 @@ public class ShopView : AbstractView
 					else
 						themePackUI.gameObject.SetActive(false);
 				}
+				group_ThemeBuyingInfo.gameObject.SetActive(true);
 				group_Moni.gameObject.SetActive(false);
 				group_Theme.gameObject.SetActive(true);
 				break;
 			case ShopGroup.Shop:
+				scrollView.normalizedPosition = Vector2.zero;
 				foreach(ThemePackUI themePackUI in themePackUIList)
 				{
 					if(themePackUI.IsInBag)
@@ -318,6 +326,7 @@ public class ShopView : AbstractView
 					else
 						themePackUI.gameObject.SetActive(true);
 				}
+				group_ThemeBuyingInfo.gameObject.SetActive(false);
 				group_Moni.gameObject.SetActive(false);
 				group_Theme.gameObject.SetActive(true);
 				break;

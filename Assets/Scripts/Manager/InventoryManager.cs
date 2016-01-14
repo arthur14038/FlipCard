@@ -21,9 +21,10 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 	Dictionary<string, ThemeInfo> themeInfoDict = new Dictionary<string, ThemeInfo>();
 	List<ThemePack> themePackList = new List<ThemePack>();
 	InventoryInfo inventoryInfo;
-	VoidBool lastPurchaseCallback;
+	VoidString purchaseCurrencyCallback;
 	ThemePack buyingThemePack;
 	VoidNoneParameter purchaseCancelCallBack;
+	VoidBool purchaseThemeCallback;
 	bool storeInitialized;
 
 	public IEnumerator Init()
@@ -56,25 +57,25 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 	
 	public void OnMarketPurchase(PurchasableVirtualItem pvi, string payload, Dictionary<string, string> extra)
 	{
-		Debug.LogFormat("OnMarketPurchase Name: {0}, payload: {1}, extra.Count: {2}", pvi.Name, payload, extra.Count);
-		if(lastPurchaseCallback != null)
+		//Debug.LogFormat("OnMarketPurchase Name: {0}, payload: {1}, extra.Count: {2}", pvi.Name, payload, extra.Count);
+		if(purchaseCurrencyCallback != null)
 		{
-			lastPurchaseCallback(true);
-			lastPurchaseCallback = null;
+			string message = string.Format("Transaction Success! \nGet {0}", pvi.Name);
+			purchaseCurrencyCallback(message);
+			purchaseCurrencyCallback = null;
 		}
 	}
 
 	public void OnMarketPurchaseCancelled(PurchasableVirtualItem pvi)
 	{
-		Debug.LogFormat("OnMarketPurchaseCancelled Name: {0}", pvi.Name);
+		//Debug.LogFormat("OnMarketPurchaseCancelled Name: {0}", pvi.Name);
 		if(purchaseCancelCallBack != null)
 			purchaseCancelCallBack();
 	}
 
 	public void OnItemPurchase(PurchasableVirtualItem pvi, string payload)
 	{
-		Debug.LogFormat("OnItemPurchase Name: {0}, payload: {1}", pvi.Name, payload);
-
+		//Debug.LogFormat("OnItemPurchase Name: {0}, payload: {1}", pvi.Name, payload);
 		if(buyingThemePack != null)
 		{
 			if(StoreInventory.GetItemBalance(buyingThemePack.cardBack.ItemId) == 0)
@@ -84,16 +85,16 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 			buyingThemePack = null;
 		}
 
-		if(lastPurchaseCallback != null)
+		if(purchaseThemeCallback != null)
 		{
-			lastPurchaseCallback(true);
-			lastPurchaseCallback = null;
+			purchaseThemeCallback(true);
+			purchaseThemeCallback = null;
 		}
 	}
 
 	public void OnGoodEquipped(EquippableVG good)
 	{
-		Debug.LogFormat("OnGoodEquipped Name: {0}", good.Name);
+		//Debug.LogFormat("OnGoodEquipped Name: {0}", good.Name);
 	}
 
 	public void OnUnexpectedStoreError(int errorCode)
@@ -102,7 +103,7 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 		switch(errorCode)
 		{
 			case 0:
-				errorContent = "GENERAL";
+				errorContent = "GENERAL_ERROR";
 				break;
 			case 1:
 				errorContent = "VERIFICATION_TIMEOUT";
@@ -116,10 +117,16 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 		}
 		Debug.LogErrorFormat("OnUnexpectedStoreError errorContent: {0}", errorContent);
 
-		if(lastPurchaseCallback != null)
+		if(purchaseCurrencyCallback != null)
 		{
-			lastPurchaseCallback(false);
-			lastPurchaseCallback = null;
+			purchaseCurrencyCallback(errorContent);
+			purchaseCurrencyCallback = null;
+		}
+
+		if(purchaseThemeCallback != null)
+		{
+			purchaseThemeCallback(false);
+			purchaseThemeCallback = null;
 		}
 
 		if(buyingThemePack != null)
@@ -193,16 +200,16 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 			return false;
 	}
 
-	public void BuyCurrencyPack(string moniPackItemId, VoidBool lastPurchaseCallback, VoidNoneParameter purchaseCancelCallBack)
+	public void BuyCurrencyPack(string moniPackItemId, VoidString purchaseCurrencyCallback, VoidNoneParameter purchaseCancelCallBack)
 	{
+		this.purchaseCurrencyCallback = purchaseCurrencyCallback;
 		this.purchaseCancelCallBack = purchaseCancelCallBack;
-		this.lastPurchaseCallback = lastPurchaseCallback;
 		StoreInventory.BuyItem(moniPackItemId);
 	}
 
-	public void BuyThemePack(ThemePack themePack, VoidBool lastPurchaseCallback)
+	public void BuyThemePack(ThemePack themePack, VoidBool purchaseThemeCallback)
 	{
-		this.lastPurchaseCallback = lastPurchaseCallback;
+		this.purchaseThemeCallback = purchaseThemeCallback;
 		buyingThemePack = themePack;
 		StoreInventory.BuyItem(buyingThemePack.theme.ItemId);
 	}
