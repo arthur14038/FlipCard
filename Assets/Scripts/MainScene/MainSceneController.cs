@@ -148,7 +148,7 @@ public class MainSceneController : AbstractController {
 
 	void StillInProgress()
 	{
-		UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.OnClick2P);
+		UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.OnClickComingSoon);
 		mainPageView.ShowUnderConstruction();
 		notifyMessage = "Please notify me when \"New Mode\" feature is launches.";
 	}
@@ -239,6 +239,7 @@ public class MainSceneController : AbstractController {
 
 	void ShowThemeInfo(string themeItemId)
 	{
+		UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.OnClickThemeInfo);
 		ThemeInfo themeInfo = InventoryManager.Instance.GetThemeInfo(themeItemId);
 		shopView.ShowThemeInfo(themeInfo.themeName, themeInfo.themeContent);
 	}

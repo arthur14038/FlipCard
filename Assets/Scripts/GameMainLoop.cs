@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Soomla.Profile;
-using Grow.Highway;
-using Grow.Sync;
 
 public enum SceneName{FirstScene = 0, MainScene, GameScene, TestMain, TestGame}
 public class GameMainLoop : SingletonMonoBehavior<GameMainLoop> {
@@ -11,6 +9,7 @@ public class GameMainLoop : SingletonMonoBehavior<GameMainLoop> {
 	public int showView;
 	public int lastUnlockMode;
     VoidNoneParameter onSceneLoadComplete;
+	bool syncFinished;
 
 	public void RegisterController(IController controller, VoidNoneParameter onSceneLoadComplete = null)
     {
@@ -52,17 +51,12 @@ public class GameMainLoop : SingletonMonoBehavior<GameMainLoop> {
         if (onSceneLoadComplete != null)
             onSceneLoadComplete();
 	}
-
+	
 	// Use this for initialization
 	IEnumerator Start () {
 		DontDestroyOnLoad(this.gameObject);
 		loadingPage.Init();
-
-		#if !UNITY_EDITOR
-		GrowHighway.Initialize();
-        GrowSync.Initialize(true, true);
-		#endif
-
+		
 		SoomlaProfile.Initialize();
         ModelManager.Instance.Init();
         ScreenEffectManager.Instance.Init();
