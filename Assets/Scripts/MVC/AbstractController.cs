@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public abstract class AbstractController : MonoBehaviour, IController{
+public abstract class AbstractController : MonoBehaviour, IController
+{
+	public UnityEngine.UI.CanvasScaler[] canvasScaler;
 
 	protected virtual void Start()
 	{

@@ -2,8 +2,14 @@
 using System.Collections;
 
 public class FirstSceneController : AbstractController {
+
 	public override IEnumerator Init ()
 	{
+		if((float)Screen.width/Screen.height > 1200f/1848f)
+		{
+			foreach(UnityEngine.UI.CanvasScaler scaler in canvasScaler)
+				scaler.screenMatchMode = UnityEngine.UI.CanvasScaler.ScreenMatchMode.Expand;
+        }
 		yield return new WaitForSeconds(0.5f);
 		GameMainLoop.Instance.ChangeScene(SceneName.MainScene);
 		//GameMainLoop.Instance.ChangeScene(SceneName.TestMain);

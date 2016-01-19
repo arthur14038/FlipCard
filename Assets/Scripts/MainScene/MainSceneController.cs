@@ -14,6 +14,11 @@ public class MainSceneController : AbstractController {
 		
 	public override IEnumerator Init ()
 	{
+		if((float)Screen.width / Screen.height > 1200f / 1848f)
+		{
+			foreach(UnityEngine.UI.CanvasScaler scaler in canvasScaler)
+				scaler.screenMatchMode = UnityEngine.UI.CanvasScaler.ScreenMatchMode.Expand;
+		}
 		yield return StartCoroutine(mainPageView.Init());
 		yield return StartCoroutine(classicModeView.Init());
 		yield return StartCoroutine(twoPlayerView.Init());
