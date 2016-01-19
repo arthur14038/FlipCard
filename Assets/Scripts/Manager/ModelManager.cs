@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json;
@@ -127,8 +128,9 @@ public class ModelManager : SingletonMonoBehavior<ModelManager> {
 	{
 		string saveFilePath = "";
 		#if UNITY_IPHONE			
-		string fileNameBase = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
-		saveFilePath = fileNameBase.Substring(0, fileNameBase.LastIndexOf('/')) + "/Documents/" + fileName;
+		string path = Application.persistentDataPath.Substring( 0, Application.persistentDataPath.Length - 5 );
+		path = path.Substring( 0, path.LastIndexOf( '/' ) );
+		saveFilePath = Path.Combine( Path.Combine( path, "Documents" ), fileName );
 		#elif UNITY_ANDROID
 		saveFilePath = Application.persistentDataPath + "/" + fileName ;
 		#else
