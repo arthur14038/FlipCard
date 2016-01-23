@@ -133,6 +133,7 @@ public class MainSceneController : AbstractController {
 
 	void ShowShop()
 	{
+		UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.OnClickShop);
 		mainPageView.HideUI(true);
 		shopView.ShowUI(true);
 		currentView = MainSceneView.Shop;
@@ -148,7 +149,7 @@ public class MainSceneController : AbstractController {
 
 	void ShowRatePage()
 	{
-
+		UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.OnClickRate);
 	}
 
 	void StillInProgress()
