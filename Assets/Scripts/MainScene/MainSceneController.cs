@@ -150,6 +150,13 @@ public class MainSceneController : AbstractController {
 	void ShowRatePage()
 	{
 		UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.OnClickRate);
+		string storeUrl = "";
+#if UNITY_IPHONE
+		storeUrl = "https://itunes.apple.com/us/app/flip-card-polilu/id1076638340?l=zh&ls=1&mt=8";
+#elif UNITY_ANDROID
+		storeUrl = "https://play.google.com/store/apps/details?id=com.PlayClay.FlipCard";
+#endif
+		Application.OpenURL(storeUrl);
 	}
 
 	void StillInProgress()
