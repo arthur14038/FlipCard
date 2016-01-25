@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GameSceneController : AbstractController
 {
@@ -69,7 +70,20 @@ public class GameSceneController : AbstractController
 		if(thisTimeRecord != null)
 		{
 			if(thisTimeRecord.playTimes % 3 == 1)
-				UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.GameRecord, ModelManager.Instance.GetGameRecordForSendEvent(GameMode.Classic));
+			{
+				Dictionary<string, object> eventData = new Dictionary<string, object>();
+				eventData.Add("Level", (int)thisTimeRecord.level);
+				eventData.Add("High Score", thisTimeRecord.highScore);
+				switch(thisTimeRecord.mode)
+				{
+					case GameMode.Classic:
+						UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.ClassicModeFinished, eventData);
+						break;
+					case GameMode.LimitTime:
+						UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.TimeModeFinished, eventData);
+						break;
+				}
+            }
 
 			ModelManager.Instance.SaveGameRecord(thisTimeRecord);
 		}

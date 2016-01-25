@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using UnityEngine.Analytics;
 
 public class UnityAnalyticsManager : SingletonMonoBehavior<UnityAnalyticsManager> {
-	public enum EventType {OnClick2P, OnClickShop, GameRecord, OnClickComingSoon, OnClickThemeInfo, OnClickRate}
+	public enum EventType {OnClickShop, OnClickComingSoon, OnClickThemeInfo, OnClickRate, TimeModeFinished, ClassicModeFinished}
 
 	public void SendCustomEvent(EventType eventType, Dictionary<string, object> eventData = null)
 	{
 		#if UNITY_EDITOR
 		//if(eventData != null)
-		//	Debug.LogFormat("Send Event {0}: {1}", eventType, Newtonsoft.Json.JsonConvert.SerializeObject(eventData));
+			Debug.LogFormat("Send Event {0}: {1}", eventType, Newtonsoft.Json.JsonConvert.SerializeObject(eventData));
 		#endif
 		Analytics.CustomEvent(eventType.ToString(), eventData);
     }
