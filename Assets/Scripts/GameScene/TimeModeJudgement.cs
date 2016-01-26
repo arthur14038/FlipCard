@@ -83,7 +83,7 @@ public class TimeModeJudgement : GameModeJudgement
 		}
 	}
 		
-	void CardMatch(bool match, params Card_Normal[] cards)
+	void CardMatch(bool match, params CardBase[] cards)
 	{
 		if(currentState != GameState.GameOver)
 		{
@@ -136,7 +136,7 @@ public class TimeModeJudgement : GameModeJudgement
 				{
 					timeModeGameView.SetScore(score);
 
-					foreach(Card_Normal matchCard in cards)
+					foreach(CardBase matchCard in cards)
 					{
 						Vector2 pos = matchCard.GetAnchorPosition();
 						pos.x += currentCardArraySetting.edgeLength / 2 - 20f;

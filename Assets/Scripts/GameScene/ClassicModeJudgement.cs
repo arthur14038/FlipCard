@@ -125,7 +125,7 @@ public class ClassicModeJudgement : GameModeJudgement
 		gameSettingView.ShowSinglePlayerGameOver(achieveCondition, "LEVEL COMPLETE", "CLASSIC MODE", ".GAME TIME.", gameTimeContent, conditionContent, recordBreak);
 	}
 
-	void CardMatch(bool match, params Card_Normal[] cards)
+	void CardMatch(bool match, params CardBase[] cards)
 	{
 		if(currentState != GameState.GameOver)
 		{

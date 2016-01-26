@@ -97,7 +97,7 @@ public class CompetitionModeJudgement : GameModeJudgement
 		gameSettingView.ShowTwoPlayersGameOver(values[0], values[1]);
 	}
 
-	void AddScore(int addAmount, int playerNumber, Card_Normal[] cards)
+	void AddScore(int addAmount, int playerNumber, CardBase[] cards)
 	{
 		int saveScore = 0;
 		int score = 0;
@@ -130,7 +130,7 @@ public class CompetitionModeJudgement : GameModeJudgement
 
 			if(cards != null)
 			{
-				foreach(Card_Normal matchCard in cards)
+				foreach(CardBase matchCard in cards)
 				{
 					Vector2 pos = matchCard.GetAnchorPosition();
 					pos.x += currentCardArraySetting.edgeLength / 2 - 20f;
@@ -140,7 +140,7 @@ public class CompetitionModeJudgement : GameModeJudgement
 		}
 	}
 
-	void CardMatch(bool match, params Card_Normal[] cards)
+	void CardMatch(bool match, params CardBase[] cards)
 	{
 		if(currentState != GameState.GameOver)
 		{
