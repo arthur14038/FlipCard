@@ -23,8 +23,6 @@ public class GameMainView : AbstractView
 	Queue<CardBase> waitForCompare = new Queue<CardBase>();
 	Queue<CardBase> waitForMatch = new Queue<CardBase>();
 	List<CardBase> cardsOnTable = new List<CardBase>();
-	int unknownCard1 = 0;
-	int unknownCard2 = 0;
 	int goldCardCount = 0;
 	bool lockFlipCard = false;
 
@@ -74,7 +72,7 @@ public class GameMainView : AbstractView
 		}
 	}
 
-	public IEnumerator DealCard()
+	public IEnumerator DealCard(int unknownCardCount = 0)
 	{
 		ShuffleCardDeck();
 		float delayDuration = dealTime / cardsDeck.Length;		
