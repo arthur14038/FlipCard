@@ -11,9 +11,9 @@ public class GameMainView : AbstractView
 	public GameObject scoreTextPrefab;
 	public GameObject getLuckyEffect;
 	public Image image_Theme;
-	public Sprite[] cardImage;
 	public VoidNoneParameter completeOneRound;
 	public VoidBoolAndCards cardMatch;
+	Sprite[] cardImage;
 	Queue<ScoreText> scoreTextQueue = new Queue<ScoreText>();
 	Vector2[] pos;
 	Vector2 shiftAmount = new Vector2(-100, 50);
@@ -65,7 +65,13 @@ public class GameMainView : AbstractView
 			SaveScoreText(st);
 		}
 		scoreTextPrefab = null;
-		yield return null;
+		cardImage = new Sprite[30];
+		for(int i = 0 ; i < 30 ; ++i)
+		{
+			ResourceRequest request = Resources.LoadAsync<Sprite>(string.Format("CardImage/CardImage_{0}", i.ToString("D3")));
+			yield return request;
+			cardImage[i] = (Sprite)request.asset;
+		}
 	}
 
 	public IEnumerator DealCard()
