@@ -19,7 +19,7 @@ public class GameSceneController : AbstractController
     public override IEnumerator Init()
 	{
 		modeView = GetModeView();
-		if((float)Screen.width / Screen.height > 1200f / 1848f)
+		if(NeedExpand)
 		{
 			foreach(UnityEngine.UI.CanvasScaler scalerA in canvasScaler)
 				scalerA.screenMatchMode = UnityEngine.UI.CanvasScaler.ScreenMatchMode.Expand;

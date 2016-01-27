@@ -76,15 +76,12 @@ public class GameMainView : AbstractView
 
 	public IEnumerator DealCard()
 	{
-		Sprite[] thisTimeCardImage = GetCardImage(cardsDeck.Length);
-		float delayDuration = dealTime / cardsDeck.Length;
-		
+		ShuffleCardDeck();
+		float delayDuration = dealTime / cardsDeck.Length;		
 		UpdateGoldCard();
 		for(int i = 0 ; i < cardsDeck.Length ; ++i)
 		{
 			cardsOnTable.Add(cardsDeck[i]);
-			cardsDeck[i].SetSprite(thisTimeCardImage[i], CardState.Back);
-			cardsDeck[i].SetCardId(thisTimeCardImage[i].name);
             cardsDeck[i].DealCard(pos[i], shiftAmount, delayDuration * i, appearDuration);
 		}
 		yield return new WaitForSeconds(dealTime);
@@ -210,6 +207,27 @@ public class GameMainView : AbstractView
 		scoreTextQueue.Enqueue(st);
 	}
 	
+	void ShuffleCardDeck()
+	{
+		Sprite[] thisTimeCardImage = GetCardImage(cardsDeck.Length);
+		for(int i = 0 ; i < cardsDeck.Length ; ++i)
+		{
+			cardsDeck[i].SetSprite(thisTimeCardImage[i], CardState.Back);
+			cardsDeck[i].SetCardId(thisTimeCardImage[i].name);
+		}
+
+		for(int i = 0 ; i < cardsDeck.Length ; ++i)
+		{
+			int randomIndex = Random.Range(0, cardsDeck.Length);
+			while(randomIndex == i)
+				randomIndex = Random.Range(0, cardsDeck.Length);
+
+			CardBase tmp = cardsDeck[i];
+			cardsDeck[i] = cardsDeck[randomIndex];
+			cardsDeck[randomIndex] = tmp;
+		}
+	}
+
 	Sprite[] GetCardImage(int count)
 	{
 		Sprite[] choosenCardFace = new Sprite[count];
@@ -240,17 +258,6 @@ public class GameMainView : AbstractView
 		} else
 		{
 			Debug.LogError("CardFace is not enough");
-		}
-
-		for(int i = 0 ; i < choosenCardFace.Length ; ++i)
-		{
-			int randomIndex = Random.Range(0, choosenCardFace.Length);
-			while(randomIndex == i)
-				randomIndex = Random.Range(0, choosenCardFace.Length);
-
-			Sprite tmp = choosenCardFace[i];
-			choosenCardFace[i] = choosenCardFace[randomIndex];
-			choosenCardFace[randomIndex] = tmp;
 		}
 
 		return choosenCardFace;

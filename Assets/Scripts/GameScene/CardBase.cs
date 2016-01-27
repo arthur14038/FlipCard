@@ -5,28 +5,28 @@ using UnityEngine.UI;
 
 public enum CardState { Face, Back, None }
 public class CardBase : MonoBehaviour {
-	Button thisButton;
-	CanvasGroup thisCanvasGroup;
-	RectTransform thisRectTransform;
-	Image image_Glow;
-	Image image_CardBody;
-	Image image_CardImage;
-	Image image_GoldCardFrame;
-	Sprite cardFaceSprite;
-	Sprite cardBackSprite;
-	Sprite cardFaceImageSprite;
-	CardState currentState = CardState.None;
+	protected Button thisButton;
+	protected CanvasGroup thisCanvasGroup;
+	protected RectTransform thisRectTransform;
+	protected Image image_Glow;
+	protected Image image_CardBody;
+	protected Image image_CardImage;
+	protected Image image_GoldCardFrame;
+	protected Sprite cardFaceSprite;
+	protected Sprite cardBackSprite;
+	protected Sprite cardFaceImageSprite;
+	protected CardState currentState = CardState.None;
 	string cardId;
-	bool isGoldCard;
-	Coroutine flipAnimation;
-	Coroutine matchEffect;
-	Coroutine mismatchEffect;
-	BoolCardBase checkCanFlipCard;
-	VoidCardBase flipFinish;
-	Color glowColor = new Color(1f, 0.85f, 0f);
-	Vector3 flipDown = new Vector3(0f, 0.9f, 1f);
+	protected bool isGoldCard;
+	protected Coroutine flipAnimation;
+	protected Coroutine matchEffect;
+	protected Coroutine mismatchEffect;
+	protected BoolCardBase checkCanFlipCard;
+	protected VoidCardBase flipFinish;
+	protected Color glowColor = new Color(1f, 0.85f, 0f);
+	protected Vector3 flipDown = new Vector3(0f, 0.9f, 1f);
 
-	public void Init(BoolCardBase checkCanFlipCard, VoidCardBase flipFinish, float cardSize)
+	public virtual void Init(BoolCardBase checkCanFlipCard, VoidCardBase flipFinish, float cardSize)
 	{
 		this.checkCanFlipCard = checkCanFlipCard;
 		this.flipFinish = flipFinish;
@@ -64,7 +64,7 @@ public class CardBase : MonoBehaviour {
 		this.cardId = cardId;
 	}
 
-	public void FlipBySystem()
+	public virtual void FlipBySystem()
 	{
 		if(flipAnimation != null)
 			StopCoroutine(flipAnimation);
@@ -193,7 +193,7 @@ public class CardBase : MonoBehaviour {
 		}
 	}
 
-	void SetCardState(CardState state)
+	protected virtual void SetCardState(CardState state)
 	{
 		if(currentState != state)
 		{
@@ -211,9 +211,7 @@ public class CardBase : MonoBehaviour {
 					break;
 				case CardState.Face:
 					image_GoldCardFrame.gameObject.SetActive(false);
-					image_CardImage.sprite = cardFaceImageSprite;
-					image_CardImage.gameObject.SetActive(true);
-					image_CardImage.rectTransform.sizeDelta = (new Vector2(cardFaceImageSprite.rect.width, cardFaceImageSprite.rect.height)) * image_CardBody.rectTransform.sizeDelta.x / 192f;
+					SetCardImage(cardFaceImageSprite);
 					thisButton.interactable = false;
 					image_CardBody.sprite = cardFaceSprite;
 					break;
@@ -221,7 +219,15 @@ public class CardBase : MonoBehaviour {
 		}
 	}
 
-	IEnumerator FlipAniamtion(bool flipByUser)
+	protected void SetCardImage(Sprite imageSprite)
+	{
+		image_CardImage.sprite = imageSprite;
+		image_CardImage.rectTransform.sizeDelta = (new Vector2(imageSprite.rect.width, imageSprite.rect.height)) * image_CardBody.rectTransform.sizeDelta.x / 192f;
+		if(!image_CardImage.gameObject.activeSelf)
+			image_CardImage.gameObject.SetActive(true);
+	}
+
+	protected IEnumerator FlipAniamtion(bool flipByUser)
 	{
 		image_CardBody.DOColor(Color.gray, 0.2f).SetEase(Ease.OutQuad);
 		image_CardImage.DOColor(Color.gray, 0.2f).SetEase(Ease.OutQuad);
@@ -260,7 +266,9 @@ public class CardBase : MonoBehaviour {
 	IEnumerator MismatchEffect()
 	{
 		yield return new WaitForSeconds(0.2f);
-		FlipBySystem();
+		if(flipAnimation != null)
+			StopCoroutine(flipAnimation);
+		flipAnimation = StartCoroutine(FlipAniamtion(false));
 
 		mismatchEffect = null;
 	}

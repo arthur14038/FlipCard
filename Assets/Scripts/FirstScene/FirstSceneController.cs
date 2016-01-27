@@ -5,7 +5,7 @@ public class FirstSceneController : AbstractController {
 
 	public override IEnumerator Init ()
 	{
-		if((float)Screen.width/Screen.height > 1200f/1848f)
+		if(NeedExpand)
 		{
 			foreach(UnityEngine.UI.CanvasScaler scaler in canvasScaler)
 				scaler.screenMatchMode = UnityEngine.UI.CanvasScaler.ScreenMatchMode.Expand;
