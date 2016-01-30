@@ -303,30 +303,4 @@ public class GameMainView : AbstractView
 		yield return null;
 		showCoroutine = null;
 	}
-
-	//void OnGUI()
-	//{
-	//	if(GUI.Button(new Rect(10, 10, 150, 50), "Init"))
-	//	{
-	//		cardsDeck = new CardBase[3*4];
-
-	//		GameObject cardPrefab = Resources.Load("Card/CardBase") as GameObject;
-	//		for(int i = 0 ; i < cardsDeck.Length ; ++i)
-	//		{
-	//			GameObject tmp = Instantiate(cardPrefab) as GameObject;
-	//			tmp.name = cardPrefab.name + i.ToString();
-	//			tmp.transform.SetParent(cardParent);
-	//			tmp.transform.localScale = Vector3.one;
-	//			tmp.SetActive(false);
-	//			cardsDeck[i] = tmp.AddComponent<CardBase>();
-	//			cardsDeck[i].Init(CanFlipCardNow, CardFlipFinish);
-	//		}
-	//	}
-
-	//	if(GUI.Button(new Rect(200, 10, 150, 50), "Deal"))
-	//	{
-	//		Vector2[] cardPos = new Vector2[12];
-	//		StartCoroutine(DealCard(cardPos));
-	//	}
-	//}
 }

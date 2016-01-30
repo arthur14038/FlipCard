@@ -33,8 +33,12 @@ public class TimeModeJudgement : GameModeJudgement
 
 	protected override IEnumerator StartGame()
 	{
+		score = 0;
+		currentCombo = 0;
+		currentRound = 0;
 		activeFeverTimeCount = 0;
-        gameMainView.FlipAllCard();
+		gamePassTime = 0;
+		gameMainView.FlipAllCard();
 		yield return new WaitForSeconds(0.35f + currentModeSetting.showCardTime);
 		gameMainView.FlipAllCard();
 		yield return new WaitForSeconds(0.35f);
@@ -243,11 +247,6 @@ public class TimeModeJudgement : GameModeJudgement
 		yield return new WaitForSeconds(0.3f);
 		yield return gameMainView.StartCoroutine(gameMainView.DealCard(currentCardArraySetting.edgeLength, GetCardPos()));
 		yield return new WaitForSeconds(0.3f);
-		yield return gameMainView.StartCoroutine(DealCardRoutine());
-	}
-
-	IEnumerator DealCardRoutine()
-	{
 		gameMainView.FlipAllCard();
 		yield return new WaitForSeconds(0.35f + currentModeSetting.showCardTime);
 		gameMainView.FlipAllCard();
@@ -255,7 +254,5 @@ public class TimeModeJudgement : GameModeJudgement
 		gameMainView.ToggleMask(false);
 		if(currentState == GameState.Waiting)
 			currentState = GameState.Playing;
-
-		AudioManager.Instance.PlayMusic("GamePlayBGM", true);
 	}
 }
