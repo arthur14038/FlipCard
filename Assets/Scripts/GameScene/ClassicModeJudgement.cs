@@ -11,13 +11,15 @@ public class ClassicModeJudgement : GameModeJudgement
 	public override IEnumerator Init(GameMainView gameMainView, GameSettingView gameSettingView, AbstractView modeView)
 	{
 		yield return gameMainView.StartCoroutine(base.Init(gameMainView, gameSettingView, modeView));
+		gameMainView.LoadCard(currentCardArraySetting.row * currentCardArraySetting.column, 0);
+		gameMainView.SetUsingCard(currentCardArraySetting.row * currentCardArraySetting.column, 0);
 		currentModeSetting = GameSettingManager.GetCurrentClassicModeSetting();
         gameMainView.completeOneRound = RoundComplete;
 		gameMainView.cardMatch = CardMatch;
 		classicModeGameView = (ClassicModeGameView)modeView;
 		classicModeGameView.onClickPause = PauseGame;
 		classicModeGameView.onGameStart = StartGame;
-		yield return gameMainView.StartCoroutine(gameMainView.DealCard());
+		yield return gameMainView.StartCoroutine(gameMainView.DealCard(currentCardArraySetting.edgeLength, GetCardPos()));
 		//gameMainView.SetAllCardBackUnknown();
     }
 

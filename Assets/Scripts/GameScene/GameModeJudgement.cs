@@ -51,4 +51,18 @@ public abstract class GameModeJudgement{
 	{
 
 	}
+
+	protected virtual Vector2[] GetCardPos()
+	{
+		Vector2[] cardPos = new Vector2[currentCardArraySetting.row * currentCardArraySetting.column];
+
+		for(int i = 0 ; i < cardPos.Length ; ++i)
+		{
+			float x = currentCardArraySetting.realFirstPosition.x + (i % currentCardArraySetting.column) * (currentCardArraySetting.edgeLength + currentCardArraySetting.cardGap);
+			float y = currentCardArraySetting.realFirstPosition.y - (i / currentCardArraySetting.column) * (currentCardArraySetting.edgeLength + currentCardArraySetting.cardGap);
+			cardPos[i] = new Vector2(x, y);
+		}
+
+		return cardPos;
+	}
 }

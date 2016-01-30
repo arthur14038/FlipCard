@@ -16,7 +16,7 @@ public class CardBase : MonoBehaviour {
 	protected Sprite cardBackSprite;
 	protected Sprite cardFaceImageSprite;
 	protected CardState currentState = CardState.None;
-	string cardId;
+	protected string cardId;
 	protected bool isGoldCard;
 	protected Coroutine flipAnimation;
 	protected Coroutine matchEffect;
@@ -25,8 +25,10 @@ public class CardBase : MonoBehaviour {
 	protected VoidCardBase flipFinish;
 	protected Color glowColor = new Color(1f, 0.85f, 0f);
 	protected Vector3 flipDown = new Vector3(0f, 0.9f, 1f);
+	protected float standardCardSize = 192f;
+	protected float currentCardSize;
 
-	public virtual void Init(BoolCardBase checkCanFlipCard, VoidCardBase flipFinish, float cardSize)
+	public virtual void Init(BoolCardBase checkCanFlipCard, VoidCardBase flipFinish)
 	{
 		this.checkCanFlipCard = checkCanFlipCard;
 		this.flipFinish = flipFinish;
@@ -47,10 +49,6 @@ public class CardBase : MonoBehaviour {
 
 		cardBackSprite = InventoryManager.Instance.GetCurrentCardBack();
 		cardFaceSprite = InventoryManager.Instance.GetCurrentCardFace();
-
-		image_CardBody.rectTransform.sizeDelta = Vector2.one * cardSize;
-		image_GoldCardFrame.rectTransform.sizeDelta = (new Vector2(image_GoldCardFrame.sprite.rect.width, image_GoldCardFrame.sprite.rect.height)) * cardSize / 192f;
-		image_Glow.rectTransform.sizeDelta = Vector2.one * (cardSize + 48f);
 	}
 
 	public void SetSprite(Sprite cardFaceImage, CardState defaultState)
@@ -71,7 +69,7 @@ public class CardBase : MonoBehaviour {
 		flipAnimation = StartCoroutine(FlipAniamtion(false));
 	}
 
-	public void DealCard(Vector2 pos, Vector2 shiftAmount, float delayTime, float duration)
+	public void DealCard(Vector2 pos, Vector2 shiftAmount, float delayTime, float duration, float cardSize)
 	{
 		if(!this.gameObject.activeSelf)
 			this.gameObject.SetActive(true);
@@ -87,6 +85,14 @@ public class CardBase : MonoBehaviour {
 			image_GoldCardFrame.color = Color.white;
 		} else
 			image_GoldCardFrame.gameObject.SetActive(false);
+		
+		if(currentCardSize != cardSize)
+		{
+			currentCardSize = cardSize;
+			image_CardBody.rectTransform.sizeDelta = Vector2.one * currentCardSize;
+			image_Glow.rectTransform.sizeDelta = Vector2.one * (currentCardSize + 48f);
+			image_GoldCardFrame.rectTransform.sizeDelta = (new Vector2(image_GoldCardFrame.sprite.rect.width, image_GoldCardFrame.sprite.rect.height)) * currentCardSize / standardCardSize;
+		}
 	}
 
 	public void Match()
@@ -105,65 +111,76 @@ public class CardBase : MonoBehaviour {
 
 	public void ToggleCardGlow(bool turnOn)
 	{
-		if(turnOn)
+		if(image_Glow.gameObject.activeSelf != turnOn)
 		{
-			image_Glow.gameObject.SetActive(true);
-			if(this.gameObject.activeInHierarchy)
+			if(turnOn)
 			{
-				image_Glow.color = glowColor - Color.black;
-				image_Glow.DOFade(1f, 0.3f);
+				image_Glow.gameObject.SetActive(true);
+				if(this.gameObject.activeInHierarchy)
+				{
+					image_Glow.color = glowColor - Color.black;
+					image_Glow.DOFade(1f, 0.3f);
+				} else
+				{
+					image_Glow.color = glowColor;
+				}
 			} else
 			{
-				image_Glow.color = glowColor;
+				if(this.gameObject.activeInHierarchy)
+				{
+					image_Glow.DOFade(0f, 0.3f).OnComplete(
+						delegate () {
+							image_Glow.gameObject.SetActive(false);
+						}
+						);
+				} else
+				{
+					image_Glow.gameObject.SetActive(false);
+				}
 			}
-		} else
-		{
-			if(this.gameObject.activeInHierarchy)
-			{
-				image_Glow.DOFade(0f, 0.3f).OnComplete(
-					delegate () {
-						image_Glow.gameObject.SetActive(false);
-					}
-					);
-			} else
-			{
-				image_Glow.gameObject.SetActive(false);
-			}
-		}
+		}		
 	}
 
 	public void ToggleGoldCard(bool value)
 	{
-		isGoldCard = value;
-		if(isGoldCard)
+		if(isGoldCard != value)
+			isGoldCard = value;
+		else
+			return;
+
+		switch(currentState)
 		{
-			switch(currentState)
-			{
-				case CardState.Back:
+			case CardState.Back:
+				if(isGoldCard)
+				{
 					image_GoldCardFrame.gameObject.SetActive(true);
-					image_GoldCardFrame.color = Color.white - Color.black;
-					image_GoldCardFrame.DOFade(1f, 0.3f);
-					break;
-				case CardState.Face:
-					image_GoldCardFrame.color = Color.white;
-					image_GoldCardFrame.gameObject.SetActive(false);
-					break;
-			}
-		} else
-		{
-			switch(currentState)
-			{
-				case CardState.Back:
-					image_GoldCardFrame.DOFade(0f, 0.3f).OnComplete(
+					if(image_GoldCardFrame.gameObject.activeInHierarchy)
+					{
+						image_GoldCardFrame.color = Color.white - Color.black;
+						image_GoldCardFrame.DOFade(1f, 0.3f);
+					}else
+					{
+						image_GoldCardFrame.color = Color.white;
+					}
+				} else
+				{
+					if(image_GoldCardFrame.gameObject.activeInHierarchy)
+					{
+						image_GoldCardFrame.DOFade(0f, 0.3f).OnComplete(
 					delegate () {
 						image_GoldCardFrame.gameObject.SetActive(false);
 					}
 					);
-					break;
-				case CardState.Face:
-					image_GoldCardFrame.gameObject.SetActive(false);
-					break;
-			}
+					}else
+					{
+						image_GoldCardFrame.gameObject.SetActive(false);
+					}
+				}
+				break;
+			case CardState.Face:
+				image_GoldCardFrame.color = Color.white;
+				image_GoldCardFrame.gameObject.SetActive(false);
+				break;
 		}
 	}
 
@@ -222,7 +239,7 @@ public class CardBase : MonoBehaviour {
 	protected void SetCardImage(Sprite imageSprite)
 	{
 		image_CardImage.sprite = imageSprite;
-		image_CardImage.rectTransform.sizeDelta = (new Vector2(imageSprite.rect.width, imageSprite.rect.height)) * image_CardBody.rectTransform.sizeDelta.x / 192f;
+		image_CardImage.rectTransform.sizeDelta = (new Vector2(imageSprite.rect.width, imageSprite.rect.height)) * currentCardSize / standardCardSize;
 		if(!image_CardImage.gameObject.activeSelf)
 			image_CardImage.gameObject.SetActive(true);
 	}

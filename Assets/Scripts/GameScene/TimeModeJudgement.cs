@@ -17,6 +17,8 @@ public class TimeModeJudgement : GameModeJudgement
 	public override IEnumerator Init(GameMainView gameMainView, GameSettingView gameSettingView, AbstractView modeView)
 	{
 		yield return gameMainView.StartCoroutine(base.Init(gameMainView, gameSettingView, modeView));
+		gameMainView.LoadCard(currentCardArraySetting.row * currentCardArraySetting.column, 0);
+		gameMainView.SetUsingCard(currentCardArraySetting.row * currentCardArraySetting.column, 0);
 		currentModeSetting = GameSettingManager.GetCurrentTimeModeSetting();
 		gameTime = currentModeSetting.gameTime;
 		gameMainView.completeOneRound = NextRound;
@@ -26,7 +28,7 @@ public class TimeModeJudgement : GameModeJudgement
 		timeModeGameView.SetTimeBar(1f);
 		timeModeGameView.onCountDownFinished = StartGame;
 		feverTimeOn = false;
-		yield return gameMainView.StartCoroutine(gameMainView.DealCard());
+		yield return gameMainView.StartCoroutine(gameMainView.DealCard(currentCardArraySetting.edgeLength, GetCardPos()));
 	}
 
 	protected override IEnumerator StartGame()
@@ -239,7 +241,7 @@ public class TimeModeJudgement : GameModeJudgement
 	{
 		gameMainView.ToggleMask(true);
 		yield return new WaitForSeconds(0.3f);
-		yield return gameMainView.StartCoroutine(gameMainView.DealCard());
+		yield return gameMainView.StartCoroutine(gameMainView.DealCard(currentCardArraySetting.edgeLength, GetCardPos()));
 		yield return new WaitForSeconds(0.3f);
 		yield return gameMainView.StartCoroutine(DealCardRoutine());
 	}

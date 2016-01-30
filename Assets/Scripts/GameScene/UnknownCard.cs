@@ -5,9 +5,9 @@ using DG.Tweening;
 public class UnknownCard : CardBase {
 	Sprite unknownSprite;
 
-	public override void Init(BoolCardBase checkCanFlipCard, VoidCardBase flipFinish, float cardSize)
+	public override void Init(BoolCardBase checkCanFlipCard, VoidCardBase flipFinish)
 	{
-		base.Init(checkCanFlipCard, flipFinish, cardSize);
+		base.Init(checkCanFlipCard, flipFinish);
 		unknownSprite = Resources.Load<Sprite>("CardImage/CardImage_Unknown");
 	}
 

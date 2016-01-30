@@ -15,14 +15,15 @@ public class GameMainView : AbstractView
 	public VoidBoolAndCards cardMatch;
 	Sprite[] cardImage;
 	Queue<ScoreText> scoreTextQueue = new Queue<ScoreText>();
-	Vector2[] pos;
 	Vector2 shiftAmount = new Vector2(-100, 50);
 	float appearDuration = 0.3f;
 	float dealTime = 0.5f;
-	CardBase[] cardsDeck;
 	Queue<CardBase> waitForCompare = new Queue<CardBase>();
 	Queue<CardBase> waitForMatch = new Queue<CardBase>();
+	List<CardBase> usingCardDeck = new List<CardBase>();
 	List<CardBase> cardsOnTable = new List<CardBase>();
+	List<CardBase> normalCardDeck = new List<CardBase>();
+	List<UnknownCard> unknownCardDeck = new List<UnknownCard>();
 	int goldCardCount = 0;
 	bool lockFlipCard = false;
 
@@ -32,26 +33,7 @@ public class GameMainView : AbstractView
 		getLuckyEffect.SetActive(false);
 
 		image_Theme.sprite = InventoryManager.Instance.GetCurrentThemeSprite();
-		CardArraySetting setting = GameSettingManager.GetCurrentCardArraySetting();
-		cardsDeck = new CardBase[setting.column * setting.row];
-		pos = new Vector2[cardsDeck.Length];
-
-		GameObject cardPrefab = Resources.Load("Card/CardBase") as GameObject;
-		for(int i = 0 ; i < cardsDeck.Length ; ++i)
-		{
-			GameObject tmp = Instantiate(cardPrefab) as GameObject;
-			tmp.name = cardPrefab.name + i.ToString();
-			tmp.transform.SetParent(cardParent);
-			tmp.transform.localScale = Vector3.one;
-			tmp.SetActive(false);
-			cardsDeck[i] = tmp.AddComponent<CardBase>();
-			cardsDeck[i].Init(CanFlipCardNow, CardFlipFinish, setting.edgeLength);
-			float x = setting.realFirstPosition.x + (i % setting.column) * (setting.edgeLength + setting.cardGap);
-			float y = setting.realFirstPosition.y - (i / setting.column) * (setting.edgeLength + setting.cardGap);
-			pos[i] = new Vector2(x, y);
-		}
-		yield return null;
-
+		
 		for(int i = 0 ; i < 8 ; ++i)
 		{
 			GameObject tmp = Instantiate(scoreTextPrefab) as GameObject;
@@ -71,29 +53,78 @@ public class GameMainView : AbstractView
 			cardImage[i] = (Sprite)request.asset;
 		}
 	}
+	
+	public void LoadCard(int normalCardCount, int unknownCardCount)
+	{
+		GameObject cardPrefab = Resources.Load("Card/CardBase") as GameObject;
+		for(int i = 0 ; i < normalCardCount ; ++i)
+		{
+			GameObject tmp = Instantiate(cardPrefab) as GameObject;
+			tmp.name = "NormalCard_" + i.ToString();
+			tmp.transform.SetParent(cardParent);
+			tmp.transform.localScale = Vector3.one;
+			tmp.SetActive(false);
+			CardBase normalCard = tmp.AddComponent<CardBase>();
+			normalCard.Init(CanFlipCardNow, CardFlipFinish);
+			normalCardDeck.Add(normalCard);
+		}
 
-	public IEnumerator DealCard(int unknownCardCount = 0)
+		for(int i = 0 ; i < unknownCardCount ; ++i)
+		{
+			GameObject tmp = Instantiate(cardPrefab) as GameObject;
+			tmp.name = "UnknownCard_" + i.ToString();
+			tmp.transform.SetParent(cardParent);
+			tmp.transform.localScale = Vector3.one;
+			tmp.SetActive(false);
+			UnknownCard unknownCard = tmp.AddComponent<UnknownCard>();
+			unknownCard.Init(CanFlipCardNow, CardFlipFinish);
+			unknownCardDeck.Add(unknownCard);
+		}
+	}
+
+	public void SetUsingCard(int normalCardCount, int unknownCardCount)
+	{
+		if(normalCardCount > normalCardDeck.Count)
+		{
+			Debug.LogError("Normal Card Deck have no enough cards.");
+			return;
+		}
+
+		if(unknownCardCount > unknownCardDeck.Count)
+		{
+			Debug.LogError("Unknown Card Deck have no enough cards.");
+			return;
+		}
+
+		usingCardDeck.Clear();
+		for(int i = 0 ; i < normalCardCount ; ++i)
+			usingCardDeck.Add(normalCardDeck[i]);
+		for(int i = 0 ; i < unknownCardCount ; ++i)
+			usingCardDeck.Add(unknownCardDeck[i]);
+	}
+
+	public IEnumerator DealCard(float cardSize, Vector2[] cardPos)
 	{
 		ShuffleCardDeck();
-		float delayDuration = dealTime / cardsDeck.Length;		
+		float delayDuration = dealTime / usingCardDeck.Count;		
 		UpdateGoldCard();
-		for(int i = 0 ; i < cardsDeck.Length ; ++i)
+		for(int i = 0 ; i < usingCardDeck.Count ; ++i)
 		{
-			cardsOnTable.Add(cardsDeck[i]);
-            cardsDeck[i].DealCard(pos[i], shiftAmount, delayDuration * i, appearDuration);
+			cardsOnTable.Add(usingCardDeck[i]);
+			usingCardDeck[i].DealCard(cardPos[i], shiftAmount, delayDuration * i, appearDuration, cardSize);
 		}
 		yield return new WaitForSeconds(dealTime);
 	}
 
 	public void FlipAllCard()
 	{
-		foreach(CardBase card in cardsDeck)
+		foreach(CardBase card in cardsOnTable)
 			card.FlipBySystem();
 	}
 	
 	public void ToggleCardGlow(bool turnOn)
 	{
-		foreach(CardBase card in cardsDeck)
+		foreach(CardBase card in usingCardDeck)
 			card.ToggleCardGlow(turnOn);
 	}
 
@@ -108,28 +139,28 @@ public class GameMainView : AbstractView
 	{
 		if(goldCardCount < 0)
 		{
-			foreach(CardBase card in cardsDeck)
+			foreach(CardBase card in usingCardDeck)
 				card.ToggleGoldCard(true);
 		}
 		else if(goldCardCount == 0)
 		{
-			foreach(CardBase card in cardsDeck)
+			foreach(CardBase card in usingCardDeck)
 				card.ToggleGoldCard(false);
 		}
 		else
 		{
-			foreach(CardBase card in cardsDeck)
+			foreach(CardBase card in usingCardDeck)
 				card.ToggleGoldCard(false);
 
 			List<int> tickets = new List<int>();
-			for(int i = 0 ; i < cardsDeck.Length ; ++i)
+			for(int i = 0 ; i < usingCardDeck.Count ; ++i)
 				tickets.Add(i);
 
 			for(int i = 0 ; i < goldCardCount ; ++i)
 			{
 				int randomIndex = Random.Range(0, tickets.Count);
+				usingCardDeck[tickets[randomIndex]].ToggleGoldCard(true);
 				tickets.RemoveAt(randomIndex);
-				cardsDeck[randomIndex].ToggleGoldCard(true);
 			}
 		}
 	}
@@ -207,22 +238,22 @@ public class GameMainView : AbstractView
 	
 	void ShuffleCardDeck()
 	{
-		Sprite[] thisTimeCardImage = GetCardImage(cardsDeck.Length);
-		for(int i = 0 ; i < cardsDeck.Length ; ++i)
+		Sprite[] thisTimeCardImage = GetCardImage(usingCardDeck.Count);
+		for(int i = 0 ; i < usingCardDeck.Count ; ++i)
 		{
-			cardsDeck[i].SetSprite(thisTimeCardImage[i], CardState.Back);
-			cardsDeck[i].SetCardId(thisTimeCardImage[i].name);
+			usingCardDeck[i].SetSprite(thisTimeCardImage[i], CardState.Back);
+			usingCardDeck[i].SetCardId(thisTimeCardImage[i].name);
 		}
 
-		for(int i = 0 ; i < cardsDeck.Length ; ++i)
+		for(int i = 0 ; i < usingCardDeck.Count ; ++i)
 		{
-			int randomIndex = Random.Range(0, cardsDeck.Length);
+			int randomIndex = Random.Range(0, usingCardDeck.Count);
 			while(randomIndex == i)
-				randomIndex = Random.Range(0, cardsDeck.Length);
+				randomIndex = Random.Range(0, usingCardDeck.Count);
 
-			CardBase tmp = cardsDeck[i];
-			cardsDeck[i] = cardsDeck[randomIndex];
-			cardsDeck[randomIndex] = tmp;
+			CardBase tmp = usingCardDeck[i];
+			usingCardDeck[i] = usingCardDeck[randomIndex];
+			usingCardDeck[randomIndex] = tmp;
 		}
 	}
 
@@ -272,4 +303,30 @@ public class GameMainView : AbstractView
 		yield return null;
 		showCoroutine = null;
 	}
+
+	//void OnGUI()
+	//{
+	//	if(GUI.Button(new Rect(10, 10, 150, 50), "Init"))
+	//	{
+	//		cardsDeck = new CardBase[3*4];
+
+	//		GameObject cardPrefab = Resources.Load("Card/CardBase") as GameObject;
+	//		for(int i = 0 ; i < cardsDeck.Length ; ++i)
+	//		{
+	//			GameObject tmp = Instantiate(cardPrefab) as GameObject;
+	//			tmp.name = cardPrefab.name + i.ToString();
+	//			tmp.transform.SetParent(cardParent);
+	//			tmp.transform.localScale = Vector3.one;
+	//			tmp.SetActive(false);
+	//			cardsDeck[i] = tmp.AddComponent<CardBase>();
+	//			cardsDeck[i].Init(CanFlipCardNow, CardFlipFinish);
+	//		}
+	//	}
+
+	//	if(GUI.Button(new Rect(200, 10, 150, 50), "Deal"))
+	//	{
+	//		Vector2[] cardPos = new Vector2[12];
+	//		StartCoroutine(DealCard(cardPos));
+	//	}
+	//}
 }
