@@ -18,12 +18,16 @@ public class TestCardArrayEditor : Editor
 				myTarget.difficulty = (LevelDifficulty)EditorGUILayout.EnumPopup("Difficulty", myTarget.difficulty);
 				break;
 			case UseLayout.Infinite:
+				myTarget.totalCardCount = EditorGUILayout.IntField("Total Card Count", myTarget.totalCardCount);
+				myTarget.cardSize = EditorGUILayout.FloatField("Card Size", myTarget.cardSize);
 				break;
 		}
-		if(GUILayout.Button("Show Cards"))
-		{
-			myTarget.LoadAndShowCards();
-		}
+		
+		if(EditorApplication.isPlaying)
+			if(GUILayout.Button("Show Cards"))
+			{
+				myTarget.LoadAndShowCards();
+			}
 		//EditorGUILayout.LabelField("Level", myTarget.Level.ToString());
 	}
 }
@@ -33,6 +37,10 @@ public class TestCardArray : MonoBehaviour {
 	public Transform cardParent;
 	public UseLayout useLayout = UseLayout.LevelDifficulty;
 	public LevelDifficulty difficulty;
+	public int totalCardCount = 6;
+	public float cardSize = 192f;
+	public float gap = 50f;
+	public Vector2 center = Vector2.zero;
 	List<RectTransform> cardList = new List<RectTransform>();
 	
 	public void LoadAndShowCards()
@@ -60,6 +68,20 @@ public class TestCardArray : MonoBehaviour {
 				}
 				break;
 			case UseLayout.Infinite:
+				LoadCard(totalCardCount);
+				Vector2[] cardPos2 = GetCardPosition(totalCardCount);
+				for(int i = 0 ; i < cardList.Count ; ++i)
+				{
+					if(i < totalCardCount)
+					{
+						cardList[i].gameObject.SetActive(true);
+						cardList[i].transform.localPosition = cardPos2[i];
+						cardList[i].sizeDelta = new Vector2(cardSize, cardSize);
+					} else
+					{
+						cardList[i].gameObject.SetActive(false);
+					}
+				}
 				break;
 		}
 	}
@@ -93,5 +115,26 @@ public class TestCardArray : MonoBehaviour {
 		}
 
 		return cardPos;
+	}
+
+	Vector2[] GetCardPosition(int cardCount)
+	{
+		switch(cardCount)
+		{
+			case 6:
+				GameSettingManager.currentLevel = LevelDifficulty.EASY;
+				return GetCardPosition(GameSettingManager.GetCurrentCardArraySetting());
+			case 12:
+				GameSettingManager.currentLevel = LevelDifficulty.NORMAL;
+				return GetCardPosition(GameSettingManager.GetCurrentCardArraySetting());
+			case 20:
+				GameSettingManager.currentLevel = LevelDifficulty.HARD;
+				return GetCardPosition(GameSettingManager.GetCurrentCardArraySetting());
+			case 30:
+				GameSettingManager.currentLevel = LevelDifficulty.CRAZY;
+				return GetCardPosition(GameSettingManager.GetCurrentCardArraySetting());
+			default:
+				return null;
+		}
 	}
 }
