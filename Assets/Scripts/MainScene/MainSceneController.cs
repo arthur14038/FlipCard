@@ -80,7 +80,7 @@ public class MainSceneController : AbstractController {
 		AudioManager.Instance.PlayMusic("FlipCardBGM3", true); 
 	}
 
-	void GoToGameScene(CardArrayLevel level, GameMode mode)
+	void GoToGameScene(LevelDifficulty level, GameMode mode)
 	{
 		AudioManager.Instance.StopMusic();
         GameSettingManager.currentLevel = level;

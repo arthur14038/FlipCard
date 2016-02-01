@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class GameRecord{
-	public CardArrayLevel level;
+	public LevelDifficulty level;
 	public GameMode mode;
 	public int highScore;
 	public int playTimes;

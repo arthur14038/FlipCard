@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 
 public class ModelManager : SingletonMonoBehavior<ModelManager> {
-	Dictionary<CardArrayLevel, GameRecord> timeModeRecordDict;
-	Dictionary<CardArrayLevel, GameRecord> classicModeRecordDict;
+	Dictionary<LevelDifficulty, GameRecord> timeModeRecordDict;
+	Dictionary<LevelDifficulty, GameRecord> classicModeRecordDict;
 	string gameRecordFileName = "GameRecord.json";
 	string timeModeRecordFileName = "TimeModeRecord.json";
 	string classicModeRecordFileName = "ClassicModeRecord.json";
@@ -24,10 +24,10 @@ public class ModelManager : SingletonMonoBehavior<ModelManager> {
 		if(!string.IsNullOrEmpty(encodedString))
 		{
 			string jsonString = EncodeTool.GetDecodedBase64(encodedString, encodeKey, encodeIV);
-			timeModeRecordDict = JsonConvert.DeserializeObject<Dictionary<CardArrayLevel, GameRecord>>(jsonString);			
+			timeModeRecordDict = JsonConvert.DeserializeObject<Dictionary<LevelDifficulty, GameRecord>>(jsonString);			
 		}else
 		{
-			timeModeRecordDict = new Dictionary<CardArrayLevel, GameRecord>();
+			timeModeRecordDict = new Dictionary<LevelDifficulty, GameRecord>();
         }
 
 		string classicModeRecordPath = GetSaveFilePath(classicModeRecordFileName);
@@ -36,10 +36,10 @@ public class ModelManager : SingletonMonoBehavior<ModelManager> {
 		if(!string.IsNullOrEmpty(encodedString))
 		{
 			string jsonString = EncodeTool.GetDecodedBase64(encodedString, encodeKey, encodeIV);
-			classicModeRecordDict = JsonConvert.DeserializeObject<Dictionary<CardArrayLevel, GameRecord>>(jsonString);
+			classicModeRecordDict = JsonConvert.DeserializeObject<Dictionary<LevelDifficulty, GameRecord>>(jsonString);
 		} else
 		{
-			classicModeRecordDict = new Dictionary<CardArrayLevel, GameRecord>();
+			classicModeRecordDict = new Dictionary<LevelDifficulty, GameRecord>();
 		}
 	}
 
@@ -75,7 +75,7 @@ public class ModelManager : SingletonMonoBehavior<ModelManager> {
 		}
 	}
 
-	public GameRecord GetGameRecord(CardArrayLevel level, GameMode mode)
+	public GameRecord GetGameRecord(LevelDifficulty level, GameMode mode)
 	{
 		GameRecord record = null;
         switch(mode)
@@ -109,13 +109,13 @@ public class ModelManager : SingletonMonoBehavior<ModelManager> {
 		switch(mode)
 		{
 			case GameMode.Classic:
-				foreach(KeyValuePair<CardArrayLevel, GameRecord> kvp in classicModeRecordDict)
+				foreach(KeyValuePair<LevelDifficulty, GameRecord> kvp in classicModeRecordDict)
 				{
 					eventData.Add(kvp.Key.ToString(), JsonConvert.SerializeObject(kvp.Value));
                 }
 				break;
 			case GameMode.LimitTime:
-				foreach(KeyValuePair<CardArrayLevel, GameRecord> kvp in timeModeRecordDict)
+				foreach(KeyValuePair<LevelDifficulty, GameRecord> kvp in timeModeRecordDict)
 				{
 					eventData.Add(kvp.Key.ToString(), JsonConvert.SerializeObject(kvp.Value));
 				}

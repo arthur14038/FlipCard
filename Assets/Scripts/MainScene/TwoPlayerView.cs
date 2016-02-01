@@ -27,14 +27,14 @@ public class TwoPlayerView : AbstractView
 	{
 		AudioManager.Instance.PlayOneShot("Button_Click");
 		if(onClickPlay != null)
-			onClickPlay((CardArrayLevel)level, GameMode.Competition);
+			onClickPlay((LevelDifficulty)level, GameMode.Competition);
 	}
 
 	public void OnClickCooperation(int level)
 	{
 		AudioManager.Instance.PlayOneShot("Button_Click");
 		if(onClickPlay != null)
-			onClickPlay((CardArrayLevel)level, GameMode.Cooperation);
+			onClickPlay((LevelDifficulty)level, GameMode.Cooperation);
 	}
 
 	IEnumerator WaveEffect(RectTransform waveItem, float enterDuration)

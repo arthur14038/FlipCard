@@ -56,10 +56,10 @@ public class TimeModeView : AbstractView {
 	{
 		AudioManager.Instance.PlayOneShot("Button_Click");
 		if(onClickPlay != null)
-			onClickPlay((CardArrayLevel)level, (GameMode)mode);
+			onClickPlay((LevelDifficulty)level, (GameMode)mode);
 	}
 
-	Sprite GetLevelIcon(CardArrayLevel level)
+	Sprite GetLevelIcon(LevelDifficulty level)
 	{
 		return levelIconSprites[(int)level];
 	}

@@ -3,15 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-public enum CardArrayLevel{EASY = 0, NORMAL, HARD, CRAZY, Lock}
+public enum LevelDifficulty{EASY = 0, NORMAL, HARD, CRAZY, Lock}
 public enum GameMode { LimitTime = 1, Classic, Competition, Cooperation}
 public class GameSettingManager{
-	static Dictionary<CardArrayLevel, CardArraySetting> cardArraySettings = new Dictionary<CardArrayLevel, CardArraySetting>();
-	static Dictionary<CardArrayLevel, TimeModeSetting> timeModeSettings = new Dictionary<CardArrayLevel, TimeModeSetting>();
-	static Dictionary<CardArrayLevel, CompetitionModeSetting> competitionModeSettings = new Dictionary<CardArrayLevel, CompetitionModeSetting>();
-	static Dictionary<CardArrayLevel, ClassicModeSetting> classicModeSettings = new Dictionary<CardArrayLevel, ClassicModeSetting>();
+	static Dictionary<LevelDifficulty, CardArraySetting> cardArraySettings = new Dictionary<LevelDifficulty, CardArraySetting>();
+	static Dictionary<LevelDifficulty, TimeModeSetting> timeModeSettings = new Dictionary<LevelDifficulty, TimeModeSetting>();
+	static Dictionary<LevelDifficulty, CompetitionModeSetting> competitionModeSettings = new Dictionary<LevelDifficulty, CompetitionModeSetting>();
+	static Dictionary<LevelDifficulty, ClassicModeSetting> classicModeSettings = new Dictionary<LevelDifficulty, ClassicModeSetting>();
 	static List<SinglePlayerLevel> singlePlayerLevelList;
-	public static CardArrayLevel currentLevel;
+	public static LevelDifficulty currentLevel;
 	public static GameMode currentMode;
 
 	public static void LoadData()
@@ -98,7 +98,7 @@ public class GameSettingManager{
 }
 
 public class CardArraySetting{
-	public CardArrayLevel level;
+	public LevelDifficulty level;
 	public float edgeLength;
 	public int column;
 	public int row;
@@ -109,7 +109,7 @@ public class CardArraySetting{
 
 public class TimeModeSetting
 {
-	public CardArrayLevel level;
+	public LevelDifficulty level;
 	public float gameTime;
 	public float showCardTime;
 	public float awardTime;
@@ -124,7 +124,7 @@ public class TimeModeSetting
 
 public class CompetitionModeSetting
 {
-	public CardArrayLevel level;
+	public LevelDifficulty level;
 	public int matchAddScore;
 	public int mismatchReduceScore;
 	public int comboAddScore;
@@ -133,7 +133,7 @@ public class CompetitionModeSetting
 
 public class ClassicModeSetting
 {
-	public CardArrayLevel level;
+	public LevelDifficulty level;
 	public int excellentMove;
 	public int targetMove;
 	public float targetTime;
@@ -141,7 +141,7 @@ public class ClassicModeSetting
 
 public class SinglePlayerLevel
 {
-	public CardArrayLevel gameLevel;
+	public LevelDifficulty gameLevel;
 	public GameMode gameMode;
 	public string firstInformationTitle;
 	public string secondInformationTitle;

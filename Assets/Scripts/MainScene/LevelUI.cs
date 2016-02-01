@@ -53,7 +53,7 @@ public class LevelUI : MonoBehaviour {
 			text_LevelTitle.gameObject.SetActive(false);
 			image_Mask.gameObject.SetActive(true);
 
-			image_LevelIcon.sprite = getSpriteIcon(CardArrayLevel.Lock);
+			image_LevelIcon.sprite = getSpriteIcon(LevelDifficulty.Lock);
         } else
 		{
 			text_FirstInformationTitle.gameObject.SetActive(true);
