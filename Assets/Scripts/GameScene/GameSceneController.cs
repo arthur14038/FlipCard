@@ -19,14 +19,6 @@ public class GameSceneController : AbstractController
     public override IEnumerator Init()
 	{
 		modeView = GetModeView();
-		if(NeedExpand)
-		{
-			foreach(UnityEngine.UI.CanvasScaler scalerA in canvasScaler)
-				scalerA.screenMatchMode = UnityEngine.UI.CanvasScaler.ScreenMatchMode.Expand;
-
-			UnityEngine.UI.CanvasScaler scaler = modeView.GetComponent<UnityEngine.UI.CanvasScaler>();
-			scaler.screenMatchMode = UnityEngine.UI.CanvasScaler.ScreenMatchMode.Expand;
-		}
 		judgement = GetJudgement();
 		judgement.exitGame = ExitGame;
 		judgement.saveGameRecord = SaveTmpGameRecord;

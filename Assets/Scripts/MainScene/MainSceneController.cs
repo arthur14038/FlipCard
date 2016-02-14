@@ -14,11 +14,6 @@ public class MainSceneController : AbstractController {
 		
 	public override IEnumerator Init ()
 	{
-		if(NeedExpand)
-		{
-			foreach(UnityEngine.UI.CanvasScaler scaler in canvasScaler)
-				scaler.screenMatchMode = UnityEngine.UI.CanvasScaler.ScreenMatchMode.Expand;
-		}
 		yield return StartCoroutine(mainPageView.Init());
 		yield return StartCoroutine(classicModeView.Init());
 		yield return StartCoroutine(twoPlayerView.Init());

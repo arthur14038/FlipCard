@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using DG.Tweening;
 using Soomla.Store;
 
 public class ThemePackUI : MonoBehaviour {
@@ -116,6 +117,26 @@ public class ThemePackUI : MonoBehaviour {
 
 			SetUIState(stateShouldBe);
 		}
+	}
+
+	public IEnumerator EnterEffect(float enterDuration)
+	{
+		StartCoroutine(WaveEffect(image_CardBack.rectTransform, enterDuration));
+		yield return StartCoroutine(WaveEffect(image_CardFace.rectTransform, enterDuration));
+	}
+
+	IEnumerator WaveEffect(RectTransform waveItem, float duration)
+	{
+		waveItem.rotation = Quaternion.Euler(Vector3.zero);
+		yield return waveItem.DORotate(Vector3.back * (10f + Random.Range(-2f, 2f)), duration).SetEase(Ease.OutBounce).WaitForCompletion();
+		float noise = Random.Range(0f, 0.125f);
+		yield return waveItem.DORotate(Vector3.forward * 7.5f, 0.125f + noise).SetEase(Ease.OutQuad).WaitForCompletion();
+		noise = Random.Range(0f, 0.125f);
+		yield return waveItem.DORotate(Vector3.back * 5.0f, 0.125f + noise).SetEase(Ease.OutQuad).WaitForCompletion();
+		noise = Random.Range(0f, 0.125f);
+		yield return waveItem.DORotate(Vector3.forward * 2.5f, 0.125f + noise).SetEase(Ease.OutQuad).WaitForCompletion();
+		noise = Random.Range(0f, 0.125f);
+		yield return waveItem.DORotate(Vector3.zero, 0.125f + noise).SetEase(Ease.OutQuad).WaitForCompletion();
 	}
 
 	void SetUIState(ThemePackUIState state)

@@ -46,6 +46,7 @@ public class ShopView : AbstractView
 	public GameObject group_ThemeBuyingInfo;
 	public ScrollRect scrollView;
 	public GameObject group_SoldOut;
+	public RectTransform[] waveMoni;
     Coroutine loadingAnimation;
 	Vector3 rotateAngle = new Vector3(0f, 0f, 120f);
 
@@ -183,7 +184,7 @@ public class ShopView : AbstractView
 		{
 			themePackUI.CheckUIState();
 		}
-		SetCurrentGroup(currentGroup);
+		SetCurrentGroup(currentGroup, false);
 	}
 
 	void UpdateMoniCount()
@@ -300,13 +301,28 @@ public class ShopView : AbstractView
 		yield return group_ResultMsg.DOScale(1f, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
 	}
 
-	void SetCurrentGroup(ShopGroup value)
+	IEnumerator WaveEffect(RectTransform waveItem, float duration)
+	{
+		waveItem.rotation = Quaternion.Euler(Vector3.zero);
+		yield return waveItem.DORotate(Vector3.back * (10f + Random.Range(-2f, 2f)), duration).SetEase(Ease.OutBounce).WaitForCompletion();
+		float noise = Random.Range(0f, 0.125f);
+		yield return waveItem.DORotate(Vector3.forward * 7.5f, 0.125f + noise).SetEase(Ease.OutQuad).WaitForCompletion();
+		noise = Random.Range(0f, 0.125f);
+		yield return waveItem.DORotate(Vector3.back * 5.0f, 0.125f + noise).SetEase(Ease.OutQuad).WaitForCompletion();
+		noise = Random.Range(0f, 0.125f);
+		yield return waveItem.DORotate(Vector3.forward * 2.5f, 0.125f + noise).SetEase(Ease.OutQuad).WaitForCompletion();
+		noise = Random.Range(0f, 0.125f);
+		yield return waveItem.DORotate(Vector3.zero, 0.125f + noise).SetEase(Ease.OutQuad).WaitForCompletion();
+	}
+
+	void SetCurrentGroup(ShopGroup value, bool repositionScrollView = true)
 	{
 		currentGroup = value;
 		switch(currentGroup)
 		{
 			case ShopGroup.Theme:
-				scrollView.normalizedPosition = Vector2.zero;
+				if(repositionScrollView)
+					scrollView.normalizedPosition = Vector2.zero;
 				foreach(ThemePackUI themePackUI in themePackUIList)
 				{
 					if(themePackUI.IsInBag)
@@ -320,7 +336,8 @@ public class ShopView : AbstractView
 				group_SoldOut.SetActive(false);
                 break;
 			case ShopGroup.Shop:
-				scrollView.normalizedPosition = Vector2.zero;
+				if(repositionScrollView)
+					scrollView.normalizedPosition = Vector2.zero;
 				int availableCount = 0;
 				foreach(ThemePackUI themePackUI in themePackUIList)
 				{
@@ -391,6 +408,19 @@ public class ShopView : AbstractView
 
 	protected override IEnumerator ShowUIAnimation()
 	{
+		switch(currentGroup)
+		{
+			case ShopGroup.Theme:
+			case ShopGroup.Shop:
+				foreach(ThemePackUI themePackUI in themePackUIList)
+					if(themePackUI.gameObject.activeInHierarchy)
+						StartCoroutine(themePackUI.EnterEffect(0.5f));
+				break;
+			case ShopGroup.Moni:
+				foreach(RectTransform moni in waveMoni)
+					StartCoroutine(WaveEffect(moni, 0.5f));
+				break;
+		}
 		group_Shop.gameObject.SetActive(true);
 		group_Shop.anchoredPosition = hideRight;
 		yield return group_Shop.DOAnchorPos(Vector2.zero, 0.5f).SetEase(Ease.OutCubic).WaitForCompletion();

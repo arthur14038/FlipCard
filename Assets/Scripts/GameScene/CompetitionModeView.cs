@@ -22,7 +22,7 @@ public class CompetitionModeView : AbstractView
 		group_Instruction.alpha = 1f;
 		text_Instruction.gameObject.SetActive(true);
 		TogglePlayerArrow(3);
-		StartCoroutine(ShowInstruction("PRESS TO READY"));
+		StartCoroutine(ShowInstruction("TAP TO READY"));
 		yield return null;
 	}
 

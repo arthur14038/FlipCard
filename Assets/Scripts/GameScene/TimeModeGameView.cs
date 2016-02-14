@@ -19,6 +19,7 @@ public class TimeModeGameView : AbstractView
 	public RectTransform group_FeverTime;
 	public GameObject timeIsRunning;
 	public GameObject feverTimeEffect;
+	private Vector2 feverTimePos = new Vector2(0f, -832f);
 
 	public override IEnumerator Init()
 	{
@@ -112,9 +113,9 @@ public class TimeModeGameView : AbstractView
 	IEnumerator FeverTimeEffect()
 	{
 		group_FeverTime.gameObject.SetActive(true);
-        group_FeverTime.anchoredPosition = hideRight;
-		yield return group_FeverTime.DOAnchorPos(Vector2.zero, 0.5f).SetEase(Ease.OutBack).WaitForCompletion();
-		yield return group_FeverTime.DOAnchorPos(hideLeft, 0.5f).SetDelay(0.3f).SetEase(Ease.InBack).WaitForCompletion();
+        group_FeverTime.anchoredPosition = feverTimePos + hideRight;
+		yield return group_FeverTime.DOAnchorPos(feverTimePos, 0.5f).SetEase(Ease.OutBack).WaitForCompletion();
+		yield return group_FeverTime.DOAnchorPos(feverTimePos + hideLeft, 0.5f).SetDelay(0.3f).SetEase(Ease.InBack).WaitForCompletion();
 		group_FeverTime.gameObject.SetActive(false);
 	}
 

@@ -23,7 +23,7 @@ public class PressButtonTool : ButtonOffset
 	PressButtonState currentState;
 	Tweener thisTweener;
 	Tweener additionTweener;
-	float chargeTime = 0.8f;
+	float chargeTime = 0f;
 
 	public void SetChargeTime(float value)
 	{
