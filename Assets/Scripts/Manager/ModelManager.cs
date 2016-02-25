@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using System.IO;
-using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
@@ -24,7 +22,7 @@ public class ModelManager : SingletonMonoBehavior<ModelManager> {
 		if(!string.IsNullOrEmpty(encodedString))
 		{
 			string jsonString = EncodeTool.GetDecodedBase64(encodedString, encodeKey, encodeIV);
-			timeModeRecordDict = JsonConvert.DeserializeObject<Dictionary<LevelDifficulty, GameRecord>>(jsonString);			
+			timeModeRecordDict = JsonConvert.DeserializeObject<Dictionary<LevelDifficulty, GameRecord>>(jsonString);
 		}else
 		{
 			timeModeRecordDict = new Dictionary<LevelDifficulty, GameRecord>();

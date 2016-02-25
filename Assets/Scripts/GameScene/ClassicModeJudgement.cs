@@ -78,7 +78,7 @@ public class ClassicModeJudgement : GameModeJudgement
 			achieveCondition[1] = false;
 		}
 
-		if(gameTime <= currentModeSetting.targetTime)
+		if(Mathf.FloorToInt(gameTime) < currentModeSetting.targetTime)
 		{
 			grade += 1;
 			achieveCondition[2] = true;
@@ -87,7 +87,7 @@ public class ClassicModeJudgement : GameModeJudgement
 			achieveCondition[2] = false;
 		}
 
-		if(grade == 3 && moveTimes <= currentModeSetting.excellentMove)
+		if(moveTimes <= currentModeSetting.excellentMove)
 		{
 			grade += 1;
 			achieveCondition[3] = true;
@@ -120,10 +120,8 @@ public class ClassicModeJudgement : GameModeJudgement
 		conditionContent[0] = string.Format("COMPLETE {0} LEVEL", currentModeSetting.level.ToString());
 		conditionContent[1] = string.Format("LESS THAN {0} MOVE", currentModeSetting.targetMove);
 		conditionContent[2] = string.Format("COMPLETE IN {0} SECOND", currentModeSetting.targetTime+1);
-		if(grade >= 3)
-			conditionContent[3] = string.Format("LESS THAN {0} MOVE", currentModeSetting.excellentMove);
-		else
-			conditionContent[3] = "?????????";
+		conditionContent[3] = string.Format("LESS THAN {0} MOVE", currentModeSetting.excellentMove);
+
 		gameSettingView.ShowSinglePlayerGameOver(achieveCondition, "LEVEL COMPLETE", "CLASSIC MODE", ".GAME TIME.", gameTimeContent, conditionContent, recordBreak);
 	}
 

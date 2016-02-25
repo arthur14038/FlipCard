@@ -8,8 +8,8 @@
      "MismatchReduceScore": -2, 
      "FeverTimeThreshold": 6, 
      "FeverTimeDuration": 4.0, 
-     "TargetRound": 20, 
-     "TargetFeverTimeCount": 6, 
+     "TargetRound": 15, 
+     "TargetFeverTimeCount": 5, 
      "TargetScore": 360
  },
    {
@@ -21,8 +21,8 @@
      "MismatchReduceScore": -1, 
      "FeverTimeThreshold": 6, 
      "FeverTimeDuration": 12.0, 
-     "TargetRound": 6, 
-     "TargetFeverTimeCount": 3, 
+     "TargetRound": 5, 
+     "TargetFeverTimeCount": 2, 
      "TargetScore": 280
  },
    {
@@ -34,8 +34,8 @@
      "MismatchReduceScore": 0, 
      "FeverTimeThreshold": 5, 
      "FeverTimeDuration": 20.0, 
-     "TargetRound": 3, 
-     "TargetFeverTimeCount": 4, 
+     "TargetRound": 2, 
+     "TargetFeverTimeCount": 3, 
      "TargetScore": 430
  },
    {
@@ -48,7 +48,7 @@
      "FeverTimeThreshold": 4, 
      "FeverTimeDuration": 40.0, 
      "TargetRound": 1, 
-     "TargetFeverTimeCount": 3, 
+     "TargetFeverTimeCount": 2, 
      "TargetScore": 200
  }
 ]

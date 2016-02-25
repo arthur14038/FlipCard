@@ -65,9 +65,9 @@ public class GameMainLoop : SingletonMonoBehavior<GameMainLoop> {
 #endif
 
 		SoomlaProfile.Initialize();
-        ModelManager.Instance.Init();
-        ScreenEffectManager.Instance.Init();
 		GameSettingManager.LoadData();
+		ModelManager.Instance.Init();
+        ScreenEffectManager.Instance.Init();
 		
 		lastUnlockMode = PlayerPrefsManager.UnlockMode;
 
