@@ -41,7 +41,6 @@ public class CompetitionModeJudgement : GameModeJudgement
 		yield return new WaitForSeconds(0.2f);
 		yield return competitionModeView.StartCoroutine(competitionModeView.FadeOutInstruction());
 		gameMainView.ToggleMask(false);
-		//gameMainView.SetLuckyCard(1);
 		currentState = GameState.Playing;
 		AudioManager.Instance.PlayMusic("GamePlayBGM", true);
 	}

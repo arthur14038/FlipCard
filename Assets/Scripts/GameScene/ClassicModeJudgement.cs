@@ -20,7 +20,6 @@ public class ClassicModeJudgement : GameModeJudgement
 		classicModeGameView.onClickPause = PauseGame;
 		classicModeGameView.onGameStart = StartGame;
 		yield return gameMainView.StartCoroutine(gameMainView.DealCard(currentCardArraySetting.edgeLength, GetCardPos()));
-		//gameMainView.SetAllCardBackUnknown();
     }
 
 	protected override IEnumerator StartGame()
@@ -131,24 +130,6 @@ public class ClassicModeJudgement : GameModeJudgement
 		{
 			++moveTimes;
 			classicModeGameView.SetMoveTimes(moveTimes);
-
-			//if(match)
-			//{
-			//	int scoreChangeAmount = currentModeSetting.matchAddScore * cards.Length;
-
-			//	if(scoreChangeAmount != 0)
-			//	{
-			//		score += scoreChangeAmount;
-			//		classicModeGameView.SetScore(score);
-
-			//		foreach(Card_Normal matchCard in cards)
-			//		{
-			//			Vector2 pos = matchCard.GetAnchorPosition();
-			//			pos.x += currentCardArraySetting.edgeLength / 2 - 20f;
-			//			gameMainView.ShowScoreText(currentModeSetting.matchAddScore, pos);
-			//		}
-			//	}
-			//}
 		}
 	}
 }

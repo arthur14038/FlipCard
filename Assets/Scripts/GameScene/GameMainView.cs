@@ -34,7 +34,7 @@ public class GameMainView : AbstractView
 
 		image_Theme.sprite = InventoryManager.Instance.GetCurrentThemeSprite();
 		
-		for(int i = 0 ; i < 8 ; ++i)
+		for(int i = 0 ; i < 16 ; ++i)
 		{
 			GameObject tmp = Instantiate(scoreTextPrefab) as GameObject;
 			tmp.name = scoreTextPrefab.name;
