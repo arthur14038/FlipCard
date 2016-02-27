@@ -64,15 +64,43 @@ public class GameSceneController : AbstractController
 			if(thisTimeRecord.playTimes % 3 == 1)
 			{
 				Dictionary<string, object> eventData = new Dictionary<string, object>();
-				eventData.Add("Level", (int)thisTimeRecord.level);
-				eventData.Add("High Score", thisTimeRecord.highScore);
+				eventData.Add("PlayTimes", thisTimeRecord.playTimes);
+				eventData.Add("Grade", thisTimeRecord.grade.ToString());
 				switch(thisTimeRecord.mode)
 				{
 					case GameMode.Classic:
-						UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.ClassicModeFinished, eventData);
+					switch(thisTimeRecord.level)
+					{
+					case LevelDifficulty.EASY:
+						UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.ClassicModeEasy, eventData);
 						break;
-					case GameMode.LimitTime:
-						UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.TimeModeFinished, eventData);
+					case LevelDifficulty.NORMAL:
+						UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.ClassicModeNormal, eventData);
+						break;
+					case LevelDifficulty.HARD:
+						UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.ClassicModeHard, eventData);
+						break;
+					case LevelDifficulty.CRAZY:
+						UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.ClassicModeCrazy, eventData);
+						break;
+					}
+					break;
+				case GameMode.LimitTime:
+					switch(thisTimeRecord.level)
+					{
+					case LevelDifficulty.EASY:
+						UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.TimeModeEasy, eventData);
+						break;
+					case LevelDifficulty.NORMAL:
+						UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.TimeModeNormal, eventData);
+						break;
+					case LevelDifficulty.HARD:
+						UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.TimeModeHard, eventData);
+						break;
+					case LevelDifficulty.CRAZY:
+						UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.TimeModeCrazy, eventData);
+						break;
+					}
 						break;
 				}
             }
@@ -80,7 +108,6 @@ public class GameSceneController : AbstractController
 			ModelManager.Instance.SaveGameRecord(thisTimeRecord);
 		}
 
-		//GameMainLoop.Instance.ChangeScene(SceneName.TestMain, returnView);
 		GameMainLoop.Instance.ChangeScene(SceneName.MainScene, returnView);
     }
 	
@@ -90,19 +117,16 @@ public class GameSceneController : AbstractController
 		{
 			case GameMode.LimitTime:
 				GameObject timeModeView = Instantiate(Resources.Load("UI/TimeModeView")) as GameObject;
-				//GameObject timeModeView = Instantiate(Resources.Load("UI/TimeModeView_NoM")) as GameObject;
 				Canvas timeModeViewCanvas = timeModeView.GetComponent<Canvas>();
 				timeModeViewCanvas.worldCamera = Camera.main;
 				return timeModeView.GetComponent<AbstractView>();
 			case GameMode.Competition:
 				GameObject competitionModeView = Instantiate(Resources.Load("UI/CompetitionModeView")) as GameObject;
-				//GameObject competitionModeView = Instantiate(Resources.Load("UI/CompetitionModeView_NoM")) as GameObject;
 				Canvas competitionModeViewCanvas = competitionModeView.GetComponent<Canvas>();
 				competitionModeViewCanvas.worldCamera = Camera.main;
 				return competitionModeView.GetComponent<AbstractView>();
 			case GameMode.Classic:
 				GameObject classicModeView = Instantiate(Resources.Load("UI/ClassicModeView")) as GameObject;
-				//GameObject classicModeView = Instantiate(Resources.Load("UI/ClassicModeView_NoM")) as GameObject;
 				Canvas classicModeViewCanvas = classicModeView.GetComponent<Canvas>();
 				classicModeViewCanvas.worldCamera = Camera.main;
 				return classicModeView.GetComponent<AbstractView>();

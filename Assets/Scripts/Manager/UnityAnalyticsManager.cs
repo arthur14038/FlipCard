@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using UnityEngine.Analytics;
 
 public class UnityAnalyticsManager : SingletonMonoBehavior<UnityAnalyticsManager> {
-	public enum EventType {OnClickShop, OnClickComingSoon, OnClickThemeInfo, OnClickRate, TimeModeFinished, ClassicModeFinished}
+	public enum EventType {OnClickShop, OnClickComingSoon, OnClickThemeInfo, OnClickRate, 
+		TimeModeEasy, TimeModeNormal, TimeModeHard, TimeModeCrazy, 
+	ClassicModeEasy, ClassicModeNormal, ClassicModeHard, ClassicModeCrazy}
 
 	public void SendCustomEvent(EventType eventType, Dictionary<string, object> eventData = null)
 	{
