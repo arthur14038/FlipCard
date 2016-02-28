@@ -10,6 +10,8 @@ public class ModelManager : SingletonMonoBehavior<ModelManager> {
 	string classicModeRecordFileName = "ClassicModeRecord.json";
 	string encodeKey = "FlipCard";
 	string encodeIV = "VeryGood";
+	const int ClassicModeRecordVersion = 0;
+	const int TimeModeRecordVersion = 0;
 
 	public void Init()
 	{
@@ -23,6 +25,19 @@ public class ModelManager : SingletonMonoBehavior<ModelManager> {
 		{
 			string jsonString = EncodeTool.GetDecodedBase64(encodedString, encodeKey, encodeIV);
 			timeModeRecordDict = JsonConvert.DeserializeObject<Dictionary<LevelDifficulty, GameRecord>>(jsonString);
+
+			if(!timeModeRecordDict.ContainsKey(LevelDifficulty.Lock))
+			{				
+				GameRecord timeModeVersionControl = new GameRecord();
+				timeModeVersionControl.highScore = 0;
+				timeModeRecordDict.Add(LevelDifficulty.Lock, timeModeVersionControl);
+			}
+			
+			if(timeModeRecordDict[LevelDifficulty.Lock].highScore != TimeModeRecordVersion)
+			{
+				timeModeRecordDict.Clear();
+				WriteFileTool.DeleteFile(timeModeRecordPath);
+			}
 		}else
 		{
 			timeModeRecordDict = new Dictionary<LevelDifficulty, GameRecord>();
@@ -35,6 +50,19 @@ public class ModelManager : SingletonMonoBehavior<ModelManager> {
 		{
 			string jsonString = EncodeTool.GetDecodedBase64(encodedString, encodeKey, encodeIV);
 			classicModeRecordDict = JsonConvert.DeserializeObject<Dictionary<LevelDifficulty, GameRecord>>(jsonString);
+
+			if(!classicModeRecordDict.ContainsKey(LevelDifficulty.Lock))
+			{
+				GameRecord classicModeVersionControl = new GameRecord();
+				classicModeVersionControl.highScore = 0;
+				classicModeRecordDict.Add(LevelDifficulty.Lock, classicModeVersionControl);
+			}
+
+			if(classicModeRecordDict[LevelDifficulty.Lock].highScore != ClassicModeRecordVersion)
+			{
+				classicModeRecordDict.Clear();
+				WriteFileTool.DeleteFile(classicModeRecordPath);
+			}
 		} else
 		{
 			classicModeRecordDict = new Dictionary<LevelDifficulty, GameRecord>();
@@ -54,6 +82,14 @@ public class ModelManager : SingletonMonoBehavior<ModelManager> {
 				else
 					classicModeRecordDict.Add(record.level, record);
 
+			GameRecord classicModeVersionControl = new GameRecord();
+			classicModeVersionControl.highScore = ClassicModeRecordVersion;
+						
+			if(classicModeRecordDict.ContainsKey(LevelDifficulty.Lock))
+				classicModeRecordDict[LevelDifficulty.Lock] = classicModeVersionControl;
+			else
+				classicModeRecordDict.Add(LevelDifficulty.Lock, classicModeVersionControl);
+
 				jsonString = JsonConvert.SerializeObject(classicModeRecordDict);
 				encodedString = EncodeTool.GetEncodedBase64(jsonString, encodeKey, encodeIV);
 				filePath = GetSaveFilePath(classicModeRecordFileName);
@@ -64,6 +100,14 @@ public class ModelManager : SingletonMonoBehavior<ModelManager> {
 					timeModeRecordDict[record.level] = record;
 				else
 					timeModeRecordDict.Add(record.level, record);
+
+			GameRecord timeModeVersionControl = new GameRecord();
+			timeModeVersionControl.highScore = TimeModeRecordVersion;
+
+			if(timeModeRecordDict.ContainsKey(LevelDifficulty.Lock))
+				timeModeRecordDict[LevelDifficulty.Lock] = timeModeVersionControl;
+			else
+				timeModeRecordDict.Add(LevelDifficulty.Lock, timeModeVersionControl);
 
 				jsonString = JsonConvert.SerializeObject(timeModeRecordDict);
 				encodedString = EncodeTool.GetEncodedBase64(jsonString, encodeKey, encodeIV);

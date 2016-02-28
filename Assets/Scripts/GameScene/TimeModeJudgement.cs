@@ -5,12 +5,12 @@ public class TimeModeJudgement : GameModeJudgement
 {
 	float gamePassTime;
 	float gameTime;
-	float feverTimePassTime;
 	int currentRound;
-	int currentCombo;
 	int score;
 	int activeFeverTimeCount;
+	int mismatchTimes;
 	bool feverTimeOn = false;
+	bool comboAward = false;
 	TimeModeGameView timeModeGameView;
 	TimeModeSetting currentModeSetting;
 
@@ -28,16 +28,17 @@ public class TimeModeJudgement : GameModeJudgement
 		timeModeGameView.SetTimeBar(1f);
 		timeModeGameView.onCountDownFinished = StartGame;
 		feverTimeOn = false;
+		comboAward = false;
 		yield return gameMainView.StartCoroutine(gameMainView.DealCard(currentCardArraySetting.edgeLength, GetCardPos()));
 	}
 
 	protected override IEnumerator StartGame()
 	{
 		score = 0;
-		currentCombo = 0;
 		currentRound = 0;
 		activeFeverTimeCount = 0;
 		gamePassTime = 0;
+		mismatchTimes = 0;
 		gameMainView.FlipAllCard();
 		yield return new WaitForSeconds(0.35f + currentModeSetting.showCardTime);
 		gameMainView.FlipAllCard();
@@ -67,21 +68,6 @@ public class TimeModeJudgement : GameModeJudgement
 					timeModeGameView.ToggleTimeIsRunning(true);
 				else
 					timeModeGameView.ToggleTimeIsRunning(false);
-
-
-				if(feverTimeOn)
-				{
-					feverTimePassTime += Time.deltaTime;
-					timeModeGameView.SetFeverTimeCircle(1f - feverTimePassTime/ currentModeSetting.feverTimeDuration);
-
-					if(feverTimePassTime >= currentModeSetting.feverTimeDuration)
-					{
-						feverTimeOn = false;
-						timeModeGameView.ToggleFeverTimeEffect(false);
-						gameMainView.SetGoldCard(0);
-						gameMainView.ToggleCardGlow(false);
-                    }
-				}
 			} else
 			{
 				timeModeGameView.ToggleTimeIsRunning(false);
@@ -98,37 +84,27 @@ public class TimeModeJudgement : GameModeJudgement
 			{
 				scoreChangeAmount = currentModeSetting.matchAddScore * cards.Length;
 
-				if(!feverTimeOn)
+				if(!comboAward)
 				{
-					++currentCombo;
-					timeModeGameView.SetFeverTimeCircle((float)currentCombo / currentModeSetting.feverTimeThreshold);
-                }
+					comboAward = true;
+					gameMainView.ToggleCardGlow(true);
+				}else
+				{
+					scoreChangeAmount *= 2;
+				}
 
 				if(cards[0].IsGoldCard())
 					scoreChangeAmount *= 2;
 
 				if(cards[1].IsGoldCard())
 					scoreChangeAmount *= 2;
-
-				if(currentCombo >= currentModeSetting.feverTimeThreshold && !feverTimeOn)
-				{
-					++activeFeverTimeCount;
-                    timeModeGameView.ShowFeverTime();
-					feverTimePassTime = 0f;
-					feverTimeOn = true;
-					gameMainView.SetGoldCard(-1);
-					gameMainView.ToggleCardGlow(true);
-
-					currentCombo = 0;
-				}
 			} else
 			{
-				scoreChangeAmount = currentModeSetting.mismatchReduceScore * cards.Length;
-
-				if(!feverTimeOn)
+				++mismatchTimes;
+				if(comboAward)
 				{
-					currentCombo = 0;
-					timeModeGameView.SetFeverTimeCircle((float)currentCombo / currentModeSetting.feverTimeThreshold);
+					comboAward = false;
+					gameMainView.ToggleCardGlow(false);
 				}
 			}
 			if(scoreChangeAmount != 0)
@@ -158,6 +134,20 @@ public class TimeModeJudgement : GameModeJudgement
 		if(currentState == GameState.Playing)
 			currentState = GameState.Waiting;
 		++currentRound;
+
+		if(mismatchTimes > 0)
+		{			
+			feverTimeOn = false;
+			mismatchTimes = 0;
+			timeModeGameView.ToggleFeverTimeEffect(false);
+			gameMainView.SetGoldCard(0);
+		}else
+		{
+			feverTimeOn = true;
+			++activeFeverTimeCount;
+			timeModeGameView.ShowFeverTime();
+			gameMainView.SetGoldCard(-1);
+		}
 
 		float awardTime = currentModeSetting.awardTime;
 		
