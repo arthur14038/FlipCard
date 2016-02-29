@@ -5,10 +5,13 @@ public class TimeModeJudgement : GameModeJudgement
 {
 	float gamePassTime;
 	float gameTime;
+	float frozenTime;
 	int currentRound;
 	int score;
 	int activeFeverTimeCount;
 	int mismatchTimes;
+	int bombCardCount;
+	int frozenCardCount;
 	bool feverTimeOn = false;
 	bool comboAward = false;
 	TimeModeGameView timeModeGameView;
@@ -17,9 +20,23 @@ public class TimeModeJudgement : GameModeJudgement
 	public override IEnumerator Init(GameMainView gameMainView, GameSettingView gameSettingView, AbstractView modeView)
 	{
 		yield return gameMainView.StartCoroutine(base.Init(gameMainView, gameSettingView, modeView));
-		gameMainView.LoadCard(currentCardArraySetting.row * currentCardArraySetting.column, 0);
-		gameMainView.SetUsingCard(currentCardArraySetting.row * currentCardArraySetting.column, 0);
 		currentModeSetting = GameSettingManager.GetCurrentTimeModeSetting();
+		switch(currentModeSetting.level)
+		{
+			case LevelDifficulty.EASY:
+				gameMainView.LoadCard(currentCardArraySetting.row * currentCardArraySetting.column, 0, false, false);
+				break;
+			case LevelDifficulty.NORMAL:
+
+				gameMainView.LoadCard(currentCardArraySetting.row * currentCardArraySetting.column, 0, true, true);
+				break;
+			case LevelDifficulty.HARD:
+				gameMainView.LoadCard(currentCardArraySetting.row * currentCardArraySetting.column, 0, true, true);
+				break;
+			case LevelDifficulty.CRAZY:
+				gameMainView.LoadCard(currentCardArraySetting.row * currentCardArraySetting.column, 0, true, true);
+				break;
+		}
 		gameTime = currentModeSetting.gameTime;
 		gameMainView.completeOneRound = NextRound;
 		gameMainView.cardMatch = CardMatch;
@@ -29,7 +46,8 @@ public class TimeModeJudgement : GameModeJudgement
 		timeModeGameView.onCountDownFinished = StartGame;
 		feverTimeOn = false;
 		comboAward = false;
-		yield return gameMainView.StartCoroutine(gameMainView.DealCard(currentCardArraySetting.edgeLength, GetCardPos()));
+		RollSpecialCardCount();
+		yield return gameMainView.StartCoroutine(gameMainView.DealCard(currentCardArraySetting.edgeLength, GetCardPos(), bombCardCount, frozenCardCount));
 	}
 
 	protected override IEnumerator StartGame()
@@ -57,17 +75,24 @@ public class TimeModeJudgement : GameModeJudgement
 			if(currentState == GameState.Playing)
 			{
 				timeModeGameView.SetTimeBar(1f - gamePassTime / gameTime);
-				gamePassTime += Time.deltaTime;
-				if(gamePassTime >= gameTime)
+				if(frozenTime > 0)
 				{
-					GameOver(score);
-					timeModeGameView.SetTimeBar(0f);
-				}
+					frozenTime -= Time.deltaTime;
+				} else
+				{
+					gamePassTime += Time.deltaTime;
 
-				if(gameTime - gamePassTime < 5f)
-					timeModeGameView.ToggleTimeIsRunning(true);
-				else
-					timeModeGameView.ToggleTimeIsRunning(false);
+					if(gamePassTime >= gameTime)
+					{
+						GameOver(score);
+						timeModeGameView.SetTimeBar(0f);
+					}
+
+					if(gameTime - gamePassTime < 5f)
+						timeModeGameView.ToggleTimeIsRunning(true);
+					else
+						timeModeGameView.ToggleTimeIsRunning(false);
+				}
 			} else
 			{
 				timeModeGameView.ToggleTimeIsRunning(false);
@@ -79,10 +104,16 @@ public class TimeModeJudgement : GameModeJudgement
 	{
 		if(currentState != GameState.GameOver)
 		{
-			int scoreChangeAmount = 0;
 			if(match)
 			{
-				scoreChangeAmount = currentModeSetting.matchAddScore * cards.Length;
+				int scoreChangeAmount = currentModeSetting.matchAddScore * cards.Length;
+
+				foreach(CardBase matchCard in cards)
+				{
+					Vector2 pos = matchCard.GetAnchorPosition();
+					pos.x += currentCardArraySetting.edgeLength / 2 - 20f;
+					gameMainView.ShowScoreText(pos, comboAward, matchCard.IsGoldCard());
+				}
 
 				if(!comboAward)
 				{
@@ -90,14 +121,29 @@ public class TimeModeJudgement : GameModeJudgement
 					gameMainView.ToggleCardGlow(true);
 				}else
 				{
-					scoreChangeAmount *= 2;
+					scoreChangeAmount += 2 * cards.Length;
 				}
 
 				if(cards[0].IsGoldCard())
-					scoreChangeAmount *= 2;
+					scoreChangeAmount += 4;
 
 				if(cards[1].IsGoldCard())
-					scoreChangeAmount *= 2;
+					scoreChangeAmount += 4;
+				
+				if(scoreChangeAmount != 0)
+				{
+					score += scoreChangeAmount;
+					timeModeGameView.SetScore(score);
+				}
+
+				if(cards[0].IsBombCard && gameMainView.GetTableCardCount() > 0)
+					gameMainView.StartCoroutine(BombCardEffect());
+
+				if(cards[0].IsFrozenCard)
+				{
+					gameMainView.ShowFrozen();
+					frozenTime = currentModeSetting.awardTime;
+				}
 			} else
 			{
 				++mismatchTimes;
@@ -105,25 +151,6 @@ public class TimeModeJudgement : GameModeJudgement
 				{
 					comboAward = false;
 					gameMainView.ToggleCardGlow(false);
-				}
-			}
-			if(scoreChangeAmount != 0)
-			{
-				int saveScore = score;
-				score += scoreChangeAmount;
-				if(score < 0)
-					score = 0;
-
-				if(saveScore != score)
-				{
-					timeModeGameView.SetScore(score);
-
-					foreach(CardBase matchCard in cards)
-					{
-						Vector2 pos = matchCard.GetAnchorPosition();
-						pos.x += currentCardArraySetting.edgeLength / 2 - 20f;
-						gameMainView.ShowScoreText((score - saveScore) / cards.Length, pos);
-					}
 				}
 			}
 		}
@@ -162,6 +189,53 @@ public class TimeModeJudgement : GameModeJudgement
 		if(gamePassTime < 0f)
 			gamePassTime = 0f;
 		timeModeGameView.AddTimeEffect(1f - gamePassTime / gameTime);
+	}
+
+	void RollSpecialCardCount()
+	{
+		switch(currentModeSetting.level)
+		{
+			case LevelDifficulty.NORMAL:
+				int normalDice = Random.Range(0, 5);
+				switch(normalDice)
+				{
+					case 3:
+						bombCardCount = 2;
+						frozenCardCount = 0;
+						break;
+					case 4:
+						bombCardCount = 0;
+						frozenCardCount = 2;
+						break;
+					default:
+						bombCardCount = 0;
+						frozenCardCount = 0;
+						break;
+				}
+				break;
+			case LevelDifficulty.HARD:
+				int hardDice = Random.Range(0, 1);
+				switch(hardDice)
+				{
+					case 0:
+						bombCardCount = 2;
+						frozenCardCount = 0;
+						break;
+					case 1:
+						bombCardCount = 0;
+						frozenCardCount = 2;
+						break;
+				}
+				break;
+			case LevelDifficulty.CRAZY:
+				bombCardCount = 2;
+				frozenCardCount = 2;
+				break;
+			default:
+				bombCardCount = 0;
+				frozenCardCount = 0;
+				break;
+		}
 	}
 
 	protected override void GameOver(params int[] values)
@@ -233,13 +307,34 @@ public class TimeModeJudgement : GameModeJudgement
 	{
 		gameMainView.ToggleMask(true);
 		yield return new WaitForSeconds(0.3f);
-		yield return gameMainView.StartCoroutine(gameMainView.DealCard(currentCardArraySetting.edgeLength, GetCardPos()));
+		RollSpecialCardCount();
+		yield return gameMainView.StartCoroutine(gameMainView.DealCard(currentCardArraySetting.edgeLength, GetCardPos(), bombCardCount, frozenCardCount));
 		yield return new WaitForSeconds(0.3f);
 		gameMainView.FlipAllCard();
 		yield return new WaitForSeconds(0.35f + currentModeSetting.showCardTime);
 		gameMainView.FlipAllCard();
 		yield return new WaitForSeconds(0.35f);
 		gameMainView.ToggleMask(false);
+		if(currentState == GameState.Waiting)
+			currentState = GameState.Playing;
+	}
+
+	IEnumerator BombCardEffect()
+	{
+		if(currentState == GameState.Playing)
+			currentState = GameState.Waiting;
+
+		gameMainView.ShowExplosion();
+        gameMainView.ToggleMask(true);
+		yield return new WaitForSeconds(0.3f);
+
+		gameMainView.FlipAllCard();
+		yield return new WaitForSeconds(0.35f + currentModeSetting.showCardTime);
+		gameMainView.FlipAllCard();
+		yield return new WaitForSeconds(0.35f);
+
+		gameMainView.ToggleMask(false);
+
 		if(currentState == GameState.Waiting)
 			currentState = GameState.Playing;
 	}

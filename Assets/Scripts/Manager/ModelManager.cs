@@ -11,7 +11,7 @@ public class ModelManager : SingletonMonoBehavior<ModelManager> {
 	string encodeKey = "FlipCard";
 	string encodeIV = "VeryGood";
 	const int ClassicModeRecordVersion = 0;
-	const int TimeModeRecordVersion = 0;
+	const int TimeModeRecordVersion = 1;
 
 	public void Init()
 	{

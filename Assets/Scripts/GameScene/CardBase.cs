@@ -28,6 +28,24 @@ public class CardBase : MonoBehaviour {
 	protected float standardCardSize = 192f;
 	protected float currentCardSize;
 
+	public bool IsBombCard
+	{
+		get
+		{
+			return isBombCard;
+        }
+	}
+	protected bool isBombCard = false;
+
+	public bool IsFrozenCard
+	{
+		get
+		{
+			return isFrozenCard;
+		}
+	}
+	protected bool isFrozenCard = false;
+
 	public virtual void Init(BoolCardBase checkCanFlipCard, VoidCardBase flipFinish)
 	{
 		this.checkCanFlipCard = checkCanFlipCard;
@@ -51,7 +69,7 @@ public class CardBase : MonoBehaviour {
 		cardFaceSprite = InventoryManager.Instance.GetCurrentCardFace();
 	}
 
-	public void SetSprite(Sprite cardFaceImage, CardState defaultState)
+	public virtual void SetSprite(Sprite cardFaceImage, CardState defaultState)
 	{
 		cardFaceImageSprite = cardFaceImage;
 		SetCardState(defaultState);
@@ -60,6 +78,15 @@ public class CardBase : MonoBehaviour {
 	public void SetCardId(string cardId)
 	{
 		this.cardId = cardId;
+		if(cardId.EndsWith("Bomb"))
+			isBombCard = true;
+		else
+			isBombCard = false;
+
+		if(cardId.EndsWith("Frozen"))
+			isFrozenCard = true;
+		else
+			isFrozenCard = false;
 	}
 
 	public virtual void FlipBySystem()

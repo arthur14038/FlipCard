@@ -114,9 +114,6 @@ public class TimeModeSetting
 	public float showCardTime;
 	public float awardTime;
 	public int matchAddScore;
-	public int mismatchReduceScore;
-	public int feverTimeThreshold;
-    public float feverTimeDuration;
     public int targetRound;
 	public int targetFeverTimeCount;
 	public int targetScore;
@@ -126,8 +123,6 @@ public class CompetitionModeSetting
 {
 	public LevelDifficulty level;
 	public int matchAddScore;
-	public int mismatchReduceScore;
-	public int comboAddScore;
 	public int goldCardCount;
 }
 

@@ -10,10 +10,14 @@ public class GameMainView : AbstractView
 	public GameObject image_Mask;
 	public GameObject scoreTextPrefab;
 	public GameObject getLuckyEffect;
+	public GameObject explosionEffect;
+	public GameObject frozenEffect;
 	public Image image_Theme;
 	public VoidNoneParameter completeOneRound;
 	public VoidBoolAndCards cardMatch;
 	Sprite[] cardImage;
+	Sprite bombSprite;
+	Sprite frozenSprite;
 	Queue<ScoreText> scoreTextQueue = new Queue<ScoreText>();
 	Vector2 shiftAmount = new Vector2(-100, 50);
 	float appearDuration = 0.3f;
@@ -25,6 +29,8 @@ public class GameMainView : AbstractView
 	List<CardBase> normalCardDeck = new List<CardBase>();
 	List<UnknownCard> unknownCardDeck = new List<UnknownCard>();
 	int goldCardCount = 0;
+	int bombCardCount;
+	int frozenCardCount;
 	bool lockFlipCard = false;
 
 	public override IEnumerator Init()
@@ -46,15 +52,16 @@ public class GameMainView : AbstractView
 		}
 		scoreTextPrefab = null;
 		cardImage = new Sprite[30];
-		for(int i = 0 ; i < 30 ; ++i)
+		ResourceRequest request = null;
+        for(int i = 0 ; i < 30 ; ++i)
 		{
-			ResourceRequest request = Resources.LoadAsync<Sprite>(string.Format("CardImage/CardImage_{0}", i.ToString("D3")));
+			request = Resources.LoadAsync<Sprite>(string.Format("CardImage/CardImage_{0}", i.ToString("D3")));
 			yield return request;
 			cardImage[i] = (Sprite)request.asset;
 		}
 	}
-	
-	public void LoadCard(int normalCardCount, int unknownCardCount)
+
+	public void LoadCard(int normalCardCount, int unknownCardCount, bool enableBomb = false, bool enableFrozen = false)
 	{
 		GameObject cardPrefab = Resources.Load("Card/CardBase") as GameObject;
 		for(int i = 0 ; i < normalCardCount ; ++i)
@@ -80,10 +87,18 @@ public class GameMainView : AbstractView
 			unknownCard.Init(CanFlipCardNow, CardFlipFinish);
 			unknownCardDeck.Add(unknownCard);
 		}
+		
+		if(enableBomb)
+			bombSprite = Resources.Load<Sprite>("CardImage/CardImage_Bomb");
+
+		if(enableFrozen)
+			frozenSprite = Resources.Load<Sprite>("CardImage/CardImage_Frozen");
+
+		SetUsingCard(normalCardCount, unknownCardCount);
 	}
 
-	public void SetUsingCard(int normalCardCount, int unknownCardCount)
-	{
+	void SetUsingCard(int normalCardCount, int unknownCardCount)
+	{		
 		if(normalCardCount > normalCardDeck.Count)
 		{
 			Debug.LogError("Normal Card Deck have no enough cards.");
@@ -97,14 +112,19 @@ public class GameMainView : AbstractView
 		}
 
 		usingCardDeck.Clear();
+		
 		for(int i = 0 ; i < normalCardCount ; ++i)
 			usingCardDeck.Add(normalCardDeck[i]);
+
 		for(int i = 0 ; i < unknownCardCount ; ++i)
 			usingCardDeck.Add(unknownCardDeck[i]);
 	}
 
-	public IEnumerator DealCard(float cardSize, Vector2[] cardPos)
+	public IEnumerator DealCard(float cardSize, Vector2[] cardPos, int bombCardCount = 0, int frozenCardCount = 0)
 	{
+		this.bombCardCount = bombCardCount;
+		this.frozenCardCount = frozenCardCount;
+
 		ShuffleCardDeck();
 		float delayDuration = dealTime / usingCardDeck.Count;		
 		UpdateGoldCard();
@@ -114,6 +134,11 @@ public class GameMainView : AbstractView
 			usingCardDeck[i].DealCard(cardPos[i], shiftAmount, delayDuration * i, appearDuration, cardSize);
 		}
 		yield return new WaitForSeconds(dealTime);
+	}
+
+	public int GetTableCardCount()
+	{
+		return cardsOnTable.Count;
 	}
 
 	public void FlipAllCard()
@@ -194,11 +219,6 @@ public class GameMainView : AbstractView
 			bool isMatch = false;
 			if(cardA.GetCardId() == cardB.GetCardId())
 			{
-				if(cardA.IsGoldCard() || cardB.IsGoldCard())
-				{
-					getLuckyEffect.SetActive(false);
-					getLuckyEffect.SetActive(true);
-				}
 				AudioManager.Instance.PlayOneShot("GamePlayGetPair");
 				isMatch = true;
 				cardA.Match();
@@ -225,10 +245,28 @@ public class GameMainView : AbstractView
 			image_Mask.SetActive(value);
 	}
 
-	public void ShowScoreText(int score, Vector2 pos)
+	public void ShowScoreText(Vector2 pos, bool comboAward, bool goldCardAward)
 	{
 		ScoreText st = scoreTextQueue.Dequeue();
-		st.ShowScoreText(score, pos);
+		st.ShowScoreText(pos, comboAward, goldCardAward);
+	}
+
+	public void ShowFireWork()
+	{
+		getLuckyEffect.SetActive(false);
+		getLuckyEffect.SetActive(true);
+	}
+
+	public void ShowExplosion()
+	{
+		explosionEffect.SetActive(false);
+		explosionEffect.SetActive(true);
+	}
+
+	public void ShowFrozen()
+	{
+		frozenEffect.SetActive(false);
+		frozenEffect.SetActive(true);
 	}
 
 	void SaveScoreText(ScoreText st)
@@ -260,6 +298,18 @@ public class GameMainView : AbstractView
 	Sprite[] GetCardImage(int count)
 	{
 		Sprite[] choosenCardFace = new Sprite[count];
+
+		for(int i = 0 ; i < bombCardCount ; ++i)
+		{
+			--count;
+			choosenCardFace[count] = bombSprite;
+        }
+
+		for(int i = 0 ; i < frozenCardCount ; ++i)
+		{
+			--count;
+			choosenCardFace[count] = frozenSprite;
+		}
 		if(cardImage.Length > count / 2)
 		{
 			int[] chooseCardIndex = new int[count / 2];
@@ -274,7 +324,7 @@ public class GameMainView : AbstractView
 				tickets.RemoveAt(selectIndex);
 			}
 
-			for(int i = 0 ; i < choosenCardFace.Length ; ++i)
+			for(int i = 0 ; i < count ; ++i)
 			{
 				choosenCardFace[i] = cardImage[chooseCardIndex[i / 2]];
 			}

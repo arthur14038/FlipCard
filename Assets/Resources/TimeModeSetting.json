@@ -5,9 +5,6 @@
      "ShowCardTime": 0.5, 
      "AwardTime": 0.8, 
      "MatchAddScore": 1, 
-     "MismatchReduceScore": 0, 
-     "FeverTimeThreshold": 6, 
-     "FeverTimeDuration": 4.0, 
      "TargetRound": 15, 
      "TargetFeverTimeCount": 5, 
      "TargetScore": 360
@@ -15,12 +12,9 @@
    {
      "Level": 1, 
      "GameTime": 30.0, 
-     "ShowCardTime": 3.5, 
+     "ShowCardTime": 2.5, 
      "AwardTime": 2.6, 
      "MatchAddScore": 1, 
-     "MismatchReduceScore": 0, 
-     "FeverTimeThreshold": 6, 
-     "FeverTimeDuration": 12.0, 
      "TargetRound": 5, 
      "TargetFeverTimeCount": 2, 
      "TargetScore": 280
@@ -28,12 +22,9 @@
    {
      "Level": 2, 
      "GameTime": 40.0, 
-     "ShowCardTime": 8.0, 
+     "ShowCardTime": 6.0, 
      "AwardTime": 13.3, 
      "MatchAddScore": 1, 
-     "MismatchReduceScore": 0, 
-     "FeverTimeThreshold": 5, 
-     "FeverTimeDuration": 20.0, 
      "TargetRound": 2, 
      "TargetFeverTimeCount": 3, 
      "TargetScore": 430
@@ -41,12 +32,9 @@
    {
      "Level": 3, 
      "GameTime": 60.0, 
-     "ShowCardTime": 15.0, 
+     "ShowCardTime": 12.0, 
      "AwardTime": 26.6, 
      "MatchAddScore": 1, 
-     "MismatchReduceScore": 0, 
-     "FeverTimeThreshold": 4, 
-     "FeverTimeDuration": 40.0, 
      "TargetRound": 1, 
      "TargetFeverTimeCount": 2, 
      "TargetScore": 200

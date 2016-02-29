@@ -17,7 +17,6 @@ public class CompetitionModeJudgement : GameModeJudgement
 	{
 		yield return gameMainView.StartCoroutine(base.Init(gameMainView, gameSettingView, modeView));
 		gameMainView.LoadCard(currentCardArraySetting.row * currentCardArraySetting.column, 0);
-		gameMainView.SetUsingCard(currentCardArraySetting.row * currentCardArraySetting.column, 0);
 		currentModeSetting = GameSettingManager.GetCurrentCompetitionModeSetting();
 		gameMainView.completeOneRound = RoundComplete;
 		gameMainView.cardMatch = CardMatch;
@@ -88,7 +87,7 @@ public class CompetitionModeJudgement : GameModeJudgement
 
 	void RoundComplete()
 	{
-		AddScore(1, (int)currentTurn, null);
+		AddScore(1, (int)currentTurn);
 		GameOver(player1Score, player2Score);
 	}
 
@@ -98,7 +97,7 @@ public class CompetitionModeJudgement : GameModeJudgement
 		gameSettingView.ShowTwoPlayersGameOver(values[0], values[1]);
 	}
 
-	void AddScore(int addAmount, int playerNumber, CardBase[] cards)
+	void AddScore(int addAmount, int playerNumber)
 	{
 		int saveScore = 0;
 		int score = 0;
@@ -128,16 +127,6 @@ public class CompetitionModeJudgement : GameModeJudgement
 					break;
 			}
 			competitionModeView.SetTwoPlayerScore(player1Score, player2Score);
-
-			if(cards != null)
-			{
-				foreach(CardBase matchCard in cards)
-				{
-					Vector2 pos = matchCard.GetAnchorPosition();
-					pos.x += currentCardArraySetting.edgeLength / 2 - 20f;
-					gameMainView.ShowScoreText((score - saveScore) / cards.Length, pos);
-				}
-			}
 		}
 	}
 
@@ -146,27 +135,36 @@ public class CompetitionModeJudgement : GameModeJudgement
 		if(currentState != GameState.GameOver)
 		{
 			bool takeTurn = false;
-			int scoreChangeAmount = 0;
 			if(match)
 			{
+				int scoreChangeAmount = currentModeSetting.matchAddScore * cards.Length;
+				
+				foreach(CardBase matchCard in cards)
+				{
+					Vector2 pos = matchCard.GetAnchorPosition();
+					pos.x += currentCardArraySetting.edgeLength / 2 - 20f;
+					gameMainView.ShowScoreText(pos, (comboCount != 0), matchCard.IsGoldCard());
+				}
+
 				if(comboCount == 0)
 					gameMainView.ToggleCardGlow(true);
-
-				scoreChangeAmount = currentModeSetting.matchAddScore * cards.Length;
-
-				if(comboCount > 0)
-					scoreChangeAmount *= 2;
 				
+				if(comboCount > 0)
+					scoreChangeAmount += 2 * cards.Length;
+
 				++comboCount;
 
 				if(cards[0].IsGoldCard())
-					scoreChangeAmount *= 2;
+					scoreChangeAmount += 4;
 
 				if(cards[1].IsGoldCard())
-					scoreChangeAmount *= 2;
+					scoreChangeAmount += 4;
+				
+				if(scoreChangeAmount != 0)
+					AddScore(scoreChangeAmount, (int)currentTurn);
+
 			} else
 			{
-				scoreChangeAmount = currentModeSetting.mismatchReduceScore * cards.Length;
 				if(comboCount > 0)
 				{
 					comboCount = 0;
@@ -174,9 +172,6 @@ public class CompetitionModeJudgement : GameModeJudgement
 				}
 				takeTurn = true;
 			}
-
-			if(scoreChangeAmount != 0)
-				AddScore(scoreChangeAmount, (int)currentTurn, cards);
 
 			if(takeTurn)
 			{

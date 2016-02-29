@@ -1,61 +1,66 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 using DG.Tweening;
 
 public class ScoreText : MonoBehaviour {
-	public Sprite[] scoreSprite;
-	Image thisImage;
+	public RectTransform text_Combo;
+	public RectTransform text_GoldCard;
+	Vector2 additionScorePosition1 = new Vector2(-46f, -35f);
+	Vector2 additionScorePosition2 = new Vector2(-46f, -105f);
+	CanvasGroup thisCanvasGroup;
+	RectTransform thisRectTransform;
     VoidScoreText recycle;
 
     public void Init(VoidScoreText recycle)
     {
         this.gameObject.SetActive(false);
         this.recycle = recycle;
-		thisImage = this.GetComponent<Image>();
+		thisCanvasGroup = this.GetComponent<CanvasGroup>();
+		thisRectTransform = this.GetComponent<RectTransform>();
     }
+	
+	public void ShowScoreText(Vector2 pos, bool comboAward, bool goldCardAward)
+	{
+		if(!this.gameObject.activeSelf)
+			this.gameObject.SetActive(true);
+		thisRectTransform.anchoredPosition = pos;
+		thisCanvasGroup.alpha = 1f;
 
-    public void ShowScoreText(int score, Vector2 pos)
-    {
-        if (!this.gameObject.activeSelf)
-            this.gameObject.SetActive(true);
-		thisImage.rectTransform.anchoredPosition = pos;
-		thisImage.color = Color.white;
-		
-		switch(score)
+		if(comboAward)
 		{
-			case -2:
-				thisImage.sprite = scoreSprite[0];
-                break;
-			case -1:
-				thisImage.sprite = scoreSprite[1];
-				break;
-			case 1:
-				thisImage.sprite = scoreSprite[2];
-				break;
-			case 2:
-				thisImage.sprite = scoreSprite[3];
-				break;
-			case 4:
-				thisImage.sprite = scoreSprite[4];
-				break;
-			case 6:
-				thisImage.sprite = scoreSprite[5];
-				break;
-			case 8:
-				thisImage.sprite = scoreSprite[6];
-				break;
-			default:
-				Debug.LogErrorFormat("Score {0} need to be handled.", score);
-				break;
+			text_Combo.gameObject.SetActive(true);
+			text_Combo.anchoredPosition = additionScorePosition1;
+            if(goldCardAward)
+			{
+				text_GoldCard.gameObject.SetActive(true);
+				text_GoldCard.anchoredPosition = additionScorePosition2;
+			} else
+			{
+				text_GoldCard.gameObject.SetActive(false);
+			}
+		}else
+		{
+			text_Combo.gameObject.SetActive(false);
+			if(goldCardAward)
+			{
+				text_GoldCard.gameObject.SetActive(true);
+				text_GoldCard.anchoredPosition = additionScorePosition1;
+			} else
+			{
+				text_GoldCard.gameObject.SetActive(false);
+			}
 		}
 
-		thisImage.rectTransform.DOAnchorPosY(pos.y + 50f, 0.8f).SetEase(Ease.OutQuad);
-		thisImage.DOFade(0f, 0.2f).SetDelay(0.6f).OnComplete(
-            delegate () {
-                this.gameObject.SetActive(false);
-                if (recycle != null)
-                    recycle(this);
-            }
-        );
-    }
+		StartCoroutine(ScoreTextEffect(pos.y));
+	}
+
+	IEnumerator ScoreTextEffect(float y)
+	{
+		thisRectTransform.DOAnchorPosY(y + 50f, 0.8f).SetEase(Ease.OutQuad);
+		yield return thisCanvasGroup.DOFade(0f, 0.2f).SetDelay(0.6f).WaitForCompletion();
+		this.gameObject.SetActive(false);
+		if(recycle != null)
+			recycle(this);
+	}
 }
