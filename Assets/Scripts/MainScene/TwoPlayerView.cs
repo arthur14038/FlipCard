@@ -29,14 +29,7 @@ public class TwoPlayerView : AbstractView
 		if(onClickPlay != null)
 			onClickPlay((LevelDifficulty)level, GameMode.Competition);
 	}
-
-	public void OnClickCooperation(int level)
-	{
-		AudioManager.Instance.PlayOneShot("Button_Click");
-		if(onClickPlay != null)
-			onClickPlay((LevelDifficulty)level, GameMode.Cooperation);
-	}
-
+	
 	IEnumerator WaveEffect(RectTransform waveItem, float enterDuration)
 	{
 		waveItem.rotation = Quaternion.Euler(Vector3.zero);

@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
 
 public class GameSceneController : AbstractController
 {
@@ -32,28 +31,25 @@ public class GameSceneController : AbstractController
 		modeView.ShowUI(false);
     }
 	
-	void SaveTmpGameRecord(GameRecord record)
-	{
-		thisTimeRecord = record;
-    }
-
     void LoadingComplete()
     {
 		modeView.ShowUI(true);
     }
-	
-    void ExitGame()
+
+	void SaveTmpGameRecord(GameRecord record)
+	{
+		thisTimeRecord = record;
+	}
+
+	void ExitGame()
 	{
 		AudioManager.Instance.StopMusic();
 		int returnView = 0;
 		switch(GameSettingManager.currentMode)
 		{
-			case GameMode.Classic:
+			case GameMode.FlipCard:
 				returnView = 1;
                 break;
-			case GameMode.LimitTime:
-				returnView = 3;
-				break;
 			case GameMode.Competition:
 				returnView = 2;
 				break;
@@ -63,73 +59,29 @@ public class GameSceneController : AbstractController
 		{
 			if(thisTimeRecord.playTimes % 3 == 1)
 			{
-				Dictionary<string, object> eventData = new Dictionary<string, object>();
-				eventData.Add("PlayTimes", thisTimeRecord.playTimes);
-				eventData.Add("Grade", thisTimeRecord.grade.ToString());
-				switch(thisTimeRecord.mode)
-				{
-					case GameMode.Classic:
-					switch(thisTimeRecord.level)
-					{
-					case LevelDifficulty.EASY:
-						UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.ClassicModeEasy, eventData);
-						break;
-					case LevelDifficulty.NORMAL:
-						UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.ClassicModeNormal, eventData);
-						break;
-					case LevelDifficulty.HARD:
-						UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.ClassicModeHard, eventData);
-						break;
-					case LevelDifficulty.CRAZY:
-						UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.ClassicModeCrazy, eventData);
-						break;
-					}
-					break;
-				case GameMode.LimitTime:
-					switch(thisTimeRecord.level)
-					{
-					case LevelDifficulty.EASY:
-						UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.TimeModeEasy, eventData);
-						break;
-					case LevelDifficulty.NORMAL:
-						UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.TimeModeNormal, eventData);
-						break;
-					case LevelDifficulty.HARD:
-						UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.TimeModeHard, eventData);
-						break;
-					case LevelDifficulty.CRAZY:
-						UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.TimeModeCrazy, eventData);
-						break;
-					}
-						break;
-				}
+				Debug.Log("Should send custom event");
             }
 
-			ModelManager.Instance.SaveGameRecord(thisTimeRecord);
+			ModelManager.Instance.SaveFlipCardGameRecord(thisTimeRecord);
 		}
 
 		GameMainLoop.Instance.ChangeScene(SceneName.MainScene, returnView);
     }
-	
+
 	AbstractView GetModeView()
 	{
 		switch(GameSettingManager.currentMode)
 		{
-			case GameMode.LimitTime:
-				GameObject timeModeView = Instantiate(Resources.Load("UI/TimeModeView")) as GameObject;
-				Canvas timeModeViewCanvas = timeModeView.GetComponent<Canvas>();
+			case GameMode.FlipCard:
+				GameObject flipCardGameView = Instantiate(Resources.Load("UI/FlipCardGameView")) as GameObject;
+				Canvas timeModeViewCanvas = flipCardGameView.GetComponent<Canvas>();
 				timeModeViewCanvas.worldCamera = Camera.main;
-				return timeModeView.GetComponent<AbstractView>();
+				return flipCardGameView.GetComponent<AbstractView>();
 			case GameMode.Competition:
 				GameObject competitionModeView = Instantiate(Resources.Load("UI/CompetitionModeView")) as GameObject;
 				Canvas competitionModeViewCanvas = competitionModeView.GetComponent<Canvas>();
 				competitionModeViewCanvas.worldCamera = Camera.main;
 				return competitionModeView.GetComponent<AbstractView>();
-			case GameMode.Classic:
-				GameObject classicModeView = Instantiate(Resources.Load("UI/ClassicModeView")) as GameObject;
-				Canvas classicModeViewCanvas = classicModeView.GetComponent<Canvas>();
-				classicModeViewCanvas.worldCamera = Camera.main;
-				return classicModeView.GetComponent<AbstractView>();
 			default:
 				return null;
 		}
@@ -139,12 +91,10 @@ public class GameSceneController : AbstractController
 	{
 		switch(GameSettingManager.currentMode)
 		{
-			case GameMode.LimitTime:
-				return new TimeModeJudgement();
+			case GameMode.FlipCard:
+				return new FlipCardGameJudgement();
 			case GameMode.Competition:
 				return new CompetitionModeJudgement();
-			case GameMode.Classic:
-				return new ClassicModeJudgement();
 			default:
 				Debug.LogErrorFormat("{0}'s judgement is not implement", GameSettingManager.currentMode);
 				return null;

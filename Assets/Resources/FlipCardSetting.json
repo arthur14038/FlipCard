@@ -1,0 +1,79 @@
+﻿[
+   {
+     "Level": 1, 
+     "Round": 4, 
+     "CardCount": 6, 
+     "ShowCardTime": 0.5, 
+     "LevelTime": 20.0, 
+     "QuestionCardAppearRound": [], 
+     "SpecialCardAppearRound": [], 
+     "SpecialCardType": 0, 
+     "QuestionCardCount": 0
+ },
+   {
+     "Level": 2, 
+     "Round": 4, 
+     "CardCount": 8, 
+     "ShowCardTime": 1.0, 
+     "LevelTime": 20.0, 
+     "QuestionCardAppearRound": [4], 
+     "SpecialCardAppearRound": [], 
+     "SpecialCardType": 0, 
+     "QuestionCardCount": 1
+ },
+   {
+     "Level": 3, 
+     "Round": 3, 
+     "CardCount": 12, 
+     "ShowCardTime": 2.5, 
+     "LevelTime": 20.0, 
+     "QuestionCardAppearRound": [3], 
+     "SpecialCardAppearRound": [2, 3], 
+     "SpecialCardType": 1, 
+     "QuestionCardCount": 1
+ },
+   {
+     "Level": 4, 
+     "Round": 3, 
+     "CardCount": 16, 
+     "ShowCardTime": 4.0, 
+     "LevelTime": 20.0, 
+     "QuestionCardAppearRound": [3], 
+     "SpecialCardAppearRound": [2, 3], 
+     "SpecialCardType": 2, 
+     "QuestionCardCount": 1
+ },
+   {
+     "Level": 5, 
+     "Round": 2, 
+     "CardCount": 20, 
+     "ShowCardTime": 6.0, 
+     "LevelTime": 20.0, 
+     "QuestionCardAppearRound": [2], 
+     "SpecialCardAppearRound": [1, 2], 
+     "SpecialCardType": 3, 
+     "QuestionCardCount": 1
+ },
+   {
+     "Level": 6, 
+     "Round": 1, 
+     "CardCount": 24, 
+     "ShowCardTime": 9.0, 
+     "LevelTime": 20.0, 
+     "QuestionCardAppearRound": [1], 
+     "SpecialCardAppearRound": [1], 
+     "SpecialCardType": 3, 
+     "QuestionCardCount": 1
+ },
+   {
+     "Level": 7, 
+     "Round": 0, 
+     "CardCount": 30, 
+     "ShowCardTime": 12.0, 
+     "LevelTime": 20.0, 
+     "QuestionCardAppearRound": [0], 
+     "SpecialCardAppearRound": [0], 
+     "SpecialCardType": 4, 
+     "QuestionCardCount": 1
+ }
+]

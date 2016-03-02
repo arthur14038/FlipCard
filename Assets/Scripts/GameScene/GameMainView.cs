@@ -93,11 +93,9 @@ public class GameMainView : AbstractView
 
 		if(enableFrozen)
 			frozenSprite = Resources.Load<Sprite>("CardImage/CardImage_Frozen");
-
-		SetUsingCard(normalCardCount, unknownCardCount);
 	}
 
-	void SetUsingCard(int normalCardCount, int unknownCardCount)
+	public void SetUsingCard(int normalCardCount, int unknownCardCount)
 	{		
 		if(normalCardCount > normalCardDeck.Count)
 		{

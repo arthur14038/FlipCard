@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 
 public enum UseLayout {LevelDifficulty, Infinite}
 public class TestCardArray : MonoBehaviour {
@@ -41,6 +40,14 @@ public class TestCardArray : MonoBehaviour {
 			case UseLayout.Infinite:
 				LoadCard(totalCardCount);
 				Vector2[] cardPos2 = GetCardPosition(totalCardCount);
+				string positionInfo = "";
+				for(int i = 0 ; i < cardPos2.Length ; ++i)
+				{
+					positionInfo += string.Format("{0},{1}", cardPos2[i].x, cardPos2[i].y);
+					if(i != cardPos2.Length - 1)
+						positionInfo += ";";
+				}
+				Debug.Log(positionInfo);
 				for(int i = 0 ; i < cardList.Count ; ++i)
 				{
 					if(i < totalCardCount)
@@ -95,12 +102,53 @@ public class TestCardArray : MonoBehaviour {
 			case 6:
 				GameSettingManager.currentLevel = LevelDifficulty.EASY;
 				return GetCardPosition(GameSettingManager.GetCurrentCardArraySetting());
-			case 12:
+			case 8:
+				GameSettingManager.currentLevel = LevelDifficulty.NORMAL;
+				Vector2[] pos = GetCardPosition(GameSettingManager.GetCurrentCardArraySetting());
+				List<Vector2> tmpPos = new List<Vector2>(pos);
+				tmpPos.RemoveAt(11);
+				tmpPos.RemoveAt(9);
+				tmpPos.RemoveAt(2);
+				tmpPos.RemoveAt(0);
+				return tmpPos.ToArray();
+            case 12:
 				GameSettingManager.currentLevel = LevelDifficulty.NORMAL;
 				return GetCardPosition(GameSettingManager.GetCurrentCardArraySetting());
+			case 16:
+				GameSettingManager.currentLevel = LevelDifficulty.HARD;
+				Vector2[] pos1 = GetCardPosition(GameSettingManager.GetCurrentCardArraySetting());
+				List<Vector2> tmpPos2 = new List<Vector2>(pos1);
+				tmpPos2.RemoveAt(19);
+				tmpPos2.RemoveAt(18);
+				tmpPos2.RemoveAt(17);
+				tmpPos2.RemoveAt(16);
+				for(int i = 0 ; i < tmpPos2.Count ; ++i)
+				{
+					Vector2 tmpVec2 = tmpPos2[i];
+                    tmpVec2.y -= 130f;
+					tmpPos2[i] = tmpVec2;
+                }
+				return tmpPos2.ToArray();
 			case 20:
 				GameSettingManager.currentLevel = LevelDifficulty.HARD;
 				return GetCardPosition(GameSettingManager.GetCurrentCardArraySetting());
+			case 24:
+				GameSettingManager.currentLevel = LevelDifficulty.CRAZY;
+				Vector2[] pos2 = GetCardPosition(GameSettingManager.GetCurrentCardArraySetting());
+				List<Vector2> tmpPos3 = new List<Vector2>(pos2);
+				tmpPos3.RemoveAt(29);
+				tmpPos3.RemoveAt(24);
+				tmpPos3.RemoveAt(19);
+				tmpPos3.RemoveAt(14);
+				tmpPos3.RemoveAt(9);
+				tmpPos3.RemoveAt(4);
+				for(int i = 0 ; i < tmpPos3.Count ; ++i)
+				{
+					Vector2 tmpVec2 = tmpPos3[i];
+					tmpVec2.x += 100f;
+					tmpPos3[i] = tmpVec2;
+				}
+				return tmpPos3.ToArray();
 			case 30:
 				GameSettingManager.currentLevel = LevelDifficulty.CRAZY;
 				return GetCardPosition(GameSettingManager.GetCurrentCardArraySetting());

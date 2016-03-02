@@ -76,6 +76,8 @@ public class MainSceneController : AbstractController {
 	void StartFlipCardGame()
 	{
 		AudioManager.Instance.StopMusic();
+		GameSettingManager.currentMode = GameMode.FlipCard;
+		GameMainLoop.Instance.ChangeScene(SceneName.GameScene);
 	}
 
 	void ShowMainPage()
