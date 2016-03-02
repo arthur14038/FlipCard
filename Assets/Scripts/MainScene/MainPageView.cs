@@ -21,9 +21,8 @@ public class MainPageView : AbstractView {
 	public VoidNoneParameter onClickShop;
 	public VoidNoneParameter onClickLeaveGame;
 	public VoidNoneParameter onClickNotify;
-	public VoidNoneParameter onClickClassicMode;
+	public VoidNoneParameter onClickFlipCard;
 	public VoidNoneParameter onClick2P;
-	public VoidNoneParameter onClickTimeMode;
 	public VoidNoneParameter onClickComingSoon;
 	private Vector2 settingWindowPos = new Vector2(0f, 832f);
 
@@ -57,28 +56,21 @@ public class MainPageView : AbstractView {
 
 		yield return 0;
 	}
-
-	public void OnClickClassicMode()
+	
+	public void OnClickFlipCard()
 	{
 		AudioManager.Instance.PlayOneShot("Button_Click");
-		if(onClickClassicMode != null)
-			onClickClassicMode();
+		if(onClickFlipCard != null)
+			onClickFlipCard();
 	}
-	
+
 	public void OnClick2P()
 	{
 		AudioManager.Instance.PlayOneShot("Button_Click");
 		if(onClick2P != null)
 			onClick2P();
 	}
-
-	public void OnClickTimeMode()
-	{
-		AudioManager.Instance.PlayOneShot("Button_Click");
-		if(onClickTimeMode != null)
-			onClickTimeMode();
-	}
-
+	
 	public void OnClickComingSoon()
 	{
 		AudioManager.Instance.PlayOneShot("Button_Click");
