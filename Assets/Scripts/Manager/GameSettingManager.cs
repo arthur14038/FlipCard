@@ -65,7 +65,7 @@ public class GameSettingManager{
 			return null;
 	}
 
-	public static FlipCardGameSetting GetFlipCardSetting(int level)
+	public static FlipCardGameSetting GetFlipCardGameSetting(int level)
 	{
 		if(flipCardSettings.ContainsKey(level))
 			return flipCardSettings[level];

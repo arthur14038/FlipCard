@@ -31,7 +31,7 @@ public class FlipCardGameJudgement : GameModeJudgement
 		flipCardGameView.SetCurrentScore(score);
 		flipCardGameView.SetTimeBar(1f);
 
-		currentGameSetting = GameSettingManager.GetFlipCardSetting(currentLevel);
+		currentGameSetting = GameSettingManager.GetFlipCardGameSetting(currentLevel);
 		flipCardArraySetting = GameSettingManager.GetFlipCardArraySetting(currentLevel);
 		gameMainView.SetUsingCard(currentGameSetting.cardCount, 0);
 
@@ -43,12 +43,17 @@ public class FlipCardGameJudgement : GameModeJudgement
 		gameMainView.FlipAllCard();
 		yield return new WaitForSeconds(0.35f + currentGameSetting.showCardTime);
 		gameMainView.FlipAllCard();
-		yield return new WaitForSeconds(0.35f);
 		gameMainView.ToggleMask(false);
+		yield return new WaitForSeconds(0.35f);
 		
 		if(currentState == GameState.Waiting)
 			currentState = GameState.Playing;
 		AudioManager.Instance.PlayMusic("GamePlayBGM", true);
+	}
+
+	protected override void GameOver(params int[] values)
+	{
+		base.GameOver(values);
 	}
 
 	public override void JudgementUpdate()
@@ -67,7 +72,7 @@ public class FlipCardGameJudgement : GameModeJudgement
 
 					if(gamePassTime >= currentGameSetting.levelTime)
 					{
-						GameOver(score);
+						GameOver(score, currentLevel, currentRound);
 						flipCardGameView.SetTimeBar(0f);
 					}
 
@@ -163,7 +168,7 @@ public class FlipCardGameJudgement : GameModeJudgement
 				flipCardGameView.ToggleFeverTimeEffect(false);
 
 				flipCardArraySetting = GameSettingManager.GetFlipCardArraySetting(currentLevel);
-				currentGameSetting = GameSettingManager.GetFlipCardSetting(currentLevel);
+				currentGameSetting = GameSettingManager.GetFlipCardGameSetting(currentLevel);
 
 				gameMainView.SetUsingCard(currentGameSetting.cardCount, 0);
 				
@@ -187,8 +192,8 @@ public class FlipCardGameJudgement : GameModeJudgement
 		gameMainView.FlipAllCard();
 		yield return new WaitForSeconds(0.35f + currentGameSetting.showCardTime);
 		gameMainView.FlipAllCard();
+		gameMainView.ToggleMask(false);
 		yield return new WaitForSeconds(0.35f);
-        gameMainView.ToggleMask(false);
 		if(currentState == GameState.Waiting)
 			currentState = GameState.Playing;
 	}

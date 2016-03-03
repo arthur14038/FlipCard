@@ -2,17 +2,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class GameMainView : AbstractView
 {
 	public Transform scoreTextParent;
 	public Transform cardParent;
-	public GameObject image_Mask;
 	public GameObject scoreTextPrefab;
 	public GameObject getLuckyEffect;
 	public GameObject explosionEffect;
 	public GameObject frozenEffect;
 	public Image image_Theme;
+	public Image image_Mask;
 	public VoidNoneParameter completeOneRound;
 	public VoidBoolAndCards cardMatch;
 	Sprite[] cardImage;
@@ -35,7 +36,8 @@ public class GameMainView : AbstractView
 
 	public override IEnumerator Init()
 	{
-		ToggleMask(true);
+		image_Mask.gameObject.SetActive(true);
+		image_Mask.color = Color.black * 0.5f;
 		getLuckyEffect.SetActive(false);
 
 		image_Theme.sprite = InventoryManager.Instance.GetCurrentThemeSprite();
@@ -239,8 +241,23 @@ public class GameMainView : AbstractView
 	
 	public void ToggleMask(bool value)
 	{
-		if(image_Mask.activeSelf != value)
-			image_Mask.SetActive(value);
+		if(value)
+		{
+			if(!image_Mask.gameObject.activeSelf)
+				image_Mask.gameObject.SetActive(true);
+
+			image_Mask.DOFade(0.5f, 0.2f).SetDelay(0.15f);
+		} else
+		{
+			if(image_Mask.gameObject.activeSelf)
+			{
+				image_Mask.DOFade(0f, 0.2f).SetDelay(0.15f).OnComplete(
+			delegate () {
+				image_Mask.gameObject.SetActive(false);
+			}
+		);
+			}
+		}
 	}
 
 	public void ShowScoreText(Vector2 pos, bool comboAward, bool goldCardAward)
