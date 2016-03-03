@@ -3,7 +3,8 @@ using System.Collections;
 
 public abstract class GameModeJudgement{
 	public enum GameState { Waiting, Playing, Pausing, GameOver}
-	protected GameState currentState;
+	protected GameState currentState = GameState.Waiting;
+	protected GameState stateBeforePause;
 	protected GameMainView gameMainView;
 	protected GameSettingView gameSettingView;
 	protected CardArraySetting currentCardArraySetting;
@@ -31,13 +32,14 @@ public abstract class GameModeJudgement{
 
 	protected virtual void PauseGame()
 	{
+		stateBeforePause = currentState;
 		currentState = GameState.Pausing;
 		gameSettingView.ShowUI(true);
 	}
 
 	protected virtual void ResumeGame()
 	{
-		currentState = GameState.Playing;
+		currentState = stateBeforePause;
 		gameSettingView.HideUI(true);
     }
 	
@@ -45,6 +47,14 @@ public abstract class GameModeJudgement{
 	{
 		if(exitGame != null)
 			exitGame();
+	}
+
+	protected void SetCurrentState(GameState value)
+	{
+		if(currentState == GameState.Pausing)
+			stateBeforePause = value;
+		else
+			currentState = value;
 	}
 
 	public virtual void JudgementUpdate()

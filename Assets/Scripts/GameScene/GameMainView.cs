@@ -19,6 +19,7 @@ public class GameMainView : AbstractView
 	Sprite[] cardImage;
 	Sprite bombSprite;
 	Sprite frozenSprite;
+	Sprite flashbangSprite;
 	Queue<ScoreText> scoreTextQueue = new Queue<ScoreText>();
 	Vector2 shiftAmount = new Vector2(-100, 50);
 	float appearDuration = 0.3f;
@@ -32,6 +33,7 @@ public class GameMainView : AbstractView
 	int goldCardCount = 0;
 	int bombCardCount;
 	int frozenCardCount;
+	int flashbangCardCount;
 	bool lockFlipCard = false;
 
 	public override IEnumerator Init()
@@ -61,9 +63,16 @@ public class GameMainView : AbstractView
 			yield return request;
 			cardImage[i] = (Sprite)request.asset;
 		}
+
+		if(GameSettingManager.currentMode == GameMode.FlipCard)
+		{
+			bombSprite = Resources.Load<Sprite>("CardImage/CardImage_Bomb");
+			frozenSprite = Resources.Load<Sprite>("CardImage/CardImage_Frozen");
+			flashbangSprite = Resources.Load<Sprite>("CardImage/CardImage_Flashbang");
+		}
 	}
 
-	public void LoadCard(int normalCardCount, int unknownCardCount, bool enableBomb = false, bool enableFrozen = false)
+	public void LoadCard(int normalCardCount, int unknownCardCount)
 	{
 		GameObject cardPrefab = Resources.Load("Card/CardBase") as GameObject;
 		for(int i = 0 ; i < normalCardCount ; ++i)
@@ -89,12 +98,6 @@ public class GameMainView : AbstractView
 			unknownCard.Init(CanFlipCardNow, CardFlipFinish);
 			unknownCardDeck.Add(unknownCard);
 		}
-		
-		if(enableBomb)
-			bombSprite = Resources.Load<Sprite>("CardImage/CardImage_Bomb");
-
-		if(enableFrozen)
-			frozenSprite = Resources.Load<Sprite>("CardImage/CardImage_Frozen");
 	}
 
 	public void SetUsingCard(int normalCardCount, int unknownCardCount)
@@ -120,10 +123,11 @@ public class GameMainView : AbstractView
 			usingCardDeck.Add(unknownCardDeck[i]);
 	}
 
-	public IEnumerator DealCard(float cardSize, Vector2[] cardPos, int bombCardCount = 0, int frozenCardCount = 0)
+	public IEnumerator DealCard(float cardSize, Vector2[] cardPos, int bombCardCount = 0, int frozenCardCount = 0, int flashbangCardCount = 0)
 	{
 		this.bombCardCount = bombCardCount;
 		this.frozenCardCount = frozenCardCount;
+		this.flashbangCardCount = flashbangCardCount;
 
 		ShuffleCardDeck();
 		float delayDuration = dealTime / usingCardDeck.Count;		
@@ -284,6 +288,12 @@ public class GameMainView : AbstractView
 		frozenEffect.SetActive(true);
 	}
 
+	public void ShowFlashbang()
+	{
+		foreach(CardBase card in cardsOnTable)
+			card.FlashbangEffect();
+	}
+
 	void SaveScoreText(ScoreText st)
 	{
 		scoreTextQueue.Enqueue(st);
@@ -292,6 +302,7 @@ public class GameMainView : AbstractView
 	void ShuffleCardDeck()
 	{
 		Sprite[] thisTimeCardImage = GetCardImage(usingCardDeck.Count);
+
 		for(int i = 0 ; i < usingCardDeck.Count ; ++i)
 		{
 			usingCardDeck[i].SetSprite(thisTimeCardImage[i], CardState.Back);
@@ -325,6 +336,13 @@ public class GameMainView : AbstractView
 			--count;
 			choosenCardFace[count] = frozenSprite;
 		}
+
+		for(int i = 0 ; i < flashbangCardCount ; ++i)
+		{
+			--count;
+			choosenCardFace[count] = flashbangSprite;
+		}
+
 		if(cardImage.Length > count / 2)
 		{
 			int[] chooseCardIndex = new int[count / 2];
@@ -352,6 +370,17 @@ public class GameMainView : AbstractView
 		} else
 		{
 			Debug.LogError("CardFace is not enough");
+		}
+
+		for(int i = 0 ; i < choosenCardFace.Length ; ++i)
+		{
+			int randomIndex = Random.Range(0, choosenCardFace.Length);
+			while(randomIndex == i)
+				randomIndex = Random.Range(0, choosenCardFace.Length);
+
+			Sprite tmp = choosenCardFace[i];
+			choosenCardFace[i] = choosenCardFace[randomIndex];
+			choosenCardFace[randomIndex] = tmp;
 		}
 
 		return choosenCardFace;

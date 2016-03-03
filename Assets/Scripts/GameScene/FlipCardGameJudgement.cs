@@ -9,8 +9,10 @@ public class FlipCardGameJudgement : GameModeJudgement
     int currentLevel;
 	int currentRound;
 	int score;
+	int mismatchTimes;
 	float gamePassTime;
 	float frozenTime;
+	float additionTime;
 	bool comboAward;
 
 	public override IEnumerator Init(GameMainView gameMainView, GameSettingView gameSettingView, AbstractView modeView)
@@ -23,10 +25,12 @@ public class FlipCardGameJudgement : GameModeJudgement
 		currentRound = 1;
 		score = 0;
 		gamePassTime = 0;
+		mismatchTimes = 0;
 		comboAward = false;
 		flipCardGameView = (FlipCardGameView)modeView;
 		flipCardGameView.onCountDownFinished = StartGame;
 		flipCardGameView.onClickPause = PauseGame;
+		flipCardGameView.onClickNextLevel = NextLevel;
 		flipCardGameView.SetCurrentLevel(currentLevel, currentRound);
 		flipCardGameView.SetCurrentScore(score);
 		flipCardGameView.SetTimeBar(1f);
@@ -34,6 +38,7 @@ public class FlipCardGameJudgement : GameModeJudgement
 		currentGameSetting = GameSettingManager.GetFlipCardGameSetting(currentLevel);
 		flipCardArraySetting = GameSettingManager.GetFlipCardArraySetting(currentLevel);
 		gameMainView.SetUsingCard(currentGameSetting.cardCount, 0);
+		flipCardGameView.SetPauseButtonState(false);
 
 		yield return gameMainView.StartCoroutine(gameMainView.DealCard(flipCardArraySetting.cardSize, flipCardArraySetting.realCardPosition));
 	}
@@ -45,9 +50,9 @@ public class FlipCardGameJudgement : GameModeJudgement
 		gameMainView.FlipAllCard();
 		gameMainView.ToggleMask(false);
 		yield return new WaitForSeconds(0.35f);
-		
-		if(currentState == GameState.Waiting)
-			currentState = GameState.Playing;
+
+		SetCurrentState(GameState.Playing);
+		flipCardGameView.SetPauseButtonState(true);
 		AudioManager.Instance.PlayMusic("GamePlayBGM", true);
 	}
 
@@ -124,8 +129,20 @@ public class FlipCardGameJudgement : GameModeJudgement
 					flipCardGameView.SetCurrentScore(score);
 				}
 
+				if(cards[0].IsBombCard && gameMainView.GetTableCardCount() > 0)
+					gameMainView.StartCoroutine(BombCardEffect());
+
+				if(cards[0].IsFrozenCard)
+				{
+					gameMainView.ShowFrozen();
+					frozenTime = currentGameSetting.showCardTime;
+				}
+
+				if(cards[0].IsFlashbangCard && gameMainView.GetTableCardCount() > 0)
+					gameMainView.ShowFlashbang();
 			} else
 			{
+				++mismatchTimes;
 				if(comboAward)
 				{
 					comboAward = false;
@@ -137,64 +154,200 @@ public class FlipCardGameJudgement : GameModeJudgement
 
 	void RoundComplete()
 	{
-		if(currentState == GameState.Playing)
-			currentState = GameState.Waiting;
-		
+		SetCurrentState(GameState.Waiting);
+		gameMainView.ToggleMask(true);
+
 		++currentRound;
 
-		if(currentRound < currentGameSetting.round)
+		if(mismatchTimes == 0)
 		{
-			gameMainView.SetGoldCard(0);
-			gameMainView.StartCoroutine(NextRoundRoutine(false));
-		} else if(currentRound == currentGameSetting.round)
-		{
-			gameMainView.SetGoldCard(-1);
-			flipCardGameView.ShowFinalRound();
-			gameMainView.StartCoroutine(NextRoundRoutine(true));
+			score += 8;
+			flipCardGameView.SetCurrentScore(score);
+			flipCardGameView.StartCoroutine(flipCardGameView.PerfectEffect());
 		} else
 		{
-			if(currentGameSetting.round > 0)
+			mismatchTimes = 0;
+		}
+		
+		if(currentRound > currentGameSetting.round)
+		{
+			if(currentLevel < 7)
 			{
-				gamePassTime = 0;
-				flipCardGameView.AddTimeEffect(1f);
-                gameMainView.SetGoldCard(0);
-
+				additionTime = currentGameSetting.levelTime - gamePassTime;
+				gamePassTime = 0;				
 				++currentLevel;
-				if(currentLevel > 7)
-					currentLevel = 7;
-
 				currentRound = 1;
-
+				
 				flipCardGameView.ToggleFeverTimeEffect(false);
 
 				flipCardArraySetting = GameSettingManager.GetFlipCardArraySetting(currentLevel);
 				currentGameSetting = GameSettingManager.GetFlipCardGameSetting(currentLevel);
 
-				gameMainView.SetUsingCard(currentGameSetting.cardCount, 0);
-				
+				int questionCardCount = 0;
+				int normalCardCount = currentGameSetting.cardCount;
+
+				if(currentGameSetting.questionCardAppearRound.Length > 0)
+				{
+					if(currentRound == currentGameSetting.questionCardAppearRound[0])
+					{
+						questionCardCount = currentGameSetting.questionCardCount;
+						normalCardCount -= questionCardCount;
+					}
+				}
+
+				gameMainView.SetUsingCard(normalCardCount, questionCardCount);
+
 				if(comboAward)
 					gameMainView.ToggleCardGlow(true);
 				else
 					gameMainView.ToggleCardGlow(false);
 
+				flipCardGameView.StartCoroutine(flipCardGameView.ShowNextLevelUI(string.Format("NEXT LEVEL: {0}-{1}", currentLevel, currentRound)));
 			}
-			gameMainView.StartCoroutine(NextRoundRoutine(false));
-		}
-    }
+		} else
+		{
+			int goldCardCount = 0;
+			if(currentRound == currentGameSetting.round)
+			{
+				goldCardCount = -1;
+				flipCardGameView.StartCoroutine(flipCardGameView.FinalRoundEffect());
+				flipCardGameView.ToggleFeverTimeEffect(true);
+			}
 
-	IEnumerator NextRoundRoutine(bool finalRound)
+			int questionCardCount = 0;
+			int normalCardCount = currentGameSetting.cardCount;
+
+			if(currentGameSetting.questionCardAppearRound.Length > 0)
+			{
+				if(currentGameSetting.questionCardAppearRound[0] == 0 || currentRound == currentGameSetting.questionCardAppearRound[0])
+				{
+					questionCardCount = currentGameSetting.questionCardCount;
+					normalCardCount -= questionCardCount;
+				}
+			}
+
+			gameMainView.SetUsingCard(normalCardCount, questionCardCount);
+
+			flipCardGameView.SetCurrentLevel(currentLevel, currentRound);
+			gameMainView.SetGoldCard(goldCardCount);
+			gameMainView.StartCoroutine(NextRoundRoutine());
+		}
+	}
+
+	void NextLevel()
 	{
+		flipCardGameView.AddTimeEffect(1f);
+		gamePassTime = 0;
+
+		int goldCardCount = 0;
+		if(currentRound == currentGameSetting.round)
+		{
+			goldCardCount = -1;
+			flipCardGameView.StartCoroutine(flipCardGameView.FinalRoundEffect());
+			flipCardGameView.ToggleFeverTimeEffect(true);
+		}
 		flipCardGameView.SetCurrentLevel(currentLevel, currentRound);
-		gameMainView.ToggleMask(true);
-		yield return new WaitForSeconds(0.3f);
-		yield return gameMainView.StartCoroutine(gameMainView.DealCard(flipCardArraySetting.cardSize, flipCardArraySetting.realCardPosition));
-		yield return new WaitForSeconds(0.3f);
+		gameMainView.SetGoldCard(goldCardCount);
+		gameMainView.StartCoroutine(NextRoundRoutine());
+	}
+
+	IEnumerator NextRoundRoutine()
+	{
+		yield return new WaitForSeconds(0.3f);  //等桌面清空
+		int[] specialCardCount = new int[3];
+		specialCardCount[0] = 0;
+		specialCardCount[1] = 0;
+		specialCardCount[2] = 0;
+		if(currentGameSetting.specialCardAppearRound.Length > 0)
+		{
+			int specialCardType = 0;
+			if(currentGameSetting.specialCardAppearRound[0] == 0)
+			{
+				specialCardType = currentGameSetting.specialCardType;
+			} else
+			{
+				for(int i = 0 ; i < currentGameSetting.specialCardAppearRound.Length ; ++i)
+				{
+					if(currentGameSetting.specialCardAppearRound[i] == currentRound)
+					{
+						specialCardType = currentGameSetting.specialCardType;
+						break;
+					}
+				}
+			}
+			switch(specialCardType)
+			{
+				case 1:
+					specialCardCount[0] = 2;
+					break;
+				case 2:
+					specialCardCount[1] = 2;
+					break;
+				case 3:
+					specialCardCount[2] = 2;
+					break;
+				case 4:
+					int randomIndex = Random.Range(0, 3);
+					specialCardCount[randomIndex] = 2;
+					break;
+			}
+		}
+		yield return gameMainView.StartCoroutine(gameMainView.DealCard(flipCardArraySetting.cardSize, flipCardArraySetting.realCardPosition,
+			specialCardCount[0], specialCardCount[1], specialCardCount[2]));
+		yield return new WaitForSeconds(0.3f);  //等發卡動作結束
+
+		while(currentState == GameState.Pausing)
+			yield return null;
 		gameMainView.FlipAllCard();
-		yield return new WaitForSeconds(0.35f + currentGameSetting.showCardTime);
+		float showCardTime = 0.35f + currentGameSetting.showCardTime;
+		while(showCardTime > 0f)
+		{
+			if(currentState == GameState.Pausing)
+				yield return null;
+			else
+			{
+				showCardTime -= Time.deltaTime;
+				yield return new WaitForEndOfFrame();
+			}
+		}
 		gameMainView.FlipAllCard();
+		while(currentState == GameState.Pausing)
+			yield return null;
 		gameMainView.ToggleMask(false);
 		yield return new WaitForSeconds(0.35f);
-		if(currentState == GameState.Waiting)
-			currentState = GameState.Playing;
+		while(currentState == GameState.Pausing)
+			yield return null;
+		SetCurrentState(GameState.Playing);
+	}
+
+	IEnumerator BombCardEffect()
+	{
+		SetCurrentState(GameState.Waiting);
+
+		gameMainView.ShowExplosion();
+		gameMainView.ToggleMask(true);
+		yield return new WaitForSeconds(0.3f);
+
+		while(currentState == GameState.Pausing)
+			yield return null;
+		gameMainView.FlipAllCard();
+		float showCardTime = 0.35f + currentGameSetting.showCardTime;
+		while(showCardTime > 0f)
+		{
+			if(currentState == GameState.Pausing)
+				yield return null;
+			else
+			{
+				showCardTime -= Time.deltaTime;
+				yield return new WaitForEndOfFrame();
+			}
+		}
+		gameMainView.FlipAllCard();
+		while(currentState == GameState.Pausing)
+			yield return null;
+		gameMainView.ToggleMask(false);
+		yield return new WaitForSeconds(0.35f);
+
+		SetCurrentState(GameState.Playing);
 	}
 }

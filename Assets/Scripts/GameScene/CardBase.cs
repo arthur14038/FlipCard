@@ -27,6 +27,7 @@ public class CardBase : MonoBehaviour {
 	protected Vector3 flipDown = new Vector3(0f, 0.9f, 1f);
 	protected float standardCardSize = 192f;
 	protected float currentCardSize;
+	protected Tweener flashbangEffectTweener;
 
 	public bool IsBombCard
 	{
@@ -45,6 +46,15 @@ public class CardBase : MonoBehaviour {
 		}
 	}
 	protected bool isFrozenCard = false;
+
+	public bool IsFlashbangCard
+	{
+		get
+		{
+			return isFlashbangCard;
+		}
+	}
+	protected bool isFlashbangCard = false;
 
 	public virtual void Init(BoolCardBase checkCanFlipCard, VoidCardBase flipFinish)
 	{
@@ -87,6 +97,11 @@ public class CardBase : MonoBehaviour {
 			isFrozenCard = true;
 		else
 			isFrozenCard = false;
+
+		if(cardId.EndsWith("Flashbang"))
+			isFlashbangCard = true;
+		else
+			isFlashbangCard = false;
 	}
 
 	public virtual void FlipBySystem()
@@ -119,6 +134,7 @@ public class CardBase : MonoBehaviour {
 			image_CardBody.rectTransform.sizeDelta = Vector2.one * currentCardSize;
 			image_Glow.rectTransform.sizeDelta = Vector2.one * (currentCardSize + 48f);
 			image_GoldCardFrame.rectTransform.sizeDelta = (new Vector2(image_GoldCardFrame.sprite.rect.width, image_GoldCardFrame.sprite.rect.height)) * currentCardSize / standardCardSize;
+			image_CardImage.rectTransform.sizeDelta = (new Vector2(image_CardImage.sprite.rect.width, image_CardImage.sprite.rect.height)) * currentCardSize / standardCardSize;
 		}
 	}
 
@@ -226,6 +242,12 @@ public class CardBase : MonoBehaviour {
 		return isGoldCard;
 	}
 
+	public virtual void FlashbangEffect()
+	{
+		SetCardImage(cardFaceImageSprite);
+		flashbangEffectTweener = image_CardImage.DOFade(0f, 1f);
+	}
+	
 	void FlipByUser()
 	{
 		if(checkCanFlipCard(this))
@@ -265,6 +287,12 @@ public class CardBase : MonoBehaviour {
 
 	protected void SetCardImage(Sprite imageSprite)
 	{
+		if(flashbangEffectTweener != null)
+		{
+			flashbangEffectTweener.Kill();
+			flashbangEffectTweener = null;
+		}
+		image_CardImage.color = Color.white;
 		image_CardImage.sprite = imageSprite;
 		image_CardImage.rectTransform.sizeDelta = (new Vector2(imageSprite.rect.width, imageSprite.rect.height)) * currentCardSize / standardCardSize;
 		if(!image_CardImage.gameObject.activeSelf)
