@@ -13,7 +13,7 @@ public class FlipCardGameJudgement : GameModeJudgement
 	int finalLevel = 6;
 	float gamePassTime;
 	bool comboAward;
-	bool feverTimeOn;
+	bool bonusTimeOn;
 	bool lockNextRound;
 
 	public override IEnumerator Init(GameMainView gameMainView, GameSettingView gameSettingView, AbstractView modeView)
@@ -22,14 +22,18 @@ public class FlipCardGameJudgement : GameModeJudgement
 		gameMainView.LoadCard(30, 2);
         gameMainView.completeOneRound = RoundComplete;
 		gameMainView.cardMatch = CardMatch;
+
+		//設置初始參數
 		currentLevel = 1;
 		currentRound = 0;
 		score = 0;
 		gamePassTime = 0;
 		mismatchTimes = 0;
-		feverTimeOn = false;
+		bonusTimeOn = false;
 		comboAward = false;
 		lockNextRound = false;
+
+		//設置此遊戲模式專用UI
 		flipCardGameView = (FlipCardGameView)modeView;
 		flipCardGameView.onCountDownFinished = StartGame;
 		flipCardGameView.onClickPause = PauseGame;
@@ -37,12 +41,12 @@ public class FlipCardGameJudgement : GameModeJudgement
 		flipCardGameView.SetCurrentLevel(currentLevel, currentRound + 1);
 		flipCardGameView.SetCurrentScore(score);
 		flipCardGameView.SetTimeBar(1f);
+		flipCardGameView.SetPauseButtonState(false);
 
+		//取得遊戲難度設定資料並發牌
 		currentGameSetting = GameSettingManager.GetFlipCardGameSetting(currentLevel);
 		flipCardArraySetting = GameSettingManager.GetFlipCardArraySetting(currentGameSetting.cardCount);
 		gameMainView.SetUsingCard(currentGameSetting.cardCount, 0);
-		flipCardGameView.SetPauseButtonState(false);
-
 		yield return gameMainView.StartCoroutine(gameMainView.DealCard(flipCardArraySetting.cardSize, flipCardArraySetting.realCardPosition));
 	}
 
@@ -111,10 +115,7 @@ public class FlipCardGameJudgement : GameModeJudgement
 
 				if(gamePassTime >= currentGameSetting.levelTime)
 				{
-					if(feverTimeOn && currentLevel < finalLevel)
-						ThisLevelEnd();
-					else
-						GameOver(score, currentLevel, currentRound + 1);
+					ThisLevelEnd();
 					flipCardGameView.SetTimeBar(0f);
 				}
 
@@ -207,13 +208,6 @@ public class FlipCardGameJudgement : GameModeJudgement
 
 		if(currentRound < currentGameSetting.round)
 		{
-			int goldCardCount = 0;
-			if(currentRound + 1 == currentGameSetting.round)
-			{
-				goldCardCount = -1;
-				string content = "FINAL LEVEL FOR " + currentLevel;
-				//flipCardGameView.StartCoroutine(flipCardGameView.FinalRoundEffect(content));
-			}
 			int questionCardCount = 0;
 			int normalCardCount = currentGameSetting.cardCount;
 
@@ -231,51 +225,40 @@ public class FlipCardGameJudgement : GameModeJudgement
 				gameMainView.ToggleCardGlow(false);
 
 			flipCardGameView.SetCurrentLevel(currentLevel, currentRound + 1);
-			gameMainView.SetGoldCard(goldCardCount);
 			gameMainView.StartCoroutine(NextRoundRoutine());
 		} else
 		{
+			gameMainView.SetGoldCard(-1);
 			if(currentLevel == finalLevel)
 			{
 				int questionCardCount = currentGameSetting.questionCardAppearRound[currentGameSetting.questionCardAppearRound.Length-1];
 				int normalCardCount = currentGameSetting.cardCount - questionCardCount;
 				
 				gameMainView.SetUsingCard(normalCardCount, questionCardCount);
-
-				if(comboAward)
-					gameMainView.ToggleCardGlow(true);
-				else
-					gameMainView.ToggleCardGlow(false);
-
-				flipCardGameView.SetCurrentLevel(currentLevel, currentRound + 1);
-				gameMainView.SetGoldCard(-1);
-				gameMainView.StartCoroutine(NextRoundRoutine());
 			} else
 			{
-				if(!feverTimeOn)
+				if(!bonusTimeOn)
 				{
-					feverTimeOn = true;
+					bonusTimeOn = true;
 					flipCardGameView.StartCoroutine(flipCardGameView.FeverTimeEffect());
 					flipCardGameView.ToggleFeverTimeEffect(true);
 				}
 
-				gameMainView.SetUsingCard(currentGameSetting.cardCount, 0);
-
-				if(comboAward)
-					gameMainView.ToggleCardGlow(true);
-				else
-					gameMainView.ToggleCardGlow(false);
-
-				flipCardGameView.SetCurrentLevel(currentLevel, currentRound + 1);
-				gameMainView.SetGoldCard(-1);
-				gameMainView.StartCoroutine(NextRoundRoutine());
+				gameMainView.SetUsingCard(currentGameSetting.cardCount, 0);				
 			}
+			if(comboAward)
+				gameMainView.ToggleCardGlow(true);
+			else
+				gameMainView.ToggleCardGlow(false);
+
+			flipCardGameView.SetCurrentLevel(currentLevel, currentRound + 1);
+			gameMainView.StartCoroutine(NextRoundRoutine());
 		}
 	}
 
 	void ThisLevelEnd()
 	{
-		if(currentLevel == finalLevel)
+		if(currentRound < currentGameSetting.round)
 		{
 			GameOver(score, currentLevel, currentRound + 1);
 		} else
@@ -284,11 +267,9 @@ public class FlipCardGameJudgement : GameModeJudgement
 			SetCurrentState(GameState.Waiting);
 			gameMainView.ToggleMask(true);
 
-			if(feverTimeOn)
-			{
-				feverTimeOn = false;
-				flipCardGameView.ToggleFeverTimeEffect(false);
-			}
+			bonusTimeOn = false;
+			flipCardGameView.ToggleFeverTimeEffect(false);
+
 			gamePassTime = 0;
 			++currentLevel;
 			currentRound = 0;
@@ -336,7 +317,7 @@ public class FlipCardGameJudgement : GameModeJudgement
 		int[] specialCardCount = new int[2];
 		specialCardCount[0] = 0;
 		specialCardCount[1] = 0;
-		if(!feverTimeOn)
+		if(!bonusTimeOn)
 		{
 			if(currentGameSetting.specialCardAppearRound.Length > 0)
 			{
@@ -371,14 +352,14 @@ public class FlipCardGameJudgement : GameModeJudgement
 			}
 		}
 		yield return gameMainView.StartCoroutine(gameMainView.DealCard(flipCardArraySetting.cardSize, flipCardArraySetting.realCardPosition,
-			specialCardCount[0], specialCardCount[1], feverTimeOn));
+			specialCardCount[0], specialCardCount[1], bonusTimeOn));
 		yield return new WaitForSeconds(0.3f);  //等發卡動作結束
 
 		while(currentState == GameState.Pausing)
 			yield return null;
 		gameMainView.FlipAllCard();
 		float showCardTime = 0.35f + currentGameSetting.showCardTime;
-		if(feverTimeOn)
+		if(bonusTimeOn)
 			showCardTime = 0.55f;
         while(showCardTime > 0f)
 		{

@@ -22,6 +22,10 @@ public abstract class GameModeJudgement{
 		yield return null;
 	}
 
+	/// <summary>
+	/// GameScene讀取結束後呼叫開始遊戲
+	/// </summary>
+	/// <returns></returns>
 	protected abstract IEnumerator StartGame();
 
 	protected virtual void GameOver(params int[] values)
