@@ -68,7 +68,9 @@ public class GameMainLoop : SingletonMonoBehavior<GameMainLoop> {
 		GameSettingManager.LoadData();
 		ModelManager.Instance.Init();
         ScreenEffectManager.Instance.Init();
-		
+
+		if(PlayerPrefsManager.UnlockMode > 1)
+			PlayerPrefsManager.UnlockMode = 1;
 		lastUnlockMode = PlayerPrefsManager.UnlockMode;
 
 		yield return StartCoroutine(InventoryManager.Instance.Init());

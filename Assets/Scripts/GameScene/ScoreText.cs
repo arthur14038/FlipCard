@@ -18,7 +18,9 @@ public class ScoreText : MonoBehaviour {
         this.recycle = recycle;
 		thisCanvasGroup = this.GetComponent<CanvasGroup>();
 		thisRectTransform = this.GetComponent<RectTransform>();
-    }
+		text_GoldCard.gameObject.SetActive(false);
+		text_Combo.gameObject.SetActive(false);
+	}
 	
 	public void ShowScoreText(Vector2 pos, bool comboAward, bool goldCardAward)
 	{
@@ -27,30 +29,30 @@ public class ScoreText : MonoBehaviour {
 		thisRectTransform.anchoredPosition = pos;
 		thisCanvasGroup.alpha = 1f;
 
-		if(comboAward)
-		{
-			text_Combo.gameObject.SetActive(true);
-			text_Combo.anchoredPosition = additionScorePosition1;
-            if(goldCardAward)
-			{
-				text_GoldCard.gameObject.SetActive(true);
-				text_GoldCard.anchoredPosition = additionScorePosition2;
-			} else
-			{
-				text_GoldCard.gameObject.SetActive(false);
-			}
-		}else
-		{
-			text_Combo.gameObject.SetActive(false);
-			if(goldCardAward)
-			{
-				text_GoldCard.gameObject.SetActive(true);
-				text_GoldCard.anchoredPosition = additionScorePosition1;
-			} else
-			{
-				text_GoldCard.gameObject.SetActive(false);
-			}
-		}
+		//if(comboAward)
+		//{
+		//	text_Combo.gameObject.SetActive(true);
+		//	text_Combo.anchoredPosition = additionScorePosition1;
+  //          if(goldCardAward)
+		//	{
+		//		text_GoldCard.gameObject.SetActive(true);
+		//		text_GoldCard.anchoredPosition = additionScorePosition2;
+		//	} else
+		//	{
+		//		text_GoldCard.gameObject.SetActive(false);
+		//	}
+		//}else
+		//{
+		//	text_Combo.gameObject.SetActive(false);
+		//	if(goldCardAward)
+		//	{
+		//		text_GoldCard.gameObject.SetActive(true);
+		//		text_GoldCard.anchoredPosition = additionScorePosition1;
+		//	} else
+		//	{
+		//		text_GoldCard.gameObject.SetActive(false);
+		//	}
+		//}
 
 		StartCoroutine(ScoreTextEffect(pos.y));
 	}

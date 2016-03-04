@@ -37,16 +37,7 @@ public class CardBase : MonoBehaviour {
         }
 	}
 	protected bool isBombCard = false;
-
-	public bool IsFrozenCard
-	{
-		get
-		{
-			return isFrozenCard;
-		}
-	}
-	protected bool isFrozenCard = false;
-
+	
 	public bool IsFlashbangCard
 	{
 		get
@@ -92,12 +83,7 @@ public class CardBase : MonoBehaviour {
 			isBombCard = true;
 		else
 			isBombCard = false;
-
-		if(cardId.EndsWith("Frozen"))
-			isFrozenCard = true;
-		else
-			isFrozenCard = false;
-
+		
 		if(cardId.EndsWith("Flashbang"))
 			isFlashbangCard = true;
 		else
@@ -245,7 +231,7 @@ public class CardBase : MonoBehaviour {
 	public virtual void FlashbangEffect()
 	{
 		SetCardImage(cardFaceImageSprite);
-		flashbangEffectTweener = image_CardImage.DOFade(0f, 1f);
+		flashbangEffectTweener = image_CardImage.DOFade(0f, 3.5f).SetEase(Ease.InQuad);
 	}
 	
 	void FlipByUser()

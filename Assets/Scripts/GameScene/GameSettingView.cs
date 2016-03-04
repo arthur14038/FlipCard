@@ -14,19 +14,14 @@ public class GameSettingView : AbstractView {
 	public Toggle toggle_Music;
 	public Toggle toggle_Sound;
 	public RectTransform image_PauseWindow;
-
-	public Text[] text_Condition;
-	public Toggle[] toggle_Condition;
-	public RectTransform[] image_Star;
+	
     public RectTransform group_SinglePlayer;
 	public RectTransform image_CharacterRight;
 	public RectTransform image_CharacterLeft;
 	public RectTransform button_SinglePlayerGameOverExit;
 	public CanvasGroup image_SinglePlayerScoreBoard;
-	public Text text_SinglePlayerTitle;
-	public Text text_ScoreTitle;
 	public Text text_Score;
-	public Text text_Mode;
+	public Text text_Level;
     public GameObject newHighScoreEffect;
 	public GameObject image_NewHighScoreHeader;
 
@@ -136,18 +131,14 @@ public class GameSettingView : AbstractView {
 		yield return button_CompetitionGameOverExit.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
 	}
 
-	public void ShowSinglePlayerGameOver(bool[] achieveCondition, string headerTitle, string mode, string scoreTitle, string score, string[] conditions, bool recordBreak)
+	public void ShowSinglePlayerGameOver(string score, string level, bool recordBreak)
 	{
 		base.ShowUI(false);
 		AudioManager.Instance.StopMusic();
 		AudioManager.Instance.PlayOneShot("GameResult");
-
-		text_SinglePlayerTitle.text = headerTitle;
-		text_Mode.text = mode;
-		text_ScoreTitle.text = scoreTitle;
+		
 		text_Score.text = score;
-		for(int i = 0 ; i < text_Condition.Length ; ++i)
-			text_Condition[i].text = conditions[i];
+		text_Level.text = level;
 
 		if(recordBreak)
 		{
@@ -159,11 +150,10 @@ public class GameSettingView : AbstractView {
 			newHighScoreEffect.SetActive(false);
 			image_NewHighScoreHeader.gameObject.SetActive(false);
 		}
-
-		StartCoroutine(SinglePlayerGameOverEffect(achieveCondition));
+		StartCoroutine(SinglePlayerGameOverEffect());
 	}
 
-	IEnumerator SinglePlayerGameOverEffect(bool[] achieveCondition)
+	IEnumerator SinglePlayerGameOverEffect()
 	{
 		yield return StartCoroutine(ToggleMask(true, 0.7f));
 
@@ -172,37 +162,18 @@ public class GameSettingView : AbstractView {
 		image_SinglePlayerScoreBoard.gameObject.SetActive(false);
 		button_SinglePlayerGameOverExit.gameObject.SetActive(false);
 		text_Score.gameObject.SetActive(false);
-		for(int i = 0 ; i < toggle_Condition.Length ; ++i)
-		{
-			toggle_Condition[i].gameObject.SetActive(false);
-			toggle_Condition[i].isOn = false;
-        }
-        for(int i = 0 ; i < image_Star.Length ; ++i)
-			image_Star[i].gameObject.SetActive(false);
-		group_SinglePlayer.gameObject.SetActive(true);
+		text_Level.gameObject.SetActive(false);
+        group_SinglePlayer.gameObject.SetActive(true);
 		group_SinglePlayer.anchoredPosition = hideUp;
 		yield return group_SinglePlayer.DOAnchorPos(Vector2.zero, 0.5f).SetEase(Ease.OutBack).WaitForCompletion();
 		
-		image_CharacterRight.anchoredPosition = new Vector2(750f, 17f);
-		image_CharacterLeft.anchoredPosition = new Vector2(-750f, 14.5f);
+		image_CharacterRight.anchoredPosition = new Vector2(750f, -93f);
+		image_CharacterLeft.anchoredPosition = new Vector2(-750f, -95f);
 		image_CharacterRight.gameObject.SetActive(true);
 		image_CharacterLeft.gameObject.SetActive(true);
-		image_CharacterRight.DOAnchorPos(new Vector2(247f, 17f), 0.2f).SetEase(Ease.OutCubic);
-		image_CharacterLeft.DOAnchorPos(new Vector2(-257f, 14.5f), 0.2f).SetEase(Ease.OutCubic);
-
-		int[] activeCondition = new int[4];
-		int starCount = 0;
-
-		for(int i = 0 ; i < toggle_Condition.Length ; ++i)
-		{
-			toggle_Condition[i].gameObject.SetActive(true);
-			if(achieveCondition[i])
-			{
-				++starCount;
-				activeCondition[i] = i;
-			}
-		}
-
+		image_CharacterRight.DOAnchorPos(new Vector2(247f, -93f), 0.2f).SetEase(Ease.OutCubic);
+		image_CharacterLeft.DOAnchorPos(new Vector2(-257f, -95f), 0.2f).SetEase(Ease.OutCubic);
+		
 		image_SinglePlayerScoreBoard.alpha = 0f;
 		image_SinglePlayerScoreBoard.gameObject.SetActive(true);
 		yield return image_SinglePlayerScoreBoard.DOFade(1f, 0.4f).WaitForCompletion();
@@ -211,16 +182,11 @@ public class GameSettingView : AbstractView {
 		yield return text_Score.rectTransform.DOScale(1.5f, 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
 		yield return text_Score.rectTransform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
 
-		for(int i = 0 ; i < starCount ; ++i)
-		{
-			toggle_Condition[activeCondition[i]].isOn = true;
-			image_Star[i].gameObject.SetActive(true);
-			image_Star[i].DOScale(1f, 0.3f).SetEase(Ease.OutBack);
-			yield return toggle_Condition[activeCondition[i]].transform.DOScale(1.2f, 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
-			yield return toggle_Condition[activeCondition[i]].transform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
-		}
+		text_Level.gameObject.SetActive(true);
+		yield return text_Level.rectTransform.DOScale(1.5f, 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
+		yield return text_Level.rectTransform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
 
-		button_SinglePlayerGameOverExit.localScale = new Vector3(1f, 0f, 1f);
+		button_SinglePlayerGameOverExit.localScale = Vector3.one - Vector3.up;
 		button_SinglePlayerGameOverExit.gameObject.SetActive(true);
 
 		yield return button_SinglePlayerGameOverExit.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();

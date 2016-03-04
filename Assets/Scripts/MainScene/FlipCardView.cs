@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using DG.Tweening;
+using UnityEngine.UI;
 
 public class FlipCardView : AbstractView
 {
@@ -8,11 +9,48 @@ public class FlipCardView : AbstractView
 	public VoidNoneParameter onClickPlay;
 	public RectTransform group_FlipCard;
 	public RectTransform image_ShakeCircle;
+	public Text text_HighScore;
+	public Text text_HighLevel;
+	public Text text_LastScore;
+	public Text text_LastLevel;
 
 	public override IEnumerator Init()
 	{
 		escapeEvent = OnClickBack;
 		yield return null;
+		GameRecord record = ModelManager.Instance.GetFlipCardGameRecord();
+		text_HighScore.text = record.highScore.ToString();
+
+		if(record.highLevel > 0)
+		{
+			int level = record.highLevel / 1000;
+			int round = record.highLevel % 1000;
+			text_HighLevel.text = string.Format("{0}-{1}", level, round);
+		} else
+		{
+			text_HighLevel.text = "";
+        }
+		string lastLevel = "";
+		for(int i = 0 ; i < record.lastLevel.Length ; ++i)
+		{
+			if(record.lastLevel[i] > 0)
+			{
+				int level = record.lastLevel[i] / 1000;
+				int round = record.lastLevel[i] % 1000;
+				lastLevel += string.Format("{0}-{1}\n", level, round) ;
+			}
+		}
+		text_LastLevel.text = lastLevel;
+
+		string lastScore = "";
+		for(int i = 0 ; i < record.lastScore.Length ; ++i)
+		{
+			if(record.lastScore[i] > 0)
+			{
+				lastScore += record.lastScore[i] + "\n";
+			}
+		}
+		text_LastScore.text = lastScore;
 	}
 
 	public void OnClickBack()

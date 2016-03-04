@@ -10,33 +10,36 @@ public class FlipCardGameJudgement : GameModeJudgement
 	int currentRound;
 	int score;
 	int mismatchTimes;
+	int finalLevel = 6;
 	float gamePassTime;
-	float frozenTime;
-	float additionTime;
 	bool comboAward;
+	bool feverTimeOn;
+	bool lockNextRound;
 
 	public override IEnumerator Init(GameMainView gameMainView, GameSettingView gameSettingView, AbstractView modeView)
 	{
 		yield return gameMainView.StartCoroutine(base.Init(gameMainView, gameSettingView, modeView));
-		gameMainView.LoadCard(30, 1);
+		gameMainView.LoadCard(30, 2);
         gameMainView.completeOneRound = RoundComplete;
 		gameMainView.cardMatch = CardMatch;
 		currentLevel = 1;
-		currentRound = 1;
+		currentRound = 0;
 		score = 0;
 		gamePassTime = 0;
 		mismatchTimes = 0;
+		feverTimeOn = false;
 		comboAward = false;
+		lockNextRound = false;
 		flipCardGameView = (FlipCardGameView)modeView;
 		flipCardGameView.onCountDownFinished = StartGame;
 		flipCardGameView.onClickPause = PauseGame;
 		flipCardGameView.onClickNextLevel = NextLevel;
-		flipCardGameView.SetCurrentLevel(currentLevel, currentRound);
+		flipCardGameView.SetCurrentLevel(currentLevel, currentRound + 1);
 		flipCardGameView.SetCurrentScore(score);
 		flipCardGameView.SetTimeBar(1f);
 
 		currentGameSetting = GameSettingManager.GetFlipCardGameSetting(currentLevel);
-		flipCardArraySetting = GameSettingManager.GetFlipCardArraySetting(currentLevel);
+		flipCardArraySetting = GameSettingManager.GetFlipCardArraySetting(currentGameSetting.cardCount);
 		gameMainView.SetUsingCard(currentGameSetting.cardCount, 0);
 		flipCardGameView.SetPauseButtonState(false);
 
@@ -58,7 +61,42 @@ public class FlipCardGameJudgement : GameModeJudgement
 
 	protected override void GameOver(params int[] values)
 	{
+		if(PlayerPrefsManager.UnlockMode == 0)
+			PlayerPrefsManager.UnlockMode += 1;
+
 		base.GameOver(values);
+		bool recordBreak = false;
+		int thisTimeLevel = values[1] * 1000 + values[2];
+		int thisTimeScore = values[0];
+
+		GameRecord lastRecord = ModelManager.Instance.GetFlipCardGameRecord();
+
+		if(thisTimeScore > lastRecord.highScore)
+		{
+			recordBreak = true;
+			lastRecord.highScore = thisTimeScore;
+        }
+
+		if(thisTimeLevel > lastRecord.highLevel)
+		{
+			recordBreak = true;
+			lastRecord.highLevel = thisTimeLevel;
+        }
+
+		lastRecord.lastLevel[2] = lastRecord.lastLevel[1];
+		lastRecord.lastLevel[1] = lastRecord.lastLevel[0];
+		lastRecord.lastLevel[0] = thisTimeLevel;
+
+		lastRecord.lastScore[2] = lastRecord.lastScore[1];
+		lastRecord.lastScore[1] = lastRecord.lastScore[0];
+		lastRecord.lastScore[0] = thisTimeScore;
+
+		lastRecord.playTimes += 1;
+		
+		if(saveGameRecord != null)
+			saveGameRecord(lastRecord);
+
+		gameSettingView.ShowSinglePlayerGameOver(values[0].ToString(), string.Format("{0}-{1}", values[1], values[2]), recordBreak);
 	}
 
 	public override void JudgementUpdate()
@@ -68,24 +106,22 @@ public class FlipCardGameJudgement : GameModeJudgement
 			if(currentState == GameState.Playing)
 			{
 				flipCardGameView.SetTimeBar(1f - gamePassTime / currentGameSetting.levelTime);
-				if(frozenTime > 0)
-				{
-					frozenTime -= Time.deltaTime;
-				} else
-				{
-					gamePassTime += Time.deltaTime;
 
-					if(gamePassTime >= currentGameSetting.levelTime)
-					{
-						GameOver(score, currentLevel, currentRound);
-						flipCardGameView.SetTimeBar(0f);
-					}
+				gamePassTime += Time.deltaTime;
 
-					if(currentGameSetting.levelTime - gamePassTime < 5f)
-						flipCardGameView.ToggleTimeIsRunning(true);
+				if(gamePassTime >= currentGameSetting.levelTime)
+				{
+					if(feverTimeOn && currentLevel < finalLevel)
+						ThisLevelEnd();
 					else
-						flipCardGameView.ToggleTimeIsRunning(false);
+						GameOver(score, currentLevel, currentRound + 1);
+					flipCardGameView.SetTimeBar(0f);
 				}
+
+				if(currentGameSetting.levelTime - gamePassTime < 5f)
+					flipCardGameView.ToggleTimeIsRunning(true);
+				else
+					flipCardGameView.ToggleTimeIsRunning(false);
 			} else
 			{
 				flipCardGameView.ToggleTimeIsRunning(false);
@@ -131,13 +167,7 @@ public class FlipCardGameJudgement : GameModeJudgement
 
 				if(cards[0].IsBombCard && gameMainView.GetTableCardCount() > 0)
 					gameMainView.StartCoroutine(BombCardEffect());
-
-				if(cards[0].IsFrozenCard)
-				{
-					gameMainView.ShowFrozen();
-					frozenTime = currentGameSetting.showCardTime;
-				}
-
+				
 				if(cards[0].IsFlashbangCard && gameMainView.GetTableCardCount() > 0)
 					gameMainView.ShowFlashbang();
 			} else
@@ -154,10 +184,14 @@ public class FlipCardGameJudgement : GameModeJudgement
 
 	void RoundComplete()
 	{
+		if(currentState == GameState.GameOver)
+			return;
+
+		if(lockNextRound)
+			return;
+
 		SetCurrentState(GameState.Waiting);
 		gameMainView.ToggleMask(true);
-
-		++currentRound;
 
 		if(mismatchTimes == 0)
 		{
@@ -168,33 +202,44 @@ public class FlipCardGameJudgement : GameModeJudgement
 		{
 			mismatchTimes = 0;
 		}
-		
-		if(currentRound > currentGameSetting.round)
+
+		++currentRound;
+
+		if(currentRound < currentGameSetting.round)
 		{
-			if(currentLevel < 7)
+			int goldCardCount = 0;
+			if(currentRound + 1 == currentGameSetting.round)
 			{
-				additionTime = currentGameSetting.levelTime - gamePassTime;
-				gamePassTime = 0;				
-				++currentLevel;
-				currentRound = 1;
+				goldCardCount = -1;
+				string content = "FINAL LEVEL FOR " + currentLevel;
+				//flipCardGameView.StartCoroutine(flipCardGameView.FinalRoundEffect(content));
+			}
+			int questionCardCount = 0;
+			int normalCardCount = currentGameSetting.cardCount;
+
+			if(currentGameSetting.questionCardAppearRound.Length > currentRound)
+			{
+				questionCardCount = currentGameSetting.questionCardAppearRound[currentRound];
+				normalCardCount -= questionCardCount;
+			}
+
+			gameMainView.SetUsingCard(normalCardCount, questionCardCount);
+
+			if(comboAward)
+				gameMainView.ToggleCardGlow(true);
+			else
+				gameMainView.ToggleCardGlow(false);
+
+			flipCardGameView.SetCurrentLevel(currentLevel, currentRound + 1);
+			gameMainView.SetGoldCard(goldCardCount);
+			gameMainView.StartCoroutine(NextRoundRoutine());
+		} else
+		{
+			if(currentLevel == finalLevel)
+			{
+				int questionCardCount = currentGameSetting.questionCardAppearRound[currentGameSetting.questionCardAppearRound.Length-1];
+				int normalCardCount = currentGameSetting.cardCount - questionCardCount;
 				
-				flipCardGameView.ToggleFeverTimeEffect(false);
-
-				flipCardArraySetting = GameSettingManager.GetFlipCardArraySetting(currentLevel);
-				currentGameSetting = GameSettingManager.GetFlipCardGameSetting(currentLevel);
-
-				int questionCardCount = 0;
-				int normalCardCount = currentGameSetting.cardCount;
-
-				if(currentGameSetting.questionCardAppearRound.Length > 0)
-				{
-					if(currentRound == currentGameSetting.questionCardAppearRound[0])
-					{
-						questionCardCount = currentGameSetting.questionCardCount;
-						normalCardCount -= questionCardCount;
-					}
-				}
-
 				gameMainView.SetUsingCard(normalCardCount, questionCardCount);
 
 				if(comboAward)
@@ -202,105 +247,140 @@ public class FlipCardGameJudgement : GameModeJudgement
 				else
 					gameMainView.ToggleCardGlow(false);
 
-				flipCardGameView.StartCoroutine(flipCardGameView.ShowNextLevelUI(string.Format("NEXT LEVEL: {0}-{1}", currentLevel, currentRound)));
+				flipCardGameView.SetCurrentLevel(currentLevel, currentRound + 1);
+				gameMainView.SetGoldCard(-1);
+				gameMainView.StartCoroutine(NextRoundRoutine());
+			} else
+			{
+				if(!feverTimeOn)
+				{
+					feverTimeOn = true;
+					flipCardGameView.StartCoroutine(flipCardGameView.FeverTimeEffect());
+					flipCardGameView.ToggleFeverTimeEffect(true);
+				}
+
+				gameMainView.SetUsingCard(currentGameSetting.cardCount, 0);
+
+				if(comboAward)
+					gameMainView.ToggleCardGlow(true);
+				else
+					gameMainView.ToggleCardGlow(false);
+
+				flipCardGameView.SetCurrentLevel(currentLevel, currentRound + 1);
+				gameMainView.SetGoldCard(-1);
+				gameMainView.StartCoroutine(NextRoundRoutine());
 			}
+		}
+	}
+
+	void ThisLevelEnd()
+	{
+		if(currentLevel == finalLevel)
+		{
+			GameOver(score, currentLevel, currentRound + 1);
 		} else
 		{
-			int goldCardCount = 0;
-			if(currentRound == currentGameSetting.round)
+			lockNextRound = true;
+			SetCurrentState(GameState.Waiting);
+			gameMainView.ToggleMask(true);
+
+			if(feverTimeOn)
 			{
-				goldCardCount = -1;
-				flipCardGameView.StartCoroutine(flipCardGameView.FinalRoundEffect());
-				flipCardGameView.ToggleFeverTimeEffect(true);
+				feverTimeOn = false;
+				flipCardGameView.ToggleFeverTimeEffect(false);
 			}
+			gamePassTime = 0;
+			++currentLevel;
+			currentRound = 0;
+
+			currentGameSetting = GameSettingManager.GetFlipCardGameSetting(currentLevel);
+			flipCardArraySetting = GameSettingManager.GetFlipCardArraySetting(currentGameSetting.cardCount);
 
 			int questionCardCount = 0;
 			int normalCardCount = currentGameSetting.cardCount;
 
-			if(currentGameSetting.questionCardAppearRound.Length > 0)
+			if(currentGameSetting.questionCardAppearRound.Length > currentRound)
 			{
-				if(currentGameSetting.questionCardAppearRound[0] == 0 || currentRound == currentGameSetting.questionCardAppearRound[0])
-				{
-					questionCardCount = currentGameSetting.questionCardCount;
-					normalCardCount -= questionCardCount;
-				}
+				questionCardCount = currentGameSetting.questionCardAppearRound[currentRound];
+				normalCardCount -= questionCardCount;
 			}
 
 			gameMainView.SetUsingCard(normalCardCount, questionCardCount);
 
-			flipCardGameView.SetCurrentLevel(currentLevel, currentRound);
-			gameMainView.SetGoldCard(goldCardCount);
-			gameMainView.StartCoroutine(NextRoundRoutine());
+			if(comboAward)
+				gameMainView.ToggleCardGlow(true);
+			else
+				gameMainView.ToggleCardGlow(false);
+
+			gameMainView.StartCoroutine(gameMainView.ClearTable());
+
+			flipCardGameView.StartCoroutine(flipCardGameView.ShowNextLevelUI(string.Format("NEXT LEVEL: {0}-{1}", currentLevel, currentRound + 1)));
 		}
 	}
 
 	void NextLevel()
 	{
-		flipCardGameView.AddTimeEffect(1f);
+		lockNextRound = false;
+        flipCardGameView.AddTimeEffect(1f);
 		gamePassTime = 0;
-
-		int goldCardCount = 0;
-		if(currentRound == currentGameSetting.round)
-		{
-			goldCardCount = -1;
-			flipCardGameView.StartCoroutine(flipCardGameView.FinalRoundEffect());
-			flipCardGameView.ToggleFeverTimeEffect(true);
-		}
-		flipCardGameView.SetCurrentLevel(currentLevel, currentRound);
-		gameMainView.SetGoldCard(goldCardCount);
+		
+		flipCardGameView.SetCurrentLevel(currentLevel, currentRound + 1);
+		gameMainView.SetGoldCard(0);
 		gameMainView.StartCoroutine(NextRoundRoutine());
 	}
 
 	IEnumerator NextRoundRoutine()
 	{
 		yield return new WaitForSeconds(0.3f);  //等桌面清空
-		int[] specialCardCount = new int[3];
+
+		int[] specialCardCount = new int[2];
 		specialCardCount[0] = 0;
 		specialCardCount[1] = 0;
-		specialCardCount[2] = 0;
-		if(currentGameSetting.specialCardAppearRound.Length > 0)
+		if(!feverTimeOn)
 		{
-			int specialCardType = 0;
-			if(currentGameSetting.specialCardAppearRound[0] == 0)
+			if(currentGameSetting.specialCardAppearRound.Length > 0)
 			{
-				specialCardType = currentGameSetting.specialCardType;
-			} else
-			{
-				for(int i = 0 ; i < currentGameSetting.specialCardAppearRound.Length ; ++i)
+				int specialCardType = 0;
+				if(currentRound < currentGameSetting.round)
 				{
-					if(currentGameSetting.specialCardAppearRound[i] == currentRound)
+					if(currentGameSetting.specialCardAppearRound.Length > currentRound)
 					{
-						specialCardType = currentGameSetting.specialCardType;
-						break;
+						specialCardType = currentGameSetting.specialCardAppearRound[currentRound];
 					}
+				} else
+				{
+					specialCardType = 3;
 				}
-			}
-			switch(specialCardType)
-			{
-				case 1:
-					specialCardCount[0] = 2;
-					break;
-				case 2:
-					specialCardCount[1] = 2;
-					break;
-				case 3:
-					specialCardCount[2] = 2;
-					break;
-				case 4:
-					int randomIndex = Random.Range(0, 3);
-					specialCardCount[randomIndex] = 2;
-					break;
+				switch(specialCardType)
+				{
+					case 1:
+						specialCardCount[0] = 2;
+						break;
+					case 2:
+						specialCardCount[1] = 2;
+						break;
+					case 3:
+						int randomIndex = Random.Range(0, 2);
+						specialCardCount[randomIndex] = 2;
+						break;
+					case 4:
+						specialCardCount[0] = 2;
+						specialCardCount[1] = 2;
+						break;
+				}
 			}
 		}
 		yield return gameMainView.StartCoroutine(gameMainView.DealCard(flipCardArraySetting.cardSize, flipCardArraySetting.realCardPosition,
-			specialCardCount[0], specialCardCount[1], specialCardCount[2]));
+			specialCardCount[0], specialCardCount[1], feverTimeOn));
 		yield return new WaitForSeconds(0.3f);  //等發卡動作結束
 
 		while(currentState == GameState.Pausing)
 			yield return null;
 		gameMainView.FlipAllCard();
 		float showCardTime = 0.35f + currentGameSetting.showCardTime;
-		while(showCardTime > 0f)
+		if(feverTimeOn)
+			showCardTime = 0.55f;
+        while(showCardTime > 0f)
 		{
 			if(currentState == GameState.Pausing)
 				yield return null;
@@ -331,7 +411,7 @@ public class FlipCardGameJudgement : GameModeJudgement
 		while(currentState == GameState.Pausing)
 			yield return null;
 		gameMainView.FlipAllCard();
-		float showCardTime = 0.35f + currentGameSetting.showCardTime;
+		float showCardTime = 0.35f + currentGameSetting.showCardTime * (1f - (float)gameMainView.GetTableCardCount()/(float)currentGameSetting.cardCount);
 		while(showCardTime > 0f)
 		{
 			if(currentState == GameState.Pausing)

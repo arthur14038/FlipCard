@@ -33,7 +33,7 @@ public class GameSettingManager{
 				competitionModeSettings.Add(s.level, s);
 		}
 
-		jsonString = ((TextAsset)Resources.Load("FlipCardSetting")).text;
+		jsonString = ((TextAsset)Resources.Load("FlipCardGameSetting")).text;
 		List<FlipCardGameSetting> tmp3 = JsonConvert.DeserializeObject<List<FlipCardGameSetting>>(jsonString);
 		foreach(FlipCardGameSetting s in tmp3)
 		{
@@ -52,8 +52,8 @@ public class GameSettingManager{
 				Vector2 realPos = new Vector2(float.Parse(posInfo[0]), float.Parse(posInfo[1]));
 				s.realCardPosition[i] = realPos;
             }
-			if(!flipCardArraySettings.ContainsKey(s.level))
-				flipCardArraySettings.Add(s.level, s);
+			if(!flipCardArraySettings.ContainsKey(s.cardCount))
+				flipCardArraySettings.Add(s.cardCount, s);
 		}
 	}
 
@@ -73,10 +73,10 @@ public class GameSettingManager{
 			return null;
 	}
 
-	public static FlipCardArraySetting GetFlipCardArraySetting(int level)
+	public static FlipCardArraySetting GetFlipCardArraySetting(int cardCount)
 	{
-		if(flipCardArraySettings.ContainsKey(level))
-			return flipCardArraySettings[level];
+		if(flipCardArraySettings.ContainsKey(cardCount))
+			return flipCardArraySettings[cardCount];
 		else
 			return null;
 	}
@@ -116,13 +116,11 @@ public class FlipCardGameSetting
     public float levelTime;
 	public int[] questionCardAppearRound;
 	public int[] specialCardAppearRound;
-	public int specialCardType;
-	public int questionCardCount;
 }
 
 public class FlipCardArraySetting
 {
-	public int level;
+	public int cardCount;
 	public float cardSize;
 	public string[] cardPosition;
 	public Vector2[] realCardPosition;

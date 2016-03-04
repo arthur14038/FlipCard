@@ -42,6 +42,15 @@ public class ModelManager : SingletonMonoBehavior<ModelManager> {
 
 	public GameRecord GetFlipCardGameRecord()
 	{
+		if(flipCardGameRecord == null)
+		{
+			flipCardGameRecord = new GameRecord();
+			flipCardGameRecord.lastLevel = new int[] { 0, 0, 0 };
+			flipCardGameRecord.lastScore = new int[] { 0, 0, 0 };
+			flipCardGameRecord.playTimes = 0;
+			flipCardGameRecord.highLevel = 0;
+			flipCardGameRecord.highScore = 0;
+        }
 		return flipCardGameRecord;
 	}
 	

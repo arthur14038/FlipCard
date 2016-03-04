@@ -31,25 +31,4 @@ public class PlayerPrefsManager{
 			PlayerPrefs.SetInt("UnlockMode", value);
 		}
 	}
-
-	public static int ClassicModeProgress{
-		get{
-			return PlayerPrefs.GetInt("ClassicModeProgress", 0);
-		}
-		set{
-			PlayerPrefs.SetInt("ClassicModeProgress", value);
-		}
-	}
-	
-	public static int TimeModeProgress
-	{
-		get
-		{
-			return PlayerPrefs.GetInt("TimeModeProgress", -1);
-		}
-		set
-		{
-			PlayerPrefs.SetInt("TimeModeProgress", value);
-		}
-	}
 }

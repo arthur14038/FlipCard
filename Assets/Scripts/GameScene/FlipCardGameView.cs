@@ -12,10 +12,12 @@ public class FlipCardGameView : AbstractView
 	public Text text_CurrentLevel;
 	public Text text_CurrentScore;
 	public Text text_NextLevelTitle;
+	public Text text_FinalRound;
 	public RectTransform image_Counting3;
 	public RectTransform image_Counting2;
 	public RectTransform image_Counting1;
 	public RectTransform image_CountingGo;
+	public RectTransform group_FeverTime;
 	public RectTransform group_FinalRound;
 	public RectTransform group_Perfect;
 	public RectTransform image_WindowBG;
@@ -32,6 +34,7 @@ public class FlipCardGameView : AbstractView
 		image_Counting2.gameObject.SetActive(false);
 		image_Counting1.gameObject.SetActive(false);
 		image_CountingGo.gameObject.SetActive(false);
+		group_FeverTime.gameObject.SetActive(false);
 		group_FinalRound.gameObject.SetActive(false);
 		group_Perfect.gameObject.SetActive(false);
 		image_WindowBG.gameObject.SetActive(false);
@@ -88,13 +91,23 @@ public class FlipCardGameView : AbstractView
 		button_Pause.interactable = value;
 	}
 
-	public IEnumerator FinalRoundEffect()
+	public IEnumerator FinalRoundEffect(string content)
 	{
-		group_FinalRound.gameObject.SetActive(true);
+		text_FinalRound.text = content;
+        group_FinalRound.gameObject.SetActive(true);
 		group_FinalRound.anchoredPosition = feverTimePos + hideRight;
 		yield return group_FinalRound.DOAnchorPos(feverTimePos, 0.5f).SetEase(Ease.OutBack).WaitForCompletion();
 		yield return group_FinalRound.DOAnchorPos(feverTimePos + hideLeft, 0.5f).SetDelay(0.3f).SetEase(Ease.InBack).WaitForCompletion();
 		group_FinalRound.gameObject.SetActive(false);
+	}
+
+	public IEnumerator FeverTimeEffect()
+	{
+		group_FeverTime.gameObject.SetActive(true);
+		group_FeverTime.anchoredPosition = feverTimePos + hideRight;
+		yield return group_FeverTime.DOAnchorPos(feverTimePos, 0.5f).SetEase(Ease.OutBack).WaitForCompletion();
+		yield return group_FeverTime.DOAnchorPos(feverTimePos + hideLeft, 0.5f).SetDelay(0.3f).SetEase(Ease.InBack).WaitForCompletion();
+		group_FeverTime.gameObject.SetActive(false);
 	}
 
 	public IEnumerator PerfectEffect()
