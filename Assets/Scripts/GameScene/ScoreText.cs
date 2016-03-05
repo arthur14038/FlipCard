@@ -4,12 +4,9 @@ using System.Collections;
 using DG.Tweening;
 
 public class ScoreText : MonoBehaviour {
-	public RectTransform text_Combo;
-	public RectTransform text_GoldCard;
-	Vector2 additionScorePosition1 = new Vector2(-46f, -35f);
-	Vector2 additionScorePosition2 = new Vector2(-46f, -105f);
+	public Sprite[] scoreSprits;
 	CanvasGroup thisCanvasGroup;
-	RectTransform thisRectTransform;
+	Image thisImage;
     VoidScoreText recycle;
 
     public void Init(VoidScoreText recycle)
@@ -17,49 +14,38 @@ public class ScoreText : MonoBehaviour {
         this.gameObject.SetActive(false);
         this.recycle = recycle;
 		thisCanvasGroup = this.GetComponent<CanvasGroup>();
-		thisRectTransform = this.GetComponent<RectTransform>();
-		text_GoldCard.gameObject.SetActive(false);
-		text_Combo.gameObject.SetActive(false);
+		thisImage = this.GetComponent<Image>();
 	}
 	
-	public void ShowScoreText(Vector2 pos, bool comboAward, bool goldCardAward)
+	public void ShowScoreText(Vector2 pos, int score)
 	{
 		if(!this.gameObject.activeSelf)
 			this.gameObject.SetActive(true);
-		thisRectTransform.anchoredPosition = pos;
+		thisImage.rectTransform.anchoredPosition = pos;
 		thisCanvasGroup.alpha = 1f;
 
-		//if(comboAward)
-		//{
-		//	text_Combo.gameObject.SetActive(true);
-		//	text_Combo.anchoredPosition = additionScorePosition1;
-  //          if(goldCardAward)
-		//	{
-		//		text_GoldCard.gameObject.SetActive(true);
-		//		text_GoldCard.anchoredPosition = additionScorePosition2;
-		//	} else
-		//	{
-		//		text_GoldCard.gameObject.SetActive(false);
-		//	}
-		//}else
-		//{
-		//	text_Combo.gameObject.SetActive(false);
-		//	if(goldCardAward)
-		//	{
-		//		text_GoldCard.gameObject.SetActive(true);
-		//		text_GoldCard.anchoredPosition = additionScorePosition1;
-		//	} else
-		//	{
-		//		text_GoldCard.gameObject.SetActive(false);
-		//	}
-		//}
+		switch(score)
+		{
+			case 1:
+				thisImage.sprite = scoreSprits[0];
+                break;
+			case 3:
+				thisImage.sprite = scoreSprits[1];
+				break;
+			case 5:
+				thisImage.sprite = scoreSprits[2];
+				break;
+			case 7:
+				thisImage.sprite = scoreSprits[3];
+				break;
+		}
 
 		StartCoroutine(ScoreTextEffect(pos.y));
 	}
 
 	IEnumerator ScoreTextEffect(float y)
 	{
-		thisRectTransform.DOAnchorPosY(y + 50f, 0.8f).SetEase(Ease.OutQuad);
+		thisImage.rectTransform.DOAnchorPosY(y + 50f, 0.8f).SetEase(Ease.OutQuad);
 		yield return thisCanvasGroup.DOFade(0f, 0.2f).SetDelay(0.6f).WaitForCompletion();
 		this.gameObject.SetActive(false);
 		if(recycle != null)

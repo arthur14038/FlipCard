@@ -8,21 +8,22 @@ public class FlipCardGameView : AbstractView
 	public IEnumeratorNoneParameter onCountDownFinished;
 	public VoidNoneParameter onClickPause;
 	public VoidNoneParameter onClickNextLevel;
+	public VoidNoneParameter onClickBonusTime;
 	public Image group_Counting;
 	public Text text_CurrentLevel;
 	public Text text_CurrentScore;
 	public Text text_NextLevelTitle;
-	public Text text_FinalRound;
+	public Text text_AddScore;
 	public RectTransform image_Counting3;
 	public RectTransform image_Counting2;
 	public RectTransform image_Counting1;
 	public RectTransform image_CountingGo;
 	public RectTransform group_FeverTime;
-	public RectTransform group_FinalRound;
 	public RectTransform group_Perfect;
 	public RectTransform image_WindowBG;
 	public Button button_Pause;
-	public Slider timeBar;
+	public Button button_BonusTime;
+    public Slider timeBar;
 	public GameObject timeIsRunning;
 	public GameObject feverTimeEffect;
 	private Vector2 feverTimePos = new Vector2(0f, -832f);
@@ -35,9 +36,10 @@ public class FlipCardGameView : AbstractView
 		image_Counting1.gameObject.SetActive(false);
 		image_CountingGo.gameObject.SetActive(false);
 		group_FeverTime.gameObject.SetActive(false);
-		group_FinalRound.gameObject.SetActive(false);
+		button_BonusTime.gameObject.SetActive(false);
 		group_Perfect.gameObject.SetActive(false);
 		image_WindowBG.gameObject.SetActive(false);
+		text_AddScore.gameObject.SetActive(false);
 		yield return null;
 	}
 
@@ -52,6 +54,13 @@ public class FlipCardGameView : AbstractView
 	{
 		AudioManager.Instance.PlayOneShot("Button_Click");
 		StartCoroutine(GoNextLevel());
+	}
+
+	public void OnClickBonusTime()
+	{
+		AudioManager.Instance.PlayOneShot("Button_Click");
+		if(onClickBonusTime != null)
+			onClickBonusTime();
 	}
 
 	public void SetTimeBar(float value)
@@ -90,17 +99,7 @@ public class FlipCardGameView : AbstractView
 	{
 		button_Pause.interactable = value;
 	}
-
-	public IEnumerator FinalRoundEffect(string content)
-	{
-		text_FinalRound.text = content;
-        group_FinalRound.gameObject.SetActive(true);
-		group_FinalRound.anchoredPosition = feverTimePos + hideRight;
-		yield return group_FinalRound.DOAnchorPos(feverTimePos, 0.5f).SetEase(Ease.OutBack).WaitForCompletion();
-		yield return group_FinalRound.DOAnchorPos(feverTimePos + hideLeft, 0.5f).SetDelay(0.3f).SetEase(Ease.InBack).WaitForCompletion();
-		group_FinalRound.gameObject.SetActive(false);
-	}
-
+	
 	public IEnumerator FeverTimeEffect()
 	{
 		group_FeverTime.gameObject.SetActive(true);
@@ -122,16 +121,67 @@ public class FlipCardGameView : AbstractView
 		group_Perfect.gameObject.SetActive(false);
 	}
 
-	public IEnumerator ShowNextLevelUI(string nextLevelTitle)
+	public IEnumerator ShowNextLevelUI(string nextLevelTitle, int originalScore, int addScore)
 	{
+		button_BonusTime.interactable = false;
+		yield return button_BonusTime.transform.DOScale(0f, 0.3f).SetEase(Ease.InBack).WaitForCompletion();
+		button_BonusTime.gameObject.SetActive(false);
+
+		yield return text_AddScore.rectTransform.DOScale(1.5f, 0.25f).SetEase(Ease.OutCubic).WaitForCompletion();
+		yield return text_AddScore.rectTransform.DOScale(Vector3.one, 0.25f).SetEase(Ease.OutCubic).WaitForCompletion();
+		yield return new WaitForSeconds(0.2f);
+
+		float changeAmount = (float)addScore / (0.5f/Time.deltaTime);
+		float scoreForShow = originalScore;
+		float addScoreForShow = addScore;
+		float forCountSound = scoreForShow;
+        while(addScoreForShow > 0)
+		{
+			scoreForShow += changeAmount;
+			addScoreForShow -= changeAmount;
+			SetCurrentScore((int)scoreForShow);
+			SetBonusScore((int)addScoreForShow);
+			if(scoreForShow - forCountSound >= 1f)
+			{
+				AudioManager.Instance.PlayOneShot("GameResultScoreCount");
+				forCountSound = scoreForShow;
+			}
+			yield return new WaitForEndOfFrame();
+		}
+
+		SetCurrentScore(originalScore + addScore);
+		SetBonusScore(0);
+
+		yield return text_CurrentScore.rectTransform.DOScale(1.5f, 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
+		yield return text_CurrentScore.rectTransform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
+		yield return new WaitForSeconds(0.2f);
+
+		text_AddScore.gameObject.SetActive(false);
+
 		text_NextLevelTitle.text = nextLevelTitle;
 		image_WindowBG.anchoredPosition = hideDown;
-		yield return new WaitForSeconds(1f);
 		if(!image_WindowBG.gameObject.activeSelf)
 			image_WindowBG.gameObject.SetActive(true);
 		image_WindowBG.DOAnchorPos(Vector2.zero, 0.5f).SetEase(Ease.OutBack);
 	}
 
+	public IEnumerator ShowBonusButton()
+	{
+		yield return new WaitForSeconds(0.3f);  //等桌面清空
+		text_AddScore.text = "";
+		text_AddScore.gameObject.SetActive(true);
+        button_BonusTime.gameObject.SetActive(true);
+		button_BonusTime.interactable = true;
+
+		button_BonusTime.transform.localScale = Vector3.zero;
+		yield return button_BonusTime.transform.DOScale(1f, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
+	}
+	
+	public void SetBonusScore(int value)
+	{
+		text_AddScore.text = "+" + value;		
+    }
+	
 	IEnumerator GoNextLevel()
 	{
 		yield return image_WindowBG.DOAnchorPos(hideDown, 0.5f).SetEase(Ease.InBack).WaitForCompletion();

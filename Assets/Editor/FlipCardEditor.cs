@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using UnityEngine.UI;
 using System.Collections;
 
 public class FlipCardEditor : EditorWindow
@@ -42,6 +43,13 @@ public class FlipCardEditor : EditorWindow
 			DeleteGameRecord();
         }
 		GUILayout.EndHorizontal();
+		
+		GUILayout.BeginHorizontal();
+		if(GUILayout.Button("清除Material"))
+		{
+			ClearAllMaterial(Selection.gameObjects[0]);
+		}
+		GUILayout.EndHorizontal();
 	}
 
 	void DeleteGameRecord()
@@ -57,5 +65,21 @@ public class FlipCardEditor : EditorWindow
 	string GetSaveFilePath(string fileName)
 	{
 		return Application.persistentDataPath + "/" + fileName;
+	}
+
+	void ClearAllMaterial(GameObject parent)
+	{
+		Image[] images = parent.GetComponentsInChildren<Image>(true);
+
+		foreach(Image image in images)
+		{
+			if(image.material != null)
+			{
+				if(image.material.name == "SpriteMaterial" || image.material.name == "MaskMaterial")
+					image.material = null;
+				else
+					Debug.Log(image.material.name);
+            }
+		}
 	}
 }

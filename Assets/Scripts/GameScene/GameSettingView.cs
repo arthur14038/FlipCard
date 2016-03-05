@@ -19,6 +19,8 @@ public class GameSettingView : AbstractView {
 	public RectTransform image_CharacterRight;
 	public RectTransform image_CharacterLeft;
 	public RectTransform button_SinglePlayerGameOverExit;
+	public RectTransform image_TimesUp;
+	public RectTransform image_GameOverWindow;
 	public CanvasGroup image_SinglePlayerScoreBoard;
 	public Text text_Score;
 	public Text text_Level;
@@ -134,6 +136,7 @@ public class GameSettingView : AbstractView {
 	public void ShowSinglePlayerGameOver(string score, string level, bool recordBreak)
 	{
 		base.ShowUI(false);
+		AudioManager.Instance.PlayOneShot("Whistle");
 		AudioManager.Instance.StopMusic();
 		AudioManager.Instance.PlayOneShot("GameResult");
 		

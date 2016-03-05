@@ -11,6 +11,7 @@ public class FlipCardGameJudgement : GameModeJudgement
 	int score;
 	int mismatchTimes;
 	int finalLevel = 6;
+	int bonusAddScore;
 	float gamePassTime;
 	bool comboAward;
 	bool bonusTimeOn;
@@ -37,7 +38,8 @@ public class FlipCardGameJudgement : GameModeJudgement
 		flipCardGameView = (FlipCardGameView)modeView;
 		flipCardGameView.onCountDownFinished = StartGame;
 		flipCardGameView.onClickPause = PauseGame;
-		flipCardGameView.onClickNextLevel = NextLevel;
+		flipCardGameView.onClickBonusTime = BonusAddScore;
+        flipCardGameView.onClickNextLevel = NextLevel;
 		flipCardGameView.SetCurrentLevel(currentLevel, currentRound + 1);
 		flipCardGameView.SetCurrentScore(score);
 		flipCardGameView.SetTimeBar(1f);
@@ -53,7 +55,10 @@ public class FlipCardGameJudgement : GameModeJudgement
 	protected override IEnumerator StartGame()
 	{
 		gameMainView.FlipAllCard();
-		yield return new WaitForSeconds(0.35f + currentGameSetting.showCardTime);
+		yield return new WaitForSeconds(0.35f);
+
+		yield return gameMainView.StartCoroutine(WaitForShowCardTime(false));
+
 		gameMainView.FlipAllCard();
 		gameMainView.ToggleMask(false);
 		yield return new WaitForSeconds(0.35f);
@@ -130,24 +135,33 @@ public class FlipCardGameJudgement : GameModeJudgement
 		}		
 	}
 
+	void SetNewRoundTable(int normalCardCount, int questionCardCount, int goldCardCount)
+	{
+		gameMainView.SetUsingCard(normalCardCount, questionCardCount);
+		gameMainView.SetGoldCard(goldCardCount);
+
+		if(comboAward)
+			gameMainView.ToggleCardGlow(true);
+		else
+			gameMainView.ToggleCardGlow(false);
+
+		flipCardGameView.SetCurrentLevel(currentLevel, currentRound + 1);
+		gameMainView.StartCoroutine(NextRoundRoutine());
+	}
+
 	void CardMatch(bool match, params CardBase[] cards)
 	{
 		if(currentState != GameState.GameOver)
 		{
 			if(match)
 			{
-				int scoreChangeAmount = 1 * cards.Length;
-
-				foreach(CardBase matchCard in cards)
-				{
-					Vector2 pos = matchCard.GetAnchorPosition();
-					pos.x += flipCardArraySetting.cardSize / 2 - 20f;
-					gameMainView.ShowScoreText(pos, comboAward, matchCard.IsGoldCard());
-				}
-
+				int cardAScore = 1;
+				int cardBScore = 1;
+				
 				if(comboAward)
 				{
-					scoreChangeAmount += 2 * cards.Length;
+					cardAScore += 2;
+					cardBScore += 2;
 				} else
 				{
 					comboAward = true;
@@ -155,15 +169,24 @@ public class FlipCardGameJudgement : GameModeJudgement
 				}
 				
 				if(cards[0].IsGoldCard())
-					scoreChangeAmount += 4;
+					cardAScore += 4;
 
 				if(cards[1].IsGoldCard())
-					scoreChangeAmount += 4;
+					cardBScore += 4;
 
-				if(scoreChangeAmount != 0)
+				int scoreChangeAmount = cardAScore + cardBScore;
+                if(scoreChangeAmount != 0)
 				{
 					score += scoreChangeAmount;
 					flipCardGameView.SetCurrentScore(score);
+					
+					Vector2 pos = cards[0].GetAnchorPosition();
+					pos.x += currentCardArraySetting.edgeLength / 2 - 20f;
+					gameMainView.ShowScoreText(pos, cardAScore);
+
+					pos = cards[1].GetAnchorPosition();
+					pos.x += currentCardArraySetting.edgeLength / 2 - 20f;
+					gameMainView.ShowScoreText(pos, cardBScore);
 				}
 
 				if(cards[0].IsBombCard && gameMainView.GetTableCardCount() > 0)
@@ -217,85 +240,41 @@ public class FlipCardGameJudgement : GameModeJudgement
 				normalCardCount -= questionCardCount;
 			}
 
-			gameMainView.SetUsingCard(normalCardCount, questionCardCount);
-
-			if(comboAward)
-				gameMainView.ToggleCardGlow(true);
-			else
-				gameMainView.ToggleCardGlow(false);
-
-			flipCardGameView.SetCurrentLevel(currentLevel, currentRound + 1);
-			gameMainView.StartCoroutine(NextRoundRoutine());
+			SetNewRoundTable(normalCardCount, questionCardCount, 0);
 		} else
 		{
-			gameMainView.SetGoldCard(-1);
-			if(currentLevel == finalLevel)
+            if(currentLevel == finalLevel)
 			{
 				int questionCardCount = currentGameSetting.questionCardAppearRound[currentGameSetting.questionCardAppearRound.Length-1];
 				int normalCardCount = currentGameSetting.cardCount - questionCardCount;
-				
-				gameMainView.SetUsingCard(normalCardCount, questionCardCount);
-			} else
+
+				SetNewRoundTable(normalCardCount, questionCardCount, -1);
+			} else if(!bonusTimeOn)
 			{
-				if(!bonusTimeOn)
-				{
-					bonusTimeOn = true;
-					flipCardGameView.StartCoroutine(flipCardGameView.FeverTimeEffect());
-					flipCardGameView.ToggleFeverTimeEffect(true);
-				}
-
-				gameMainView.SetUsingCard(currentGameSetting.cardCount, 0);				
+				gameMainView.StartCoroutine(StartBonusTime());
 			}
-			if(comboAward)
-				gameMainView.ToggleCardGlow(true);
-			else
-				gameMainView.ToggleCardGlow(false);
-
-			flipCardGameView.SetCurrentLevel(currentLevel, currentRound + 1);
-			gameMainView.StartCoroutine(NextRoundRoutine());
 		}
 	}
 
 	void ThisLevelEnd()
 	{
-		if(currentRound < currentGameSetting.round)
+		if(currentLevel == finalLevel || currentRound < currentGameSetting.round)
 		{
 			GameOver(score, currentLevel, currentRound + 1);
 		} else
 		{
+			if(bonusTimeOn)
+				bonusTimeOn = false;
+
 			lockNextRound = true;
 			SetCurrentState(GameState.Waiting);
 			gameMainView.ToggleMask(true);
-
-			bonusTimeOn = false;
+			
 			flipCardGameView.ToggleFeverTimeEffect(false);
+			
+			flipCardGameView.StartCoroutine(flipCardGameView.ShowNextLevelUI(string.Format("NEXT LEVEL: {0}-{1}", currentLevel, currentRound + 1), score, bonusAddScore));
 
-			gamePassTime = 0;
-			++currentLevel;
-			currentRound = 0;
-
-			currentGameSetting = GameSettingManager.GetFlipCardGameSetting(currentLevel);
-			flipCardArraySetting = GameSettingManager.GetFlipCardArraySetting(currentGameSetting.cardCount);
-
-			int questionCardCount = 0;
-			int normalCardCount = currentGameSetting.cardCount;
-
-			if(currentGameSetting.questionCardAppearRound.Length > currentRound)
-			{
-				questionCardCount = currentGameSetting.questionCardAppearRound[currentRound];
-				normalCardCount -= questionCardCount;
-			}
-
-			gameMainView.SetUsingCard(normalCardCount, questionCardCount);
-
-			if(comboAward)
-				gameMainView.ToggleCardGlow(true);
-			else
-				gameMainView.ToggleCardGlow(false);
-
-			gameMainView.StartCoroutine(gameMainView.ClearTable());
-
-			flipCardGameView.StartCoroutine(flipCardGameView.ShowNextLevelUI(string.Format("NEXT LEVEL: {0}-{1}", currentLevel, currentRound + 1)));
+			score += bonusAddScore;
 		}
 	}
 
@@ -304,10 +283,52 @@ public class FlipCardGameJudgement : GameModeJudgement
 		lockNextRound = false;
         flipCardGameView.AddTimeEffect(1f);
 		gamePassTime = 0;
-		
-		flipCardGameView.SetCurrentLevel(currentLevel, currentRound + 1);
-		gameMainView.SetGoldCard(0);
-		gameMainView.StartCoroutine(NextRoundRoutine());
+		++currentLevel;
+		currentRound = 0;
+
+		currentGameSetting = GameSettingManager.GetFlipCardGameSetting(currentLevel);
+		flipCardArraySetting = GameSettingManager.GetFlipCardArraySetting(currentGameSetting.cardCount);
+
+		int questionCardCount = 0;
+		int normalCardCount = currentGameSetting.cardCount;
+
+		if(currentGameSetting.questionCardAppearRound.Length > currentRound)
+		{
+			questionCardCount = currentGameSetting.questionCardAppearRound[currentRound];
+			normalCardCount -= questionCardCount;
+		}
+
+		SetNewRoundTable(normalCardCount, questionCardCount, 0);
+	}
+
+	void BonusAddScore()
+	{
+		if(currentState == GameState.Playing)
+		{
+			++bonusAddScore;
+			flipCardGameView.SetBonusScore(bonusAddScore);
+		}
+    }
+
+	IEnumerator StartBonusTime()
+	{
+		bonusTimeOn = true;
+		flipCardGameView.ToggleFeverTimeEffect(true);
+		flipCardGameView.StartCoroutine(flipCardGameView.FeverTimeEffect());
+		bonusAddScore = 0;
+
+		yield return new WaitForSeconds(0.5f);
+
+		yield return flipCardGameView.StartCoroutine(flipCardGameView.ShowBonusButton());
+
+		while(currentState == GameState.Pausing)
+			yield return null;
+		gameMainView.ToggleMask(false);
+		yield return new WaitForSeconds(0.35f);
+
+		while(currentState == GameState.Pausing)
+			yield return null;
+		SetCurrentState(GameState.Playing);
 	}
 
 	IEnumerator NextRoundRoutine()
@@ -357,25 +378,18 @@ public class FlipCardGameJudgement : GameModeJudgement
 
 		while(currentState == GameState.Pausing)
 			yield return null;
+
 		gameMainView.FlipAllCard();
-		float showCardTime = 0.35f + currentGameSetting.showCardTime;
-		if(bonusTimeOn)
-			showCardTime = 0.55f;
-        while(showCardTime > 0f)
-		{
-			if(currentState == GameState.Pausing)
-				yield return null;
-			else
-			{
-				showCardTime -= Time.deltaTime;
-				yield return new WaitForEndOfFrame();
-			}
-		}
+		yield return new WaitForSeconds(0.35f);
+
+		yield return gameMainView.StartCoroutine(WaitForShowCardTime(false));
+
 		gameMainView.FlipAllCard();
 		while(currentState == GameState.Pausing)
 			yield return null;
 		gameMainView.ToggleMask(false);
 		yield return new WaitForSeconds(0.35f);
+
 		while(currentState == GameState.Pausing)
 			yield return null;
 		SetCurrentState(GameState.Playing);
@@ -391,18 +405,12 @@ public class FlipCardGameJudgement : GameModeJudgement
 
 		while(currentState == GameState.Pausing)
 			yield return null;
+
 		gameMainView.FlipAllCard();
-		float showCardTime = 0.35f + currentGameSetting.showCardTime * (1f - (float)gameMainView.GetTableCardCount()/(float)currentGameSetting.cardCount);
-		while(showCardTime > 0f)
-		{
-			if(currentState == GameState.Pausing)
-				yield return null;
-			else
-			{
-				showCardTime -= Time.deltaTime;
-				yield return new WaitForEndOfFrame();
-			}
-		}
+		yield return new WaitForSeconds(0.35f);
+
+		yield return gameMainView.StartCoroutine(WaitForShowCardTime(true));
+		
 		gameMainView.FlipAllCard();
 		while(currentState == GameState.Pausing)
 			yield return null;
@@ -410,5 +418,23 @@ public class FlipCardGameJudgement : GameModeJudgement
 		yield return new WaitForSeconds(0.35f);
 
 		SetCurrentState(GameState.Playing);
+	}
+
+	IEnumerator WaitForShowCardTime(bool calculateCardCount)
+	{
+		float showCardTime = currentGameSetting.showCardTime;
+		if(calculateCardCount)
+			showCardTime = currentGameSetting.showCardTime*((float)gameMainView.GetTableCardCount() / currentGameSetting.cardCount);
+		
+		while(showCardTime > 0f)
+		{
+			if(currentState == GameState.Pausing)
+				yield return null;
+			else
+			{
+				yield return new WaitForEndOfFrame();
+				showCardTime -= Time.deltaTime;
+			}
+		}
 	}
 }

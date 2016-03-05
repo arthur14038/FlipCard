@@ -9,8 +9,8 @@ public class GameMainView : AbstractView
 	public Transform scoreTextParent;
 	public Transform cardParent;
 	public GameObject scoreTextPrefab;
-	public GameObject getLuckyEffect;
 	public GameObject explosionEffect;
+	public GameObject flashEffect;
 	public Image image_Theme;
 	public Image image_Mask;
 	public VoidNoneParameter completeOneRound;
@@ -39,7 +39,6 @@ public class GameMainView : AbstractView
 	{
 		image_Mask.gameObject.SetActive(true);
 		image_Mask.color = Color.black * 0.5f;
-		getLuckyEffect.SetActive(false);
 
 		image_Theme.sprite = InventoryManager.Instance.GetCurrentThemeSprite();
 		
@@ -260,7 +259,7 @@ public class GameMainView : AbstractView
 		{
 			if(!image_Mask.gameObject.activeSelf)
 				image_Mask.gameObject.SetActive(true);
-
+			
 			image_Mask.DOFade(0.5f, 0.2f).SetDelay(0.15f);
 		} else
 		{
@@ -274,19 +273,13 @@ public class GameMainView : AbstractView
 			}
 		}
 	}
-
-	public void ShowScoreText(Vector2 pos, bool comboAward, bool goldCardAward)
+	
+	public void ShowScoreText(Vector2 pos, int score)
 	{
 		ScoreText st = scoreTextQueue.Dequeue();
-		st.ShowScoreText(pos, comboAward, goldCardAward);
+		st.ShowScoreText(pos, score);
 	}
-
-	public void ShowFireWork()
-	{
-		getLuckyEffect.SetActive(false);
-		getLuckyEffect.SetActive(true);
-	}
-
+	
 	public void ShowExplosion()
 	{
 		explosionEffect.SetActive(false);
@@ -295,22 +288,12 @@ public class GameMainView : AbstractView
 	
 	public void ShowFlashbang()
 	{
+		flashEffect.SetActive(false);
+		flashEffect.SetActive(true);
 		foreach(CardBase card in cardsOnTable)
 			card.FlashbangEffect();
 	}
-
-	public IEnumerator ClearTable()
-	{
-		yield return new WaitForSeconds(0.5f);
-
-		foreach(CardBase card in cardsOnTable)
-			card.Match();
-
-		cardsOnTable.Clear();
-		waitForCompare.Clear();
-		waitForMatch.Clear();
-	}
-
+	
 	void SaveScoreText(ScoreText st)
 	{
 		scoreTextQueue.Enqueue(st);

@@ -138,32 +138,39 @@ public class CompetitionModeJudgement : GameModeJudgement
 			bool takeTurn = false;
 			if(match)
 			{
-				int scoreChangeAmount = currentModeSetting.matchAddScore * cards.Length;
+				int cardAScore = 1;
+				int cardBScore = 1;
 				
-				foreach(CardBase matchCard in cards)
-				{
-					Vector2 pos = matchCard.GetAnchorPosition();
-					pos.x += currentCardArraySetting.edgeLength / 2 - 20f;
-					gameMainView.ShowScoreText(pos, (comboCount != 0), matchCard.IsGoldCard());
-				}
-
 				if(comboCount == 0)
 					gameMainView.ToggleCardGlow(true);
 				
 				if(comboCount > 0)
-					scoreChangeAmount += 2 * cards.Length;
+				{
+					cardAScore += 2;
+					cardBScore += 2;
+                }
 
 				++comboCount;
 
 				if(cards[0].IsGoldCard())
-					scoreChangeAmount += 4;
+					cardAScore += 4;
 
 				if(cards[1].IsGoldCard())
-					scoreChangeAmount += 4;
-				
-				if(scoreChangeAmount != 0)
+					cardBScore += 4;
+
+				int scoreChangeAmount = cardAScore + cardBScore;
+                if(scoreChangeAmount != 0)
+				{
 					AddScore(scoreChangeAmount, (int)currentTurn);
 
+					Vector2 pos = cards[0].GetAnchorPosition();
+					pos.x += currentCardArraySetting.edgeLength / 2 - 20f;
+					gameMainView.ShowScoreText(pos, cardAScore);
+
+					pos = cards[1].GetAnchorPosition();
+					pos.x += currentCardArraySetting.edgeLength / 2 - 20f;
+					gameMainView.ShowScoreText(pos, cardBScore);
+				}
 			} else
 			{
 				if(comboCount > 0)
