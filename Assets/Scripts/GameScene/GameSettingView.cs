@@ -24,8 +24,9 @@ public class GameSettingView : AbstractView {
 	public CanvasGroup image_SinglePlayerScoreBoard;
 	public Text text_Score;
 	public Text text_Level;
-    public GameObject newHighScoreEffect;
-	public GameObject image_NewHighScoreHeader;
+	public Text text_Title;
+	public Text text_PerfectCount;
+	public GameObject newHighScoreEffect;
 
 	public RectTransform group_TwoPlayer;
 	public Image image_WinnerBoard;
@@ -133,32 +134,41 @@ public class GameSettingView : AbstractView {
 		yield return button_CompetitionGameOverExit.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
 	}
 
-	public void ShowSinglePlayerGameOver(string score, string level, bool recordBreak)
+	public void ShowSinglePlayerGameOver(int score, string level, bool recordBreak, int perfectCount)
 	{
 		base.ShowUI(false);
 		AudioManager.Instance.PlayOneShot("Whistle");
 		AudioManager.Instance.StopMusic();
-		AudioManager.Instance.PlayOneShot("GameResult");
-		
-		text_Score.text = score;
+
+		text_Score.text = score.ToString();
 		text_Level.text = level;
+		text_PerfectCount.text = string.Format("Perfect match x {0}", perfectCount);
 
 		if(recordBreak)
 		{
 			AudioManager.Instance.PlayOneShot("NewHighScore2");
 			newHighScoreEffect.SetActive(true);
-			image_NewHighScoreHeader.gameObject.SetActive(true);
+			text_Title.text = "New record!";
 		} else
 		{
 			newHighScoreEffect.SetActive(false);
-			image_NewHighScoreHeader.gameObject.SetActive(false);
+			string msg = "Try again";
+			if(score > 3000)
+				msg = "Incredible!";
+			else if(score > 2000)
+				msg = "Excellent!";
+			else if(score > 1000)
+				msg = "Awesome!";
+			else if(score > 500)
+				msg = "Great!";
+			text_Title.text = msg;
 		}
 		StartCoroutine(SinglePlayerGameOverEffect());
 	}
 
 	IEnumerator SinglePlayerGameOverEffect()
 	{
-		yield return StartCoroutine(ToggleMask(true, 0.7f));
+		StartCoroutine(ToggleMask(true, 0.7f));
 
 		image_CharacterLeft.gameObject.SetActive(false);
 		image_CharacterRight.gameObject.SetActive(false);
@@ -166,9 +176,20 @@ public class GameSettingView : AbstractView {
 		button_SinglePlayerGameOverExit.gameObject.SetActive(false);
 		text_Score.gameObject.SetActive(false);
 		text_Level.gameObject.SetActive(false);
-        group_SinglePlayer.gameObject.SetActive(true);
-		group_SinglePlayer.anchoredPosition = hideUp;
-		yield return group_SinglePlayer.DOAnchorPos(Vector2.zero, 0.5f).SetEase(Ease.OutBack).WaitForCompletion();
+		image_GameOverWindow.gameObject.SetActive(false);
+		group_SinglePlayer.gameObject.SetActive(true);
+
+		image_TimesUp.gameObject.SetActive(true);
+		image_TimesUp.localScale = Vector3.zero;
+		yield return image_TimesUp.DOScale(1f, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
+		yield return new WaitForSeconds(0.4f);
+		yield return image_TimesUp.DOScale(0f, 0.3f).SetEase(Ease.InBack).WaitForCompletion();
+		image_TimesUp.gameObject.SetActive(false);
+
+		AudioManager.Instance.PlayOneShot("GameResult");
+		image_GameOverWindow.gameObject.SetActive(true);
+		image_GameOverWindow.anchoredPosition = hideUp;
+		yield return image_GameOverWindow.DOAnchorPos(Vector2.zero, 0.5f).SetEase(Ease.OutBack).WaitForCompletion();
 		
 		image_CharacterRight.anchoredPosition = new Vector2(750f, -93f);
 		image_CharacterLeft.anchoredPosition = new Vector2(-750f, -95f);

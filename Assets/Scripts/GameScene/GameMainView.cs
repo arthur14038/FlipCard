@@ -18,7 +18,6 @@ public class GameMainView : AbstractView
 	Sprite[] cardImage;
 	Sprite bombSprite;
 	Sprite flashbangSprite;
-	Sprite goldSprite;
 	Queue<ScoreText> scoreTextQueue = new Queue<ScoreText>();
 	Vector2 shiftAmount = new Vector2(-100, 50);
 	float appearDuration = 0.3f;
@@ -33,7 +32,6 @@ public class GameMainView : AbstractView
 	int bombCardCount;
 	int flashbangCardCount;
 	bool lockFlipCard = false;
-	bool feverTime = false;
 
 	public override IEnumerator Init()
 	{
@@ -65,8 +63,7 @@ public class GameMainView : AbstractView
 		if(GameSettingManager.currentMode == GameMode.FlipCard)
 		{
 			bombSprite = Resources.Load<Sprite>("CardImage/CardImage_Bomb");
-			goldSprite = Resources.Load<Sprite>("CardImage/CardImage_Gold");
-			flashbangSprite = Resources.Load<Sprite>("CardImage/CardImage_Flashbang");
+			flashbangSprite = Resources.Load<Sprite>("CardImage/CardImage_Flare");
 		}
 	}
 
@@ -121,11 +118,11 @@ public class GameMainView : AbstractView
 			usingCardDeck.Add(unknownCardDeck[i]);
 	}
 
-	public IEnumerator DealCard(float cardSize, Vector2[] cardPos, int bombCardCount = 0, int flashbangCardCount = 0, bool feverTime = false)
+	public IEnumerator DealCard(float cardSize, Vector2[] cardPos, int bombCardCount = 0, int flashbangCardCount = 0)
 	{		
 		this.bombCardCount = bombCardCount;
 		this.flashbangCardCount = flashbangCardCount;
-		this.feverTime = feverTime;
+		//this.flashbangCardCount = 2;
 
 		ShuffleCardDeck();
 		float delayDuration = dealTime / usingCardDeck.Count;		
@@ -227,17 +224,10 @@ public class GameMainView : AbstractView
 			{
 				AudioManager.Instance.PlayOneShot("GamePlayGetPair");
 				isMatch = true;
-				if(feverTime)
-				{
-					cardA.MisMatch();
-					cardB.MisMatch();
-				} else
-				{
-					cardA.Match();
-					cardB.Match();
-					cardsOnTable.Remove(cardA);
-					cardsOnTable.Remove(cardB);
-				}
+				cardA.Match();
+				cardB.Match();
+				cardsOnTable.Remove(cardA);
+				cardsOnTable.Remove(cardB);
 			}
 			else
 			{
@@ -286,12 +276,12 @@ public class GameMainView : AbstractView
 		explosionEffect.SetActive(true);
 	}
 	
-	public void ShowFlashbang()
+	public void ShowFlare()
 	{
 		flashEffect.SetActive(false);
 		flashEffect.SetActive(true);
 		foreach(CardBase card in cardsOnTable)
-			card.FlashbangEffect();
+			StartCoroutine(card.FlareEffect());
 	}
 	
 	void SaveScoreText(ScoreText st)
@@ -325,65 +315,56 @@ public class GameMainView : AbstractView
 	{
 		Sprite[] choosenCardFace = new Sprite[count];
 
-		if(feverTime)
+		for(int i = 0 ; i < bombCardCount ; ++i)
 		{
-			for(int i = 0 ; i < choosenCardFace.Length ; ++i)
-			{
-				choosenCardFace[i] = goldSprite;
-            }
-		}else
+			--count;
+			choosenCardFace[count] = bombSprite;
+		}
+
+		for(int i = 0 ; i < flashbangCardCount ; ++i)
 		{
-			for(int i = 0 ; i < bombCardCount ; ++i)
+			--count;
+			choosenCardFace[count] = flashbangSprite;
+		}
+
+		if(cardImage.Length > count / 2)
+		{
+			int[] chooseCardIndex = new int[count / 2];
+			List<int> tickets = new List<int>();
+			for(int i = 0 ; i < cardImage.Length ; ++i)
+				tickets.Add(i);
+
+			for(int i = 0 ; i < chooseCardIndex.Length ; ++i)
 			{
-				--count;
-				choosenCardFace[count] = bombSprite;
+				int selectIndex = Random.Range(0, tickets.Count);
+				chooseCardIndex[i] = tickets[selectIndex];
+				tickets.RemoveAt(selectIndex);
 			}
 
-			for(int i = 0 ; i < flashbangCardCount ; ++i)
+			for(int i = 0 ; i < count ; ++i)
 			{
-				--count;
-				choosenCardFace[count] = flashbangSprite;
+				choosenCardFace[i] = cardImage[chooseCardIndex[i / 2]];
 			}
-
-			if(cardImage.Length > count / 2)
+		} else if(cardImage.Length == count / 2)
+		{
+			for(int i = 0 ; i < count ; ++i)
 			{
-				int[] chooseCardIndex = new int[count / 2];
-				List<int> tickets = new List<int>();
-				for(int i = 0 ; i < cardImage.Length ; ++i)
-					tickets.Add(i);
-
-				for(int i = 0 ; i < chooseCardIndex.Length ; ++i)
-				{
-					int selectIndex = Random.Range(0, tickets.Count);
-					chooseCardIndex[i] = tickets[selectIndex];
-					tickets.RemoveAt(selectIndex);
-				}
-
-				for(int i = 0 ; i < count ; ++i)
-				{
-					choosenCardFace[i] = cardImage[chooseCardIndex[i / 2]];
-				}
-			} else if(cardImage.Length == count / 2)
-			{
-				for(int i = 0 ; i < count ; ++i)
-				{
-					choosenCardFace[i] = cardImage[i / 2];
-				}
-			} else
-			{
-				Debug.LogError("CardFace is not enough");
+				choosenCardFace[i] = cardImage[i / 2];
 			}
+		} else
+		{
+			Debug.LogError("CardFace is not enough");
+		}
 
-			for(int i = 0 ; i < choosenCardFace.Length ; ++i)
-			{
-				int randomIndex = Random.Range(0, choosenCardFace.Length);
-				while(randomIndex == i)
-					randomIndex = Random.Range(0, choosenCardFace.Length);
+		for(int i = 0 ; i < choosenCardFace.Length ; ++i)
+		{
+			int randomIndex = Random.Range(0, choosenCardFace.Length);
+			while(randomIndex == i)
+				randomIndex = Random.Range(0, choosenCardFace.Length);
 
-				Sprite tmp = choosenCardFace[i];
-				choosenCardFace[i] = choosenCardFace[randomIndex];
-				choosenCardFace[randomIndex] = tmp;
-			}
+			Sprite tmp = choosenCardFace[i];
+			choosenCardFace[i] = choosenCardFace[randomIndex];
+			choosenCardFace[randomIndex] = tmp;
 		}
 
 		return choosenCardFace;

@@ -24,6 +24,7 @@ public class MainPageView : AbstractView {
 	public VoidNoneParameter onClickFlipCard;
 	public VoidNoneParameter onClick2P;
 	public VoidNoneParameter onClickComingSoon;
+	public VoidNoneParameter onClickGoToFacebook;
 	private Vector2 settingWindowPos = new Vector2(0f, 832f);
 
 	public override IEnumerator Init ()
@@ -127,15 +128,15 @@ public class MainPageView : AbstractView {
         image_Mask.color = Color.clear;
         image_Mask.DOColor(Color.black * 0.7f, 0.3f);
 		image_SettingWindow.gameObject.SetActive(true);
-        image_SettingWindow.anchoredPosition = settingWindowPos + hideDown;
-        image_SettingWindow.DOAnchorPos(settingWindowPos, 0.5f).SetEase(Ease.OutBack);
+        image_SettingWindow.anchoredPosition = hideDown;
+        image_SettingWindow.DOAnchorPos(Vector2.zero, 0.5f).SetEase(Ease.OutQuart);
 	}
 
 	public void OnClickExitSetting()
 	{
 		AudioManager.Instance.PlayOneShot("Button_Click2");
 		currentState = ViewState.Main;
-        image_SettingWindow.DOAnchorPos(settingWindowPos + hideDown, 0.3f).SetEase(Ease.InQuad);
+        image_SettingWindow.DOAnchorPos(hideDown, 0.3f).SetEase(Ease.InQuad);
         image_Mask.DOColor(Color.clear, 0.3f).OnComplete(
             delegate () {
                 image_Mask.gameObject.SetActive(false);
@@ -174,6 +175,13 @@ public class MainPageView : AbstractView {
 			}
 		);
 	}
+
+	public void OnClickGoToFacebook()
+	{
+		AudioManager.Instance.PlayOneShot("Button_Click");
+		if(onClickGoToFacebook != null)
+			onClickGoToFacebook();
+    }
 
 	public void OnMusicValueChange(bool value)
 	{

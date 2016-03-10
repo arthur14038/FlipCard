@@ -9,11 +9,12 @@ public class FlipCardGameView : AbstractView
 	public VoidNoneParameter onClickPause;
 	public VoidNoneParameter onClickNextLevel;
 	public VoidNoneParameter onClickBonusTime;
-	public Image group_Counting;
 	public Text text_CurrentLevel;
 	public Text text_CurrentScore;
-	public Text text_NextLevelTitle;
+	public Text text_Level;
+	public Text text_Round;
 	public Text text_AddScore;
+	public RectTransform group_Counting;
 	public RectTransform image_Counting3;
 	public RectTransform image_Counting2;
 	public RectTransform image_Counting1;
@@ -21,12 +22,19 @@ public class FlipCardGameView : AbstractView
 	public RectTransform group_FeverTime;
 	public RectTransform group_Perfect;
 	public RectTransform image_WindowBG;
+	public RectTransform group_SpecialCard;
+	public RectTransform image_BombCard;
+	public RectTransform image_FlareCard;
 	public Button button_Pause;
 	public Button button_BonusTime;
-    public Slider timeBar;
-	public GameObject timeIsRunning;
+	public Button button_NextLevel;
+	public Slider timeBar;
+	public InfiniteProgressBar infiniteProgressBar;
+    public GameObject timeIsRunning;
 	public GameObject feverTimeEffect;
 	private Vector2 feverTimePos = new Vector2(0f, -832f);
+	private Vector2 nextLevelPos = new Vector2(0f, -112f);
+	int nextLevel;
 
 	public override IEnumerator Init()
 	{
@@ -53,6 +61,7 @@ public class FlipCardGameView : AbstractView
 	public void OnClickNextLevel()
 	{
 		AudioManager.Instance.PlayOneShot("Button_Click");
+		button_NextLevel.interactable = false;
 		StartCoroutine(GoNextLevel());
 	}
 
@@ -121,9 +130,10 @@ public class FlipCardGameView : AbstractView
 		group_Perfect.gameObject.SetActive(false);
 	}
 
-	public IEnumerator ShowNextLevelUI(string nextLevelTitle, int originalScore, int addScore)
+	public IEnumerator ShowNextLevelUI(int level, int round, int originalScore, int addScore, int specialCardType)
 	{
-		button_BonusTime.interactable = false;
+		nextLevel = level - 1;
+        button_BonusTime.interactable = false;
 		yield return button_BonusTime.transform.DOScale(0f, 0.3f).SetEase(Ease.InBack).WaitForCompletion();
 		button_BonusTime.gameObject.SetActive(false);
 
@@ -158,11 +168,18 @@ public class FlipCardGameView : AbstractView
 
 		text_AddScore.gameObject.SetActive(false);
 
-		text_NextLevelTitle.text = nextLevelTitle;
+		text_Level.text = string.Format("LEVEL {0}", level);
+		text_Round.text = string.Format("You have {0} rounds in this level.", round);
+		infiniteProgressBar.SetProgress(level - 2);
+		if(specialCardType > 0)
+			group_SpecialCard.gameObject.SetActive(true);
+		else
+			group_SpecialCard.gameObject.SetActive(false);
 		image_WindowBG.anchoredPosition = hideDown;
 		if(!image_WindowBG.gameObject.activeSelf)
 			image_WindowBG.gameObject.SetActive(true);
-		image_WindowBG.DOAnchorPos(Vector2.zero, 0.5f).SetEase(Ease.OutBack);
+		image_WindowBG.DOAnchorPos(Vector2.zero + nextLevelPos, 0.5f).SetEase(Ease.OutBack);
+		button_NextLevel.interactable = true;
 	}
 
 	public IEnumerator ShowBonusButton()
@@ -184,6 +201,8 @@ public class FlipCardGameView : AbstractView
 	
 	IEnumerator GoNextLevel()
 	{
+		infiniteProgressBar.SetProgress(nextLevel, true);
+		yield return new WaitForSeconds(0.5f);
 		yield return image_WindowBG.DOAnchorPos(hideDown, 0.5f).SetEase(Ease.InBack).WaitForCompletion();
 		image_WindowBG.gameObject.SetActive(false);
 		if(onClickNextLevel != null)
@@ -204,7 +223,7 @@ public class FlipCardGameView : AbstractView
 		float inTime = 0.245f;
 		float outTime = 0.17f;
 
-		group_Counting.color = Color.black * 0.7f;
+		//group_Counting.color = Color.black * 0.7f;
 		group_Counting.gameObject.SetActive(true);
 
 		image_Counting3.localScale = flipDown;
@@ -228,9 +247,8 @@ public class FlipCardGameView : AbstractView
 		image_CountingGo.localScale = flipDown;
 		image_CountingGo.gameObject.SetActive(true);
 		yield return image_CountingGo.DOScale(Vector3.one, inTime + 0.15f).WaitForCompletion();
-		group_Counting.DOFade(0f, 0.3f).SetDelay(delayTime + 0.5f);
-		yield return image_CountingGo.DOScale(flipDown, outTime).SetDelay(delayTime + 0.15f).SetEase(Ease.OutQuad).WaitForCompletion();
-		image_CountingGo.gameObject.SetActive(false);
+		//group_Counting.DOFade(0f, 0.3f).SetDelay(delayTime + 0.5f);
+		yield return group_Counting.DOScale(0f, 0.25f).SetDelay(delayTime + 0.07f).SetEase(Ease.InBack).WaitForCompletion();
 		group_Counting.gameObject.SetActive(false);
 
 		if(onCountDownFinished != null)

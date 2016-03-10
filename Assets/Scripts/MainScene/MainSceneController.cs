@@ -28,7 +28,8 @@ public class MainSceneController : AbstractController {
 		mainPageView.onClickLeaveGame = LeaveGame;
 		mainPageView.onClickNotify = SendNotifyMail;
 		mainPageView.onClickComingSoon = StillInProgress;
-		flipCardView.onClickBack = ShowMainPage;
+		mainPageView.onClickGoToFacebook = OpenFacebookPage;
+        flipCardView.onClickBack = ShowMainPage;
 		flipCardView.onClickPlay = StartFlipCardGame;
 		twoPlayerView.onClickBack = ShowMainPage;
 		twoPlayerView.onClickPlay = GoToGameScene;
@@ -152,6 +153,11 @@ public class MainSceneController : AbstractController {
 		string email = "playclaystudio@gmail.com";
 		string subject = MyEscapeURL("User Feedback");
 		Application.OpenURL("mailto:" + email + "?subject=" + subject);
+	}
+
+	void OpenFacebookPage()
+	{
+		Application.OpenURL("https://www.facebook.com/PlayClayStudio");
 	}
 
 	void EquipTheme(string themeItemId)

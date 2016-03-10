@@ -9,6 +9,7 @@ public class ButtonOffset : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 	public float duration = 0.1f;
 	public Ease offsetEase = Ease.Linear;
 	public Ease scaleEase = Ease.Linear;
+	public ParticleSystem onClickEffect;
 	protected RectTransform thisRectTransform;
 	Vector2 oriPos;
 	bool shouldWork = false;
@@ -53,6 +54,9 @@ public class ButtonOffset : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 	{
 		if(shouldWork)
 		{
+			if(onClickEffect != null)
+				onClickEffect.Emit(1);
+
 			oriPos = thisRectTransform.anchoredPosition;
 
 			if(doOffset)

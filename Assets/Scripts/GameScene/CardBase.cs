@@ -27,7 +27,7 @@ public class CardBase : MonoBehaviour {
 	protected Vector3 flipDown = new Vector3(0f, 0.9f, 1f);
 	protected float standardCardSize = 192f;
 	protected float currentCardSize;
-	protected Tweener flashbangEffectTweener;
+	protected Tweener flareEffectTweener;
 
 	public bool IsBombCard
 	{
@@ -38,14 +38,14 @@ public class CardBase : MonoBehaviour {
 	}
 	protected bool isBombCard = false;
 	
-	public bool IsFlashbangCard
+	public bool IsFlareCard
 	{
 		get
 		{
-			return isFlashbangCard;
+			return isFlareCard;
 		}
 	}
-	protected bool isFlashbangCard = false;
+	protected bool isFlareCard = false;
 
 	public virtual void Init(BoolCardBase checkCanFlipCard, VoidCardBase flipFinish)
 	{
@@ -84,10 +84,10 @@ public class CardBase : MonoBehaviour {
 		else
 			isBombCard = false;
 		
-		if(cardId.EndsWith("Flashbang"))
-			isFlashbangCard = true;
+		if(cardId.EndsWith("Flare"))
+			isFlareCard = true;
 		else
-			isFlashbangCard = false;
+			isFlareCard = false;
 	}
 
 	public virtual void FlipBySystem()
@@ -228,10 +228,11 @@ public class CardBase : MonoBehaviour {
 		return isGoldCard;
 	}
 
-	public virtual void FlashbangEffect()
+	public virtual IEnumerator FlareEffect()
 	{
+		yield return new WaitForSeconds(0.15f);
 		SetCardImage(cardFaceImageSprite);
-		flashbangEffectTweener = image_CardImage.DOFade(0f, 3.5f).SetEase(Ease.InQuad);
+		flareEffectTweener = image_CardImage.DOFade(0f, 3.5f).SetEase(Ease.InQuad);
 	}
 	
 	void FlipByUser()
@@ -273,10 +274,10 @@ public class CardBase : MonoBehaviour {
 
 	protected void SetCardImage(Sprite imageSprite)
 	{
-		if(flashbangEffectTweener != null)
+		if(flareEffectTweener != null)
 		{
-			flashbangEffectTweener.Kill();
-			flashbangEffectTweener = null;
+			flareEffectTweener.Kill();
+			flareEffectTweener = null;
 		}
 		image_CardImage.color = Color.white;
 		image_CardImage.sprite = imageSprite;
