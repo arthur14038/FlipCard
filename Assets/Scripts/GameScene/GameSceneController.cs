@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GameSceneController : AbstractController
 {
@@ -59,7 +60,14 @@ public class GameSceneController : AbstractController
 		{
 			if(thisTimeRecord.playTimes % 3 == 1)
 			{
-				Debug.Log("Should send custom event");
+				Dictionary<string, object> eventData = new Dictionary<string, object>();
+				int level = thisTimeRecord.highLevel / 1000;
+				int round = thisTimeRecord.highLevel % 1000;
+				string gameInfo = string.Format("playTimes: {0}, highScore: {1}, highLevel: {2}-{3}", thisTimeRecord.playTimes, thisTimeRecord.highScore, level, round);
+				eventData.Add("Game Info", gameInfo);
+				eventData.Add("High Score", thisTimeRecord.highScore);
+				eventData.Add("Play Times", thisTimeRecord.playTimes);
+				UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.InfiniteGameRecord, eventData);
             }
 
 			ModelManager.Instance.SaveFlipCardGameRecord(thisTimeRecord);

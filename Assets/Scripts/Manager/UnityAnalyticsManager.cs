@@ -5,8 +5,7 @@ using UnityEngine.Analytics;
 
 public class UnityAnalyticsManager : SingletonMonoBehavior<UnityAnalyticsManager> {
 	public enum EventType {OnClickShop, OnClickComingSoon, OnClickThemeInfo, OnClickRate, 
-		TimeModeEasy, TimeModeNormal, TimeModeHard, TimeModeCrazy, 
-	ClassicModeEasy, ClassicModeNormal, ClassicModeHard, ClassicModeCrazy}
+		InfiniteGameRecord}
 
 	public void SendCustomEvent(EventType eventType, Dictionary<string, object> eventData = null)
 	{
