@@ -15,6 +15,7 @@ public class ThemePackUI : MonoBehaviour {
 	public GameObject image_ThemeEquiped;
 	public GameObject group_Theme;
 	public GameObject group_Shop;
+	public GameObject group_Lock;
 	public Toggle toggle_Scene;
 	public Toggle toggle_Card;
 	VoidString onClickThemeInfo;
@@ -55,6 +56,7 @@ public class ThemePackUI : MonoBehaviour {
 		image_CardFace.sprite = InventoryManager.Instance.GetSpriteById(themePack.cardFace.ItemId);
 		image_CardBack.sprite = InventoryManager.Instance.GetSpriteById(themePack.cardBack.ItemId);
 		text_ThemePrice.text = themePack.theme.PurchaseType.GetPrice();
+		group_Lock.SetActive(false);
 
 		CheckUIState();
 	}
@@ -102,6 +104,33 @@ public class ThemePackUI : MonoBehaviour {
 		else
 		{
 			IsInBag = true;
+			
+			if(themePack.theme.ItemId == FlipCardStoreAsset.THEME_08_ITEM_ID)
+			{
+				if(ModelManager.Instance.GetInfiniteScore() < 40000)
+				{
+					group_Theme.SetActive(false);
+					group_Lock.SetActive(true);
+                } else
+				{
+					group_Theme.SetActive(true);
+					group_Lock.SetActive(false);
+				}
+			}
+
+			if(themePack.theme.ItemId == FlipCardStoreAsset.THEME_02_ITEM_ID)
+			{
+				if(PlayerPrefsManager.SecondInfiniteAchievement)
+				{
+					group_Theme.SetActive(true);
+					group_Lock.SetActive(false);
+				} else
+				{
+					group_Theme.SetActive(false);
+					group_Lock.SetActive(true);
+				}
+			}
+
 			ThemePackUIState stateShouldBe = ThemePackUIState.CanBeEquiped;
 
 			if(InventoryManager.Instance.IsCardEquip(themePack.cardBack.ItemId))

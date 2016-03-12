@@ -214,6 +214,11 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 		StoreInventory.BuyItem(buyingThemePack.theme.ItemId);
 	}
 
+	public void AddMoni(int value)
+	{
+		StoreInventory.GiveItem(FlipCardStoreAsset.MONI_ITEM_ID, value);
+    }
+
 	/// <summary>
 	/// Checks currently equipped good in given <c>category</c>
 	/// </summary>
@@ -262,6 +267,22 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 		}
 		if(GetEquippedVirtualGood(FlipCardStoreAsset.ThemeCategory.Name) == null)
 			EquipItem(FlipCardStoreAsset.THEME_00_ITEM_ID);
+
+		int theme02Count = StoreInventory.GetItemBalance(FlipCardStoreAsset.THEME_02_ITEM_ID);
+		if(theme02Count == 0)
+		{
+			StoreInventory.GiveItem(FlipCardStoreAsset.CARD_BACK_002_ITEM_ID, 1);
+			StoreInventory.GiveItem(FlipCardStoreAsset.CARD_FACE_002_ITEM_ID, 1);
+			StoreInventory.GiveItem(FlipCardStoreAsset.THEME_02_ITEM_ID, 1);
+		}
+
+		int theme08Count = StoreInventory.GetItemBalance(FlipCardStoreAsset.THEME_08_ITEM_ID);
+		if(theme08Count == 0)
+		{
+			StoreInventory.GiveItem(FlipCardStoreAsset.CARD_BACK_008_ITEM_ID, 1);
+			StoreInventory.GiveItem(FlipCardStoreAsset.CARD_FACE_008_ITEM_ID, 1);
+			StoreInventory.GiveItem(FlipCardStoreAsset.THEME_08_ITEM_ID, 1);
+		}
 	}
 
 	IEnumerator LoadInventoryTexture()

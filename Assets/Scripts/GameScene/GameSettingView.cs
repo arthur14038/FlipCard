@@ -27,6 +27,7 @@ public class GameSettingView : AbstractView {
 	public Text text_Title;
 	public Text text_PerfectCount;
 	public GameObject newHighScoreEffect;
+	public Image[] image_Task;
 
 	public RectTransform group_TwoPlayer;
 	public Image image_WinnerBoard;
@@ -134,7 +135,7 @@ public class GameSettingView : AbstractView {
 		yield return button_CompetitionGameOverExit.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
 	}
 
-	public void ShowSinglePlayerGameOver(int score, string level, bool recordBreak, int perfectCount)
+	public void ShowSinglePlayerGameOver(int score, string level, bool recordBreak, int perfectCount, bool[] thisTimeTask)
 	{
 		base.ShowUI(false);
 		AudioManager.Instance.PlayOneShot("Whistle");
@@ -143,6 +144,19 @@ public class GameSettingView : AbstractView {
 		text_Score.text = score.ToString();
 		text_Level.text = level;
 		text_PerfectCount.text = string.Format("Perfect match x {0}", perfectCount);
+
+		for(int i = 0 ; i < thisTimeTask.Length ; ++i)
+		{
+			Color taskColor = image_Task[i].color;
+			if(thisTimeTask[i])
+			{
+				taskColor.a = 1f;
+			}else
+			{
+				taskColor.a = 100f / 255f;
+			}
+			image_Task[i].color = taskColor;
+		}
 
 		if(recordBreak)
 		{

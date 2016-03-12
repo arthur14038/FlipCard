@@ -9,17 +9,25 @@ public class FlipCardView : AbstractView
 	public VoidNoneParameter onClickPlay;
 	public RectTransform group_FlipCard;
 	public RectTransform image_ShakeCircle;
+	public CanvasGroup group_Achievement;
+	public GameObject image_ScoreGet;
+	public GameObject image_ScoreNotGet;
+	public GameObject[] image_Check;
+	public GameObject[] image_Uncheck;
+	public Text text_Score;
 	public Text text_HighScore;
 	public Text text_HighLevel;
 	public Text text_LastScore;
 	public Text text_LastLevel;
+	public Text text_Task;
 
 	public override IEnumerator Init()
 	{
-		escapeEvent = OnClickBack;
-		yield return null;
 		GameRecord record = ModelManager.Instance.GetFlipCardGameRecord();
-		text_HighScore.text = record.highScore.ToString();
+		if(record.highScore > 0)
+			text_HighScore.text = record.highScore.ToString();
+		else
+			text_HighScore.text = "- -";
 
 		if(record.highLevel > 0)
 		{
@@ -28,8 +36,8 @@ public class FlipCardView : AbstractView
 			text_HighLevel.text = string.Format("{0}-{1}", level, round);
 		} else
 		{
-			text_HighLevel.text = "";
-        }
+			text_HighLevel.text = "- -";
+		}
 		string lastLevel = "";
 		for(int i = 0 ; i < record.lastLevel.Length ; ++i)
 		{
@@ -37,10 +45,13 @@ public class FlipCardView : AbstractView
 			{
 				int level = record.lastLevel[i] / 1000;
 				int round = record.lastLevel[i] % 1000;
-				lastLevel += string.Format("{0}-{1}\n", level, round) ;
+				lastLevel += string.Format("{0}-{1}\n", level, round);
 			}
 		}
-		text_LastLevel.text = lastLevel;
+		if(string.IsNullOrEmpty(lastLevel))
+			text_LastLevel.text = "- -";
+		else
+			text_LastLevel.text = lastLevel;
 
 		string lastScore = "";
 		for(int i = 0 ; i < record.lastScore.Length ; ++i)
@@ -50,8 +61,47 @@ public class FlipCardView : AbstractView
 				lastScore += record.lastScore[i] + "\n";
 			}
 		}
-		text_LastScore.text = lastScore;
-	}
+		if(string.IsNullOrEmpty(lastScore))
+			text_LastScore.text = "- -";
+		else
+			text_LastScore.text = lastScore;
+
+		escapeEvent = OnClickBack;
+		yield return null;
+		group_Achievement.gameObject.SetActive(false);
+
+		int targetCount = 0;
+
+		int targetScore = 40000;
+		int currentScore = ModelManager.Instance.GetInfiniteScore();
+		if(currentScore < targetScore)
+		{
+			image_ScoreGet.gameObject.SetActive(false);
+			image_ScoreNotGet.gameObject.SetActive(true);
+		} else
+		{
+			++targetCount;
+            image_ScoreGet.gameObject.SetActive(true);
+			image_ScoreNotGet.gameObject.SetActive(false);
+		}
+		text_Score.text = string.Format("{0}/<color=#099393FF>{1}</color>", currentScore, targetScore);
+
+		for(int i = 0 ; i < record.achievement.Length ; ++i)
+		{
+			if(record.achievement[i])
+			{
+				++targetCount;
+				image_Check[i].SetActive(true);
+				image_Uncheck[i].SetActive(false);
+			} else
+			{
+				image_Check[i].SetActive(false);
+				image_Uncheck[i].SetActive(true);
+			}
+		}
+
+		text_Task.text = string.Format("TASK {0}/7", targetCount);
+    }
 
 	public void OnClickBack()
 	{
@@ -65,6 +115,25 @@ public class FlipCardView : AbstractView
 		AudioManager.Instance.PlayOneShot("Button_Click");
 		if(onClickPlay != null)
 			onClickPlay();
+	}
+
+	public void OnClickTask()
+	{
+		AudioManager.Instance.PlayOneShot("Button_Click");
+
+		group_Achievement.gameObject.SetActive(true);
+		group_Achievement.alpha = 0f;
+		group_Achievement.DOFade(1f, 0.3f).SetEase(Ease.OutQuad);
+    }
+
+	public void OnClickLeaveTask()
+	{
+		AudioManager.Instance.PlayOneShot("Button_Click2");
+		group_Achievement.DOFade(0f, 0.3f).SetEase(Ease.InQuad).OnComplete(
+			delegate () {
+				group_Achievement.gameObject.SetActive(false);
+			}
+		);
 	}
 
 	public IEnumerator ShakeEffect(RectTransform shakeItem, float enterDuration)

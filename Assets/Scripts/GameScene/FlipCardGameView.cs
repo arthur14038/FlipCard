@@ -14,6 +14,7 @@ public class FlipCardGameView : AbstractView
 	public Text text_Level;
 	public Text text_Round;
 	public Text text_AddScore;
+	public Text text_Task;
 	public RectTransform group_Counting;
 	public RectTransform image_Counting3;
 	public RectTransform image_Counting2;
@@ -25,6 +26,7 @@ public class FlipCardGameView : AbstractView
 	public RectTransform group_SpecialCard;
 	public RectTransform image_BombCard;
 	public RectTransform image_FlareCard;
+	public RectTransform group_Task;
 	public Button button_Pause;
 	public Button button_BonusTime;
 	public Button button_NextLevel;
@@ -48,6 +50,7 @@ public class FlipCardGameView : AbstractView
 		group_Perfect.gameObject.SetActive(false);
 		image_WindowBG.gameObject.SetActive(false);
 		text_AddScore.gameObject.SetActive(false);
+		group_Task.gameObject.SetActive(false);
 		yield return null;
 	}
 
@@ -67,7 +70,6 @@ public class FlipCardGameView : AbstractView
 
 	public void OnClickBonusTime()
 	{
-		AudioManager.Instance.PlayOneShot("Button_Click");
 		if(onClickBonusTime != null)
 			onClickBonusTime();
 	}
@@ -130,7 +132,7 @@ public class FlipCardGameView : AbstractView
 		group_Perfect.gameObject.SetActive(false);
 	}
 
-	public IEnumerator ShowNextLevelUI(int level, int round, int originalScore, int addScore, int specialCardType)
+	public IEnumerator ShowNextLevelUI(int level, int round, int originalScore, int addScore, int specialCardType, bool thisLevelTaskComplete)
 	{
 		nextLevel = level - 1;
         button_BonusTime.interactable = false;
@@ -168,6 +170,19 @@ public class FlipCardGameView : AbstractView
 
 		text_AddScore.gameObject.SetActive(false);
 
+		if(thisLevelTaskComplete)
+		{
+			text_Task.text = string.Format("Level {0} Task Complete!", level - 1);
+			group_Task.gameObject.SetActive(true);
+
+			group_Task.localScale = Vector3.zero;
+			yield return group_Task.DOScale(1f, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
+			yield return new WaitForSeconds(0.2f);
+			yield return group_Task.DOScale(0f, 0.3f).SetEase(Ease.InBack).WaitForCompletion();
+
+			group_Task.gameObject.SetActive(false);
+		}
+
 		text_Level.text = string.Format("LEVEL {0}", level);
 		text_Round.text = string.Format("You have {0} rounds in this level.", round);
 		infiniteProgressBar.SetProgress(level - 2);
@@ -184,14 +199,14 @@ public class FlipCardGameView : AbstractView
 
 	public IEnumerator ShowBonusButton()
 	{
-		yield return new WaitForSeconds(0.3f);  //等桌面清空
 		text_AddScore.text = "";
 		text_AddScore.gameObject.SetActive(true);
         button_BonusTime.gameObject.SetActive(true);
-		button_BonusTime.interactable = true;
+		button_BonusTime.interactable = false;
 
 		button_BonusTime.transform.localScale = Vector3.zero;
 		yield return button_BonusTime.transform.DOScale(1f, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
+		button_BonusTime.interactable = true;
 	}
 	
 	public void SetBonusScore(int value)

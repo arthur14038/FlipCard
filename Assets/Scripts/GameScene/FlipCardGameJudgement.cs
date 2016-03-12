@@ -13,11 +13,15 @@ public class FlipCardGameJudgement : GameModeJudgement
 	int finalLevel = 6;
 	int bonusAddScore;
 	int perfectCount;
+	int bombActiveTimes;
+	int flareActiveTimes;
 	float reduceShowCardTime;
 	float gamePassTime;
+	float leftTimeInBonus;
 	bool comboAward;
 	bool bonusTimeOn;
 	bool lockNextRound;
+	bool[] thisTimeChallenge = new bool[] { false, false, false, false, false, false };
 
 	public override IEnumerator Init(GameMainView gameMainView, GameSettingView gameSettingView, AbstractView modeView)
 	{
@@ -74,9 +78,7 @@ public class FlipCardGameJudgement : GameModeJudgement
 
 	protected override void GameOver(params int[] values)
 	{
-		if(PlayerPrefsManager.UnlockMode == 0)
-			PlayerPrefsManager.UnlockMode = 1;
-		else if(PlayerPrefsManager.UnlockMode == 1)
+		if(PlayerPrefsManager.UnlockMode < 3)
 			PlayerPrefsManager.UnlockMode = 3;
 
 		base.GameOver(values);
@@ -106,12 +108,20 @@ public class FlipCardGameJudgement : GameModeJudgement
 		lastRecord.lastScore[1] = lastRecord.lastScore[0];
 		lastRecord.lastScore[0] = thisTimeScore;
 
+		for(int i = 0 ; i < lastRecord.achievement.Length ; ++i)
+		{
+			if(!lastRecord.achievement[i] && thisTimeChallenge[i])
+				lastRecord.achievement[i] = true;
+        }
+
+		ModelManager.Instance.AddInfiniteScore(thisTimeScore);
+
 		lastRecord.playTimes += 1;
 		
 		if(saveGameRecord != null)
 			saveGameRecord(lastRecord);
 		
-		gameSettingView.ShowSinglePlayerGameOver(values[0], string.Format("{0}-{1}", values[1], values[2]), recordBreak, perfectCount);
+		gameSettingView.ShowSinglePlayerGameOver(values[0], string.Format("{0}-{1}", values[1], values[2]), recordBreak, perfectCount, thisTimeChallenge);
 	}
 
 	public override void JudgementUpdate()
@@ -196,10 +206,16 @@ public class FlipCardGameJudgement : GameModeJudgement
 				}
 
 				if(cards[0].IsBombCard && gameMainView.GetTableCardCount() > 0)
+				{
+					++bombActiveTimes;
 					gameMainView.StartCoroutine(BombCardEffect());
+				}
 				
 				if(cards[0].IsFlareCard && gameMainView.GetTableCardCount() > 0)
+				{
+					++flareActiveTimes;
 					gameMainView.ShowFlare();
+				}
 			} else
 			{
 				++mismatchTimes;
@@ -275,7 +291,8 @@ public class FlipCardGameJudgement : GameModeJudgement
 				SetNewRoundTable(normalCardCount, questionCardCount, -1);
 			} else if(!bonusTimeOn)
 			{
-				gameMainView.StartCoroutine(StartBonusTime());
+				leftTimeInBonus = currentGameSetting.levelTime - gamePassTime;
+                gameMainView.StartCoroutine(StartBonusTime());
 			}
 		}
 	}
@@ -284,9 +301,51 @@ public class FlipCardGameJudgement : GameModeJudgement
 	{
 		if(currentLevel == finalLevel || currentRound < currentGameSetting.round)
 		{
+			if(currentLevel == finalLevel && currentRound >= currentGameSetting.round*3)
+				thisTimeChallenge[5] = true;
 			GameOver(score, currentLevel, currentRound + 1);
 		} else
 		{
+			bool thisLevelTaskComplete = false;
+			switch(currentLevel)
+			{
+				case 1:
+					if(perfectCount == currentGameSetting.round)
+					{
+						thisLevelTaskComplete = true;
+						thisTimeChallenge[0] = true;
+					}
+					break;
+				case 2:
+					if(leftTimeInBonus >= 10f)
+					{
+						thisLevelTaskComplete = true;
+						thisTimeChallenge[1] = true;
+					}
+					break;
+				case 3:
+					if(bombActiveTimes == 0 && flareActiveTimes == 0)
+					{
+						thisLevelTaskComplete = true;
+						thisTimeChallenge[2] = true;
+					}
+					break;
+				case 4:
+					if(bonusAddScore == 0)
+					{
+						thisLevelTaskComplete = true;
+						thisTimeChallenge[3] = true;
+					}
+					break;
+				case 5:
+					if(bonusAddScore >= 80)
+					{
+						thisLevelTaskComplete = true;
+						thisTimeChallenge[4] = true;
+					}
+					break;
+			}
+
 			if(bonusTimeOn)
 				bonusTimeOn = false;
 
@@ -307,7 +366,8 @@ public class FlipCardGameJudgement : GameModeJudgement
 				specialCardType = 3;
 			}
 
-			flipCardGameView.StartCoroutine(flipCardGameView.ShowNextLevelUI(currentLevel, currentGameSetting.round, score, bonusAddScore, specialCardType));
+			flipCardGameView.StartCoroutine(flipCardGameView.ShowNextLevelUI(currentLevel, 
+				currentGameSetting.round, score, bonusAddScore, specialCardType, thisLevelTaskComplete));
 
 			score += bonusAddScore;
 		}
@@ -318,6 +378,8 @@ public class FlipCardGameJudgement : GameModeJudgement
 		lockNextRound = false;
         flipCardGameView.AddTimeEffect(1f);
 		gamePassTime = 0;
+		bombActiveTimes = 0;
+		flareActiveTimes = 0;
 
 		int questionCardCount = 0;
 		int normalCardCount = currentGameSetting.cardCount;
@@ -335,6 +397,8 @@ public class FlipCardGameJudgement : GameModeJudgement
 	{
 		if(currentState == GameState.Playing)
 		{
+			float pitch = 1f + 0.1f * (bonusAddScore/20);
+			AudioManager.Instance.PlayOneShot("BonusSound", pitch);
 			++bonusAddScore;
 			flipCardGameView.SetBonusScore(bonusAddScore);
 		}
@@ -344,20 +408,17 @@ public class FlipCardGameJudgement : GameModeJudgement
 	{
 		bonusTimeOn = true;
 		flipCardGameView.ToggleFeverTimeEffect(true);
+		gameMainView.ToggleMask(false);
 		flipCardGameView.StartCoroutine(flipCardGameView.FeverTimeEffect());
 		bonusAddScore = 0;
 
-		yield return new WaitForSeconds(0.5f);
+		while(currentState == GameState.Pausing)
+			yield return null;
+
+		yield return new WaitForSeconds(0.8f);
 
 		yield return flipCardGameView.StartCoroutine(flipCardGameView.ShowBonusButton());
-
-		while(currentState == GameState.Pausing)
-			yield return null;
-		gameMainView.ToggleMask(false);
-		yield return new WaitForSeconds(0.35f);
-
-		while(currentState == GameState.Pausing)
-			yield return null;
+		
 		SetCurrentState(GameState.Playing);
 	}
 

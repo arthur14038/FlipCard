@@ -31,4 +31,40 @@ public class PlayerPrefsManager{
 			PlayerPrefs.SetInt("UnlockMode", value);
 		}
 	}
+
+	public static string InfiniteScore
+	{
+		get
+		{
+			return PlayerPrefs.GetString("InfiniteScore", "");
+		}
+		set
+		{
+			PlayerPrefs.SetString("InfiniteScore", value);
+		}
+	}
+
+	public static bool FirstInfiniteAchievement
+	{
+		get
+		{
+			return PlayerPrefs.GetInt("FirstInfiniteAchievement", 0) == 0 ? false : true;
+		}
+		set
+		{
+			PlayerPrefs.SetInt("FirstInfiniteAchievement", value ? 1 : 0);
+		}
+	}
+
+	public static bool SecondInfiniteAchievement
+	{
+		get
+		{
+			return PlayerPrefs.GetInt("SecondInfiniteAchievement", 0) == 0 ? false : true;
+		}
+		set
+		{
+			PlayerPrefs.SetInt("SecondInfiniteAchievement", value ? 1 : 0);
+		}
+	}
 }

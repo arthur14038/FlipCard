@@ -28,12 +28,28 @@ public class ModelManager : SingletonMonoBehavior<ModelManager> {
 		{
 			string jsonString = EncodeTool.GetDecodedBase64(encodedString, encodeKey, encodeIV);
 			flipCardGameRecord = JsonConvert.DeserializeObject<GameRecord>(jsonString);
+			if(flipCardGameRecord.achievement == null)
+				flipCardGameRecord.achievement = new bool[] { false, false, false, false, false, false };
 		}
     }
 
 	public void SaveFlipCardGameRecord(GameRecord record)
 	{
 		flipCardGameRecord = record;
+		if(!PlayerPrefsManager.FirstInfiniteAchievement)
+		{
+			if(record.achievement[0] && record.achievement[1] && record.achievement[2])
+			{
+				PlayerPrefsManager.FirstInfiniteAchievement = true;
+				InventoryManager.Instance.AddMoni(220);
+            }
+        }
+
+		if(!PlayerPrefsManager.SecondInfiniteAchievement)
+		{
+			if(record.achievement[3] && record.achievement[4] && record.achievement[5])
+				PlayerPrefsManager.SecondInfiniteAchievement = true;
+		}
 		string jsonString = JsonConvert.SerializeObject(flipCardGameRecord);
 		string encodedString = EncodeTool.GetEncodedBase64(jsonString, encodeKey, encodeIV);
 		string filePath = GetSaveFilePath(flipCardRecordFileName);
@@ -47,13 +63,39 @@ public class ModelManager : SingletonMonoBehavior<ModelManager> {
 			flipCardGameRecord = new GameRecord();
 			flipCardGameRecord.lastLevel = new int[] { 0, 0, 0 };
 			flipCardGameRecord.lastScore = new int[] { 0, 0, 0 };
-			flipCardGameRecord.playTimes = 0;
+			flipCardGameRecord.achievement = new bool[] { false, false, false, false, false, false };
+            flipCardGameRecord.playTimes = 0;
 			flipCardGameRecord.highLevel = 0;
 			flipCardGameRecord.highScore = 0;
         }
 		return flipCardGameRecord;
 	}
 	
+	public int GetInfiniteScore()
+	{
+		int infiniteScore = 0;
+
+		string encodedString = PlayerPrefsManager.InfiniteScore;
+		if(!string.IsNullOrEmpty(encodedString))
+		{
+			infiniteScore = int.Parse(EncodeTool.GetDecodedBase64(encodedString, encodeKey, encodeIV));
+		}
+
+		return infiniteScore;
+    }
+
+	public int AddInfiniteScore(int addAmount)
+	{
+		int infiniteScore = GetInfiniteScore();
+
+		infiniteScore += addAmount;
+		
+		string encodedString = EncodeTool.GetEncodedBase64(infiniteScore.ToString(), encodeKey, encodeIV);
+		PlayerPrefsManager.InfiniteScore = encodedString;
+
+		return infiniteScore;
+    }
+
 	string GetSaveFilePath(string fileName)
 	{
 		string saveFilePath = "";
@@ -76,5 +118,6 @@ public class GameRecord
 	public int[] lastLevel;
 	public int highScore;
 	public int[] lastScore;
+	public bool[] achievement;
 	public int playTimes;
 }
