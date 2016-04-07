@@ -115,6 +115,8 @@ public class FlipCardGameJudgement : GameModeJudgement
         }
 
 		ModelManager.Instance.AddInfiniteScore(thisTimeScore);
+		int thisTimeGetMoni = thisTimeScore / 10;
+		InventoryManager.Instance.AddMoni(thisTimeGetMoni);
 
 		lastRecord.playTimes += 1;
 		

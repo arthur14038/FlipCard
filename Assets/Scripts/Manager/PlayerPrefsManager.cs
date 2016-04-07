@@ -1,7 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PlayerPrefsManager{
+	static string encodeKey = "FlipCard";
+	static string encodeMoniIV = "Pleasure";
+	static string encodeScoreIV = "VeryGood";
+
 	public static bool SoundSetting{
 		get{
 			return PlayerPrefs.GetInt("SoundSetting", 1) == 1 ? true : false;
@@ -32,15 +37,24 @@ public class PlayerPrefsManager{
 		}
 	}
 
-	public static string InfiniteScore
+	public static int InfiniteScore
 	{
 		get
 		{
-			return PlayerPrefs.GetString("InfiniteScore", "");
+			string encodedString = PlayerPrefs.GetString("InfiniteScore", null);
+			if(string.IsNullOrEmpty(encodedString))
+			{
+				return 0;
+			} else
+			{
+				string decodeString = EncodeTool.GetDecodedBase64(encodedString, encodeKey, encodeScoreIV);
+				return int.Parse(decodeString);
+			}
 		}
 		set
 		{
-			PlayerPrefs.SetString("InfiniteScore", value);
+			string encodedString = EncodeTool.GetEncodedBase64(value.ToString(), encodeKey, encodeScoreIV);
+			PlayerPrefs.SetString("InfiniteScore", encodedString);
 		}
 	}
 
@@ -65,6 +79,75 @@ public class PlayerPrefsManager{
 		set
 		{
 			PlayerPrefs.SetInt("SecondInfiniteAchievement", value ? 1 : 0);
+		}
+	}
+
+	public static int MoniCount
+	{
+		get
+		{
+			string encodedString = PlayerPrefs.GetString("MoniCount", null);
+			if(string.IsNullOrEmpty(encodedString))
+			{
+				return 0;
+			}else
+			{
+				string decodeString = EncodeTool.GetDecodedBase64(encodedString, encodeKey, encodeMoniIV);
+				return int.Parse(decodeString);
+			}
+        }
+		set
+		{
+			string encodedString = EncodeTool.GetEncodedBase64(value.ToString(), encodeKey, encodeMoniIV);
+			PlayerPrefs.SetString("MoniCount", encodedString);
+		}
+	}
+
+	public static string EquipedThemeId
+	{
+		get
+		{
+			return PlayerPrefs.GetString("EquipedThemeId", "Theme_00");
+		}
+		set
+		{
+			PlayerPrefs.SetString("EquipedThemeId", value);
+        }
+	}
+
+	public static string EquipedCardFaceId
+	{
+		get
+		{
+			return PlayerPrefs.GetString("EquipedCardFaceId", "CardFace_000");
+		}
+		set
+		{
+			PlayerPrefs.SetString("EquipedCardFaceId", value);
+		}
+	}
+
+	public static string EquipedCardBackId
+	{
+		get
+		{
+			return PlayerPrefs.GetString("EquipedCardBackId", "CardBack_000");
+		}
+		set
+		{
+			PlayerPrefs.SetString("EquipedCardBackId", value);
+		}
+	}
+
+	public static int OwnedTheme
+	{
+		get
+		{
+			return PlayerPrefs.GetInt("OwnedTheme", 261);
+		}
+		set
+		{
+			PlayerPrefs.SetInt("OwnedTheme", value);
 		}
 	}
 }

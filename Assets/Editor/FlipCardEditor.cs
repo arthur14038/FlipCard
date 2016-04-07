@@ -26,6 +26,14 @@ public class FlipCardEditor : EditorWindow
 			GUILayout.Label("MusicSetting: " + PlayerPrefsManager.MusicSetting);
 			GUILayout.Label("SoundSetting: " + PlayerPrefsManager.SoundSetting);
 			GUILayout.Label("UnlockMode: " + PlayerPrefsManager.UnlockMode);
+			GUILayout.Label("InfiniteScore: " + PlayerPrefsManager.InfiniteScore);
+			GUILayout.Label("FirstInfiniteAchievement: " + PlayerPrefsManager.FirstInfiniteAchievement);
+			GUILayout.Label("SecondInfiniteAchievement: " + PlayerPrefsManager.SecondInfiniteAchievement);
+			GUILayout.Label("MoniCount: " + PlayerPrefsManager.MoniCount);
+			GUILayout.Label("EquipedThemeId: " + PlayerPrefsManager.EquipedThemeId);
+			GUILayout.Label("EquipedCardFaceId: " + PlayerPrefsManager.EquipedCardFaceId);
+			GUILayout.Label("EquipedCardBackId: " + PlayerPrefsManager.EquipedCardBackId);
+			GUILayout.Label("OwnedTheme: " + PlayerPrefsManager.OwnedTheme);
 		}
 
 		GUILayout.BeginHorizontal();

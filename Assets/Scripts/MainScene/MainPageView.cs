@@ -25,7 +25,6 @@ public class MainPageView : AbstractView {
 	public VoidNoneParameter onClick2P;
 	public VoidNoneParameter onClickComingSoon;
 	public VoidNoneParameter onClickGoToFacebook;
-	private Vector2 settingWindowPos = new Vector2(0f, 832f);
 
 	public override IEnumerator Init ()
 	{

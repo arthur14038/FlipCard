@@ -74,27 +74,12 @@ public class ModelManager : SingletonMonoBehavior<ModelManager> {
 	
 	public int GetInfiniteScore()
 	{
-		int infiniteScore = 0;
-
-		string encodedString = PlayerPrefsManager.InfiniteScore;
-		if(!string.IsNullOrEmpty(encodedString))
-		{
-			infiniteScore = int.Parse(EncodeTool.GetDecodedBase64(encodedString, encodeKey, encodeIV));
-		}
-
-		return infiniteScore;
+		return PlayerPrefsManager.InfiniteScore;
     }
 
-	public int AddInfiniteScore(int addAmount)
+	public void AddInfiniteScore(int addAmount)
 	{
-		int infiniteScore = GetInfiniteScore();
-
-		infiniteScore += addAmount;
-		
-		string encodedString = EncodeTool.GetEncodedBase64(infiniteScore.ToString(), encodeKey, encodeIV);
-		PlayerPrefsManager.InfiniteScore = encodedString;
-
-		return infiniteScore;
+		PlayerPrefsManager.InfiniteScore += addAmount;
     }
 
 	string GetSaveFilePath(string fileName)

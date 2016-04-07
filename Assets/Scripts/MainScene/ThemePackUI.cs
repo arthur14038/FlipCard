@@ -2,7 +2,6 @@
 using System.Collections;
 using UnityEngine.UI;
 using DG.Tweening;
-using Soomla.Store;
 
 public class ThemePackUI : MonoBehaviour {
 	enum ThemePackUIState {EquipedCard, EquipedTheme, EquipedBoth, CanBeEquiped }
@@ -21,8 +20,8 @@ public class ThemePackUI : MonoBehaviour {
 	VoidString onClickThemeInfo;
 	VoidString onEquipTheme;
 	VoidTwoString onEquipCard;
-	VoidThemePack onClickThemePrice;
-	ThemePack themePack;
+	VoidThemeInfo onClickThemePrice;
+	ThemeInfo themeInfo;
 	bool inBag;
 	public bool IsInBag {
 		get
@@ -45,17 +44,17 @@ public class ThemePackUI : MonoBehaviour {
 		}
 	}
 
-	public void Init(ThemePack themePack, VoidString onEquipTheme, VoidTwoString onEquipCard, VoidThemePack onClickThemePrice, VoidString onClickThemeInfo)
+	public void Init(ThemeInfo themeInfo, VoidString onEquipTheme, VoidTwoString onEquipCard, VoidThemeInfo onClickThemePrice, VoidString onClickThemeInfo)
 	{
-		this.themePack = themePack;
+		this.themeInfo = themeInfo;
 		this.onEquipTheme = onEquipTheme;
 		this.onEquipCard = onEquipCard;
 		this.onClickThemePrice = onClickThemePrice;
 		this.onClickThemeInfo = onClickThemeInfo;
-		image_Theme.sprite = InventoryManager.Instance.GetSpriteById(themePack.theme.ItemId);
-		image_CardFace.sprite = InventoryManager.Instance.GetSpriteById(themePack.cardFace.ItemId);
-		image_CardBack.sprite = InventoryManager.Instance.GetSpriteById(themePack.cardBack.ItemId);
-		text_ThemePrice.text = themePack.theme.PurchaseType.GetPrice();
+		image_Theme.sprite = InventoryManager.Instance.GetSpriteById(themeInfo.themeItemId);
+		image_CardFace.sprite = InventoryManager.Instance.GetSpriteById(themeInfo.cardFaceId);
+		image_CardBack.sprite = InventoryManager.Instance.GetSpriteById(themeInfo.cardBackId);
+		text_ThemePrice.text = themeInfo.requireMoni.ToString();
 		group_Lock.SetActive(false);
 
 		CheckUIState();
@@ -64,14 +63,14 @@ public class ThemePackUI : MonoBehaviour {
 	public void OnClickInfo()
 	{
 		if(onClickThemeInfo != null)
-			onClickThemeInfo(themePack.theme.ItemId);
+			onClickThemeInfo(themeInfo.themeItemId);
 	}
 
 	public void OnClickEquipTheme()
 	{
 		if(currentState == ThemePackUIState.CanBeEquiped || currentState == ThemePackUIState.EquipedCard)
 		{
-			onEquipTheme(themePack.theme.ItemId);
+			onEquipTheme(themeInfo.themeItemId);
 		}
 	}
 
@@ -79,7 +78,7 @@ public class ThemePackUI : MonoBehaviour {
 	{
 		if(currentState == ThemePackUIState.CanBeEquiped || currentState == ThemePackUIState.EquipedTheme)
 		{
-			onEquipCard(themePack.cardFace.ItemId, themePack.cardBack.ItemId);
+			onEquipCard(themeInfo.cardFaceId, themeInfo.cardBackId);
 		}
 	}
 
@@ -88,14 +87,13 @@ public class ThemePackUI : MonoBehaviour {
 		if(!IsInBag)
 		{
 			if(onClickThemePrice != null)
-				onClickThemePrice(themePack);
+				onClickThemePrice(themeInfo);
 		}
 	}
 
 	public void CheckUIState()
 	{
-		int themeBalance = StoreInventory.GetItemBalance(themePack.theme.ItemId);
-		if(themeBalance == 0)
+		if(!themeInfo.isOwned)
 		{
 			IsInBag = false;
 			image_CardEquiped.SetActive(false);
@@ -105,7 +103,7 @@ public class ThemePackUI : MonoBehaviour {
 		{
 			IsInBag = true;
 			
-			if(themePack.theme.ItemId == FlipCardStoreAsset.THEME_08_ITEM_ID)
+			if(themeInfo.themeItemId == "Theme_08")
 			{
 				if(ModelManager.Instance.GetInfiniteScore() < 40000)
 				{
@@ -118,7 +116,7 @@ public class ThemePackUI : MonoBehaviour {
 				}
 			}
 
-			if(themePack.theme.ItemId == FlipCardStoreAsset.THEME_02_ITEM_ID)
+			if(themeInfo.themeItemId == "Theme_02")
 			{
 				if(PlayerPrefsManager.SecondInfiniteAchievement)
 				{
@@ -133,10 +131,10 @@ public class ThemePackUI : MonoBehaviour {
 
 			ThemePackUIState stateShouldBe = ThemePackUIState.CanBeEquiped;
 
-			if(InventoryManager.Instance.IsCardEquip(themePack.cardBack.ItemId))
+			if(InventoryManager.Instance.IsCardEquip(themeInfo.cardBackId))
 				stateShouldBe = ThemePackUIState.EquipedCard;
 
-			if(InventoryManager.Instance.IsThemeEquiped(themePack.theme.ItemId))
+			if(InventoryManager.Instance.IsThemeEquiped(themeInfo.themeItemId))
 			{
 				if(stateShouldBe == ThemePackUIState.EquipedCard)
 					stateShouldBe = ThemePackUIState.EquipedBoth;

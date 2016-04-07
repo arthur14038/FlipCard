@@ -3,26 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine.UI;
-using Soomla.Store;
 
 public class ShopView : AbstractView
 {
-	enum ShopGroup {Theme, Shop, Moni, None}
+	enum ShopGroup {Theme, Shop, None}
 	ShopGroup currentGroup = ShopGroup.None;
 	enum MsgWindowState {Close, ConfirmBuy, NotEnoughMoni, ThemeInfo}
 	MsgWindowState currentMsgWindowState;
 	public VoidNoneParameter onClickBack;
 	public VoidString onClickThemeInfo;
 	public VoidString onClickEquipTheme;
-	public VoidThemePack onClickThemePrice;
+	public VoidThemeInfo onClickThemePrice;
 	public VoidTwoString onClickEquipCard;
-	public VoidInt onClickBuyMoniPack;
 	public VoidNoneParameter onClickConfirmBuyTheme;
 	public Text text_CurrentMoni;
 	public RectTransform group_Shop;
 	public RectTransform content_ThemeUI;
 	public RectTransform group_Theme;
-	public RectTransform group_Moni;
 	public Image image_PopUpMask;
 	public RectTransform group_MsgWindow;
 	public Text text_MsgTitle;
@@ -46,7 +43,6 @@ public class ShopView : AbstractView
 	public GameObject group_ThemeBuyingInfo;
 	public ScrollRect scrollView;
 	public GameObject group_SoldOut;
-	public RectTransform[] waveMoni;
     Coroutine loadingAnimation;
 	Vector3 rotateAngle = new Vector3(0f, 0f, 120f);
 
@@ -56,23 +52,12 @@ public class ShopView : AbstractView
 		InventoryManager.Instance.updateCurrency += UpdateMoniCount;
 		UpdateMoniCount();
 
-		List<ThemePack> themePackList = InventoryManager.Instance.GetAllThemePack();
+		List<ThemeInfo> themeInfoList = InventoryManager.Instance.GetAllThemeInfo();
 
-		for(int i = 0 ; i < themePackList.Count ; ++i)
+		for(int i = 0 ; i < themeInfoList.Count ; ++i)
 		{
-			themePackUIList[i].Init(themePackList[i], OnClickEquipTheme, OnClickEquipCard, OnClickThemePrice, OnClickThemeInfo);
+			themePackUIList[i].Init(themeInfoList[i], OnClickEquipTheme, OnClickEquipCard, OnClickThemePrice, OnClickThemeInfo);
 		}
-		//for(int i = 0 ; i < themePackList.Count ; ++i)
-		//{
-		//	GameObject tmp = Instantiate(themePackUIPrefab) as GameObject;
-		//	tmp.transform.SetParent(content_ThemeUI);
-		//	tmp.transform.localScale = Vector3.one;
-		//	tmp.name = themePackUIPrefab.name + i.ToString();
-		//	ThemePackUI themePackUI = tmp.GetComponent<ThemePackUI>();
-		//	themePackUI.Init(themePackList[i], OnClickEquipTheme, OnClickEquipCard, OnClickThemePrice);
-		//	themePackUIDictionary.Add(i, themePackUI);
-		//}
-		//themePackUIPrefab = null;
 
 		image_PopUpMask.gameObject.SetActive(false);
 		group_LoadingWindow.gameObject.SetActive(false);
@@ -103,21 +88,10 @@ public class ShopView : AbstractView
 				if(onClickConfirmBuyTheme != null)
 					onClickConfirmBuyTheme();
 				break;
-			case MsgWindowState.NotEnoughMoni:
-				swithToggle[(int)ShopGroup.Moni].isOn = true;
-				SetCurrentGroup(ShopGroup.Moni);
-				break;
 		}
 		StartCoroutine(CloseMsgWindow());
 	}
 	
-	public void BuyMoniPack(int tier)
-	{
-		AudioManager.Instance.PlayOneShot("Button_Click");
-		if(onClickBuyMoniPack != null)
-			onClickBuyMoniPack(tier);
-	}
-
 	public void ToggleGroup(int groupIndex)
 	{
 		AudioManager.Instance.PlayOneShot("Button_Click");
@@ -130,13 +104,13 @@ public class ShopView : AbstractView
 	public void ShowMoniNotEnough()
 	{
 		currentMsgWindowState = MsgWindowState.NotEnoughMoni;
-		ShowMsgWindow("Your Moni is not enough", "You don't have enough \nMoni to buy this theme.\nDo you want to buy some Moni?");
+		ShowMsgWindow("Your Moni is not enough", "You don't have enough \nMoni to buy this theme.");
 	}
 
-	public void ShowConfirmBuy(VirtualGood good)
+	public void ShowConfirmBuy(int cost)
 	{
 		currentMsgWindowState = MsgWindowState.ConfirmBuy;
-		string content = string.Format("Buying this theme will cost \n{0} Moni.\nAre you sure?", good.PurchaseType.GetPrice());
+		string content = string.Format("Buying this theme will cost \n{0} Moni.\nAre you sure?", cost);
 		ShowMsgWindow("Confirm Buy", content);
 	}
 
@@ -189,7 +163,7 @@ public class ShopView : AbstractView
 
 	void UpdateMoniCount()
 	{
-		text_CurrentMoni.text = StoreInventory.GetItemBalance(FlipCardStoreAsset.MONI_ITEM_ID).ToString();
+		text_CurrentMoni.text = PlayerPrefsManager.MoniCount.ToString();
 	}
 
 	void ShowMsgWindow(string title, string content, int group = 0)
@@ -331,7 +305,6 @@ public class ShopView : AbstractView
 						themePackUI.gameObject.SetActive(false);
 				}
 				group_ThemeBuyingInfo.gameObject.SetActive(true);
-				group_Moni.gameObject.SetActive(false);
 				group_Theme.gameObject.SetActive(true);
 				group_SoldOut.SetActive(false);
                 break;
@@ -360,12 +333,6 @@ public class ShopView : AbstractView
 					group_Theme.gameObject.SetActive(false);
 				}
 				group_ThemeBuyingInfo.gameObject.SetActive(false);
-				group_Moni.gameObject.SetActive(false);
-				break;
-			case ShopGroup.Moni:
-				group_SoldOut.SetActive(false);
-				group_Theme.gameObject.SetActive(false);
-				group_Moni.gameObject.SetActive(true);
 				break;
 		}
 	}
@@ -384,11 +351,11 @@ public class ShopView : AbstractView
 			onClickEquipCard(cardFaceItemId, cardBackItemId);
 	}
 
-	void OnClickThemePrice(ThemePack themePack)
+	void OnClickThemePrice(ThemeInfo themeInfo)
 	{
 		AudioManager.Instance.PlayOneShot("Button_Click");
 		if(onClickThemePrice != null)
-			onClickThemePrice(themePack);
+			onClickThemePrice(themeInfo);
     }
 
 	void OnClickThemeInfo(string themeItemId)
@@ -415,10 +382,6 @@ public class ShopView : AbstractView
 				foreach(ThemePackUI themePackUI in themePackUIList)
 					if(themePackUI.gameObject.activeInHierarchy)
 						StartCoroutine(themePackUI.EnterEffect(0.5f));
-				break;
-			case ShopGroup.Moni:
-				foreach(RectTransform moni in waveMoni)
-					StartCoroutine(WaveEffect(moni, 0.5f));
 				break;
 		}
 		group_Shop.gameObject.SetActive(true);

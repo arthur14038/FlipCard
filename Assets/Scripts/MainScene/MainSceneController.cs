@@ -9,7 +9,7 @@ public class MainSceneController : AbstractController {
 	public TwoPlayerView twoPlayerView;
 	public ShopView shopView;
 	string notifyMessage;
-	ThemePack wantedThemePack;
+	ThemeInfo wantedTheme;
 		
 	public override IEnumerator Init ()
 	{
@@ -37,7 +37,6 @@ public class MainSceneController : AbstractController {
 		shopView.onClickThemePrice = CheckCanAfford;
 		shopView.onClickEquipCard = EquipCard;
 		shopView.onClickEquipTheme = EquipTheme;
-		shopView.onClickBuyMoniPack = BuyMoniPack;
 		shopView.onClickConfirmBuyTheme = BuyThemePack;
 		shopView.onClickThemeInfo = ShowThemeInfo;
 
@@ -162,37 +161,37 @@ public class MainSceneController : AbstractController {
 
 	void EquipTheme(string themeItemId)
 	{
-		InventoryManager.Instance.EquipItem(themeItemId);
+		InventoryManager.Instance.EquipTheme(themeItemId);
 		mainPageView.UpdateTheme();
 		shopView.UpdateThemePackList();
 	}
 
 	void EquipCard(string cardBackItemId, string cardFaceItemId)
 	{
-		InventoryManager.Instance.EquipItem(cardBackItemId);
-		InventoryManager.Instance.EquipItem(cardFaceItemId);
+		InventoryManager.Instance.EquipCardBack(cardBackItemId);
+		InventoryManager.Instance.EquipCardFace(cardFaceItemId);
 		shopView.UpdateThemePackList();
 	}
 
-	void CheckCanAfford(ThemePack themePack)
+	void CheckCanAfford(ThemeInfo themeInfo)
 	{
-		wantedThemePack = themePack;
-		if(wantedThemePack.theme.CanAfford())
-			shopView.ShowConfirmBuy(wantedThemePack.theme);
+		wantedTheme = themeInfo;
+		if(InventoryManager.Instance.CanAfford(wantedTheme.themeItemId))
+			shopView.ShowConfirmBuy(wantedTheme.requireMoni);
 		else
 			shopView.ShowMoniNotEnough();
 	}
 
 	void BuyThemePack()
 	{
-		InventoryManager.Instance.BuyThemePack(wantedThemePack, BuyThemePackCallback);
+		InventoryManager.Instance.BuyTheme(wantedTheme.themeItemId, BuyThemePackCallback);
 		shopView.ShowLoadingWindow();
 	}
 
 	void BuyThemePackCallback(bool success)
 	{
 		string message = "";
-		ThemeInfo info = InventoryManager.Instance.GetThemeInfo(wantedThemePack.theme.ItemId);
+		ThemeInfo info = InventoryManager.Instance.GetThemeInfo(wantedTheme.themeItemId);
 		if(success)
 		{
 			shopView.UpdateThemePackList();
@@ -202,34 +201,6 @@ public class MainSceneController : AbstractController {
 			message = string.Format("<i>{0}</i>\nBuying Failed", info.themeName);
 		}
 		shopView.ShowBuyMsg(message);
-	}
-	
-	void BuyMoniPack(int tier)
-	{
-		string moniPackItemId = "";
-		switch(tier)
-		{
-			case 3:
-				moniPackItemId = FlipCardStoreAsset.MONI_PACK_TIER3_ITEM_ID;
-				break;
-			case 4:
-				moniPackItemId = FlipCardStoreAsset.MONI_PACK_TIER4_ITEM_ID;
-				break;
-			case 5:
-				moniPackItemId = FlipCardStoreAsset.MONI_PACK_TIER5_ITEM_ID;
-				break;
-			case 11:
-				moniPackItemId = FlipCardStoreAsset.MONI_PACK_TIER11_ITEM_ID;
-				break;
-			case 23:
-				moniPackItemId = FlipCardStoreAsset.MONI_PACK_TIER23_ITEM_ID;
-				break;
-			case 45:
-				moniPackItemId = FlipCardStoreAsset.MONI_PACK_TIER45_ITEM_ID;
-				break;
-		}
-		InventoryManager.Instance.BuyCurrencyPack(moniPackItemId, shopView.ShowBuyMsg, BuyCurrencyPackCancel);
-		shopView.ShowLoadingWindow();
 	}
 	
 	void BuyCurrencyPackCancel()

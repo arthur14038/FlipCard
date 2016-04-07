@@ -13,6 +13,6 @@ public class UnityAnalyticsManager : SingletonMonoBehavior<UnityAnalyticsManager
 		//if(eventData != null)
 			Debug.LogFormat("Send Event {0}: {1}", eventType, Newtonsoft.Json.JsonConvert.SerializeObject(eventData));
 		#endif
-		Analytics.CustomEvent(eventType.ToString(), eventData);
+		//Analytics.CustomEvent(eventType.ToString(), eventData);
     }
 }
