@@ -153,6 +153,11 @@ public class FlipCardGameJudgement : GameModeJudgement
 		}		
 	}
 
+	public string GetCurrentLevel()
+	{
+		return string.Format("{0}-{1}", currentLevel, currentRound);
+	}
+
 	void SetNewRoundTable(int normalCardCount, int questionCardCount, int goldCardCount)
 	{
 		gameMainView.SetUsingCard(normalCardCount, questionCardCount);
@@ -199,11 +204,11 @@ public class FlipCardGameJudgement : GameModeJudgement
 					flipCardGameView.SetCurrentScore(score);
 					
 					Vector2 pos = cards[0].GetAnchorPosition();
-					pos.x += currentCardArraySetting.edgeLength / 2 - 20f;
+					pos.x += flipCardArraySetting.cardSize / 2 - 20f;
 					gameMainView.ShowScoreText(pos, cardAScore);
 
 					pos = cards[1].GetAnchorPosition();
-					pos.x += currentCardArraySetting.edgeLength / 2 - 20f;
+					pos.x += flipCardArraySetting.cardSize / 2 - 20f;
 					gameMainView.ShowScoreText(pos, cardBScore);
 				}
 

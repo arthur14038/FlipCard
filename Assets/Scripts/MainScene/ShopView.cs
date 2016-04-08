@@ -43,7 +43,10 @@ public class ShopView : AbstractView
 	public GameObject group_ThemeBuyingInfo;
 	public ScrollRect scrollView;
 	public GameObject group_SoldOut;
-    Coroutine loadingAnimation;
+	public GameObject button_Cancel;
+	public GameObject button_Yes;
+	public GameObject button_OK;
+	Coroutine loadingAnimation;
 	Vector3 rotateAngle = new Vector3(0f, 0f, 120f);
 
 	public override IEnumerator Init()
@@ -105,6 +108,9 @@ public class ShopView : AbstractView
 	{
 		currentMsgWindowState = MsgWindowState.NotEnoughMoni;
 		ShowMsgWindow("Your Moni is not enough", "You don't have enough \nMoni to buy this theme.");
+		button_OK.SetActive(true);
+		button_Yes.SetActive(false);
+		button_Cancel.SetActive(false);
 	}
 
 	public void ShowConfirmBuy(int cost)
@@ -112,6 +118,9 @@ public class ShopView : AbstractView
 		currentMsgWindowState = MsgWindowState.ConfirmBuy;
 		string content = string.Format("Buying this theme will cost \n{0} Moni.\nAre you sure?", cost);
 		ShowMsgWindow("Confirm Buy", content);
+		button_OK.SetActive(false);
+		button_Yes.SetActive(true);
+		button_Cancel.SetActive(true);
 	}
 
 	public void ShowThemeInfo(string themeName, string themeContent)
@@ -202,6 +211,11 @@ public class ShopView : AbstractView
 				group_ThemeInfoWindow.DOScale(0f, 0.3f).SetEase(Ease.InBack);
 				break;
 			case MsgWindowState.ConfirmBuy:
+				GoogleAnalyticsManager.LogEvent(GoogleAnalyticsManager.EventCategory.BuyTheme,
+					GoogleAnalyticsManager.EventAction.CancelBuyTheme);
+
+				group_MsgWindow.DOScale(0f, 0.3f).SetEase(Ease.InBack);
+				break;
 			case MsgWindowState.NotEnoughMoni:
 				group_MsgWindow.DOScale(0f, 0.3f).SetEase(Ease.InBack);
 				break;

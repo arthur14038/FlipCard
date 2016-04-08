@@ -5,7 +5,7 @@ using DG.Tweening;
 public class TwoPlayerView : AbstractView
 {
 	public VoidNoneParameter onClickBack;
-	public VoidCardArrayLevelGameMode onClickPlay;
+	public VoidInt onClickPlay;
 	public RectTransform group_2P;
 	public RectTransform[] waveItems;
 
@@ -23,11 +23,11 @@ public class TwoPlayerView : AbstractView
 			onClickBack();
 	}
 
-	public void OnClickCompetition(int level)
+	public void OnClickCompetition(int cardCount)
 	{
 		AudioManager.Instance.PlayOneShot("Button_Click");
 		if(onClickPlay != null)
-			onClickPlay((LevelDifficulty)level, GameMode.Competition);
+			onClickPlay(cardCount);
 	}
 	
 	IEnumerator WaveEffect(RectTransform waveItem, float enterDuration)

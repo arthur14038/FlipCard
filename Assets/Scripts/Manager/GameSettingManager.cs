@@ -2,35 +2,22 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-public enum LevelDifficulty{EASY = 0, NORMAL, HARD, CRAZY, Lock}
 public enum GameMode { FlipCard = 1, Competition}
 public class GameSettingManager{
-	static Dictionary<LevelDifficulty, CardArraySetting> cardArraySettings = new Dictionary<LevelDifficulty, CardArraySetting>();
-	static Dictionary<LevelDifficulty, CompetitionModeSetting> competitionModeSettings = new Dictionary<LevelDifficulty, CompetitionModeSetting>();
+	static Dictionary<int, CompetitionModeSetting> competitionModeSettings = new Dictionary<int, CompetitionModeSetting>();
 	static Dictionary<int, FlipCardGameSetting> flipCardSettings = new Dictionary<int, FlipCardGameSetting>();
 	static Dictionary<int, FlipCardArraySetting> flipCardArraySettings = new Dictionary<int, FlipCardArraySetting>();
-    public static LevelDifficulty currentLevel;
 	public static GameMode currentMode;
+	public static int currentCardCount;
 
 	public static void LoadData()
 	{
-		string jsonString = ((TextAsset)Resources.Load("CardArraySetting")).text;
-		List<CardArraySetting> tmp = JsonConvert.DeserializeObject<List<CardArraySetting>>(jsonString);
-		foreach(CardArraySetting s in tmp)
-		{
-			if(!cardArraySettings.ContainsKey(s.level))
-			{
-				s.realFirstPosition = new Vector2(s.firstPosition[0], s.firstPosition[1]);
-				cardArraySettings.Add(s.level, s);
-			}
-		}
-		
-		jsonString = ((TextAsset)Resources.Load("CompetitionModeSetting")).text;
+		string jsonString = ((TextAsset)Resources.Load("CompetitionModeSetting")).text;
 		List<CompetitionModeSetting> tmp2 = JsonConvert.DeserializeObject<List<CompetitionModeSetting>>(jsonString);
 		foreach(CompetitionModeSetting s in tmp2)
 		{
-			if(!competitionModeSettings.ContainsKey(s.level))
-				competitionModeSettings.Add(s.level, s);
+			if(!competitionModeSettings.ContainsKey(s.cardCount))
+				competitionModeSettings.Add(s.cardCount, s);
 		}
 
 		jsonString = ((TextAsset)Resources.Load("FlipCardGameSetting")).text;
@@ -56,15 +43,7 @@ public class GameSettingManager{
 				flipCardArraySettings.Add(s.cardCount, s);
 		}
 	}
-
-	public static CardArraySetting GetCurrentCardArraySetting()
-	{
-		if(cardArraySettings.ContainsKey(currentLevel))
-			return cardArraySettings[currentLevel];
-		else
-			return null;
-	}
-
+	
 	public static FlipCardGameSetting GetFlipCardGameSetting(int level)
 	{
 		if(flipCardSettings.ContainsKey(level))
@@ -83,27 +62,16 @@ public class GameSettingManager{
 
 	public static CompetitionModeSetting GetCurrentCompetitionModeSetting()
 	{
-		if(competitionModeSettings.ContainsKey(currentLevel))
-			return competitionModeSettings[currentLevel];
+		if(competitionModeSettings.ContainsKey(currentCardCount))
+			return competitionModeSettings[currentCardCount];
 		else
 			return null;
 	}
 }
 
-public class CardArraySetting{
-	public LevelDifficulty level;
-	public float edgeLength;
-	public int column;
-	public int row;
-	public float cardGap;
-	public float[] firstPosition;
-	public Vector2 realFirstPosition;
-}
-
 public class CompetitionModeSetting
 {
-	public LevelDifficulty level;
-	public int matchAddScore;
+	public int cardCount;
 	public int goldCardCount;
 }
 

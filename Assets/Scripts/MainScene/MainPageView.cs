@@ -28,10 +28,12 @@ public class MainPageView : AbstractView {
 
 	public override IEnumerator Init ()
 	{
-		currentState = ViewState.Main;
+		hideUp = new Vector2(0f, (1080f*Screen.height)/Screen.width);
+		hideDown = -hideUp;
+        currentState = ViewState.Main;
 		image_Mask.gameObject.SetActive(false);
 		image_LeaveWindow.gameObject.SetActive(false);
-		image_SettingWindow.gameObject.SetActive(false);
+		image_SettingWindow.anchoredPosition = hideUp;
 		image_UnderConstructionWindow.gameObject.SetActive(false);
 		group_Main.gameObject.SetActive(true);
 		escapeEvent = OnClickEscape;
@@ -123,11 +125,6 @@ public class MainPageView : AbstractView {
 	{
 		AudioManager.Instance.PlayOneShot("Button_Click");
 		currentState = ViewState.SettingWindow;
-		image_Mask.gameObject.SetActive(true);
-        image_Mask.color = Color.clear;
-        image_Mask.DOColor(Color.black * 0.7f, 0.3f);
-		image_SettingWindow.gameObject.SetActive(true);
-        image_SettingWindow.anchoredPosition = hideDown;
         image_SettingWindow.DOAnchorPos(Vector2.zero, 0.5f).SetEase(Ease.OutQuart);
 	}
 
@@ -135,13 +132,7 @@ public class MainPageView : AbstractView {
 	{
 		AudioManager.Instance.PlayOneShot("Button_Click2");
 		currentState = ViewState.Main;
-        image_SettingWindow.DOAnchorPos(hideDown, 0.3f).SetEase(Ease.InQuad);
-        image_Mask.DOColor(Color.clear, 0.3f).OnComplete(
-            delegate () {
-                image_Mask.gameObject.SetActive(false);
-				image_SettingWindow.gameObject.SetActive(false);
-			}
-        );
+        image_SettingWindow.DOAnchorPos(hideUp, 0.3f).SetEase(Ease.InQuad);
 	}
     
 	public void OnClickNotify()

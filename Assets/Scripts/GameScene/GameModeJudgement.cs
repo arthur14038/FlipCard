@@ -7,7 +7,6 @@ public abstract class GameModeJudgement{
 	protected GameState stateBeforePause;
 	protected GameMainView gameMainView;
 	protected GameSettingView gameSettingView;
-	protected CardArraySetting currentCardArraySetting;
 	public VoidNoneParameter exitGame;
 	public VoidGameRecord saveGameRecord;
 
@@ -16,7 +15,6 @@ public abstract class GameModeJudgement{
 		currentState = GameState.Waiting;
         this.gameSettingView = gameSettingView;
 		this.gameMainView = gameMainView;
-		currentCardArraySetting = GameSettingManager.GetCurrentCardArraySetting();
 		gameSettingView.onClickResume = ResumeGame;
 		gameSettingView.onClickExit = ExitGame;
 		yield return null;
@@ -64,19 +62,5 @@ public abstract class GameModeJudgement{
 	public virtual void JudgementUpdate()
 	{
 
-	}
-
-	protected virtual Vector2[] GetCardPos()
-	{
-		Vector2[] cardPos = new Vector2[currentCardArraySetting.row * currentCardArraySetting.column];
-
-		for(int i = 0 ; i < cardPos.Length ; ++i)
-		{
-			float x = currentCardArraySetting.realFirstPosition.x + (i % currentCardArraySetting.column) * (currentCardArraySetting.edgeLength + currentCardArraySetting.cardGap);
-			float y = currentCardArraySetting.realFirstPosition.y - (i / currentCardArraySetting.column) * (currentCardArraySetting.edgeLength + currentCardArraySetting.cardGap);
-			cardPos[i] = new Vector2(x, y);
-		}
-
-		return cardPos;
 	}
 }

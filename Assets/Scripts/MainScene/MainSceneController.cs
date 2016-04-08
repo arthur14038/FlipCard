@@ -32,7 +32,7 @@ public class MainSceneController : AbstractController {
         flipCardView.onClickBack = ShowMainPage;
 		flipCardView.onClickPlay = StartFlipCardGame;
 		twoPlayerView.onClickBack = ShowMainPage;
-		twoPlayerView.onClickPlay = GoToGameScene;
+		twoPlayerView.onClickPlay = StartTwoPlayerGame;
 		shopView.onClickBack = ShowMainPage;
 		shopView.onClickThemePrice = CheckCanAfford;
 		shopView.onClickEquipCard = EquipCard;
@@ -68,15 +68,16 @@ public class MainSceneController : AbstractController {
 		AudioManager.Instance.PlayMusic("FlipCardBGM3", true); 
 	}
 
-	void GoToGameScene(LevelDifficulty level, GameMode mode)
+	void StartTwoPlayerGame(int cardCount)
 	{
-		AudioManager.Instance.StopMusic();
-        GameSettingManager.currentLevel = level;
-		GameSettingManager.currentMode = mode;
-		GameMainLoop.Instance.ChangeScene(SceneName.GameScene);
-		//GameMainLoop.Instance.ChangeScene(SceneName.TestGame);
+		GoogleAnalyticsManager.LogEvent(GoogleAnalyticsManager.EventCategory.UserClickEvent,
+			GoogleAnalyticsManager.EventAction.ClickTwoPlayer, cardCount.ToString());
+        AudioManager.Instance.StopMusic();
+		GameSettingManager.currentMode = GameMode.Competition;
+		GameSettingManager.currentCardCount = cardCount;
+        GameMainLoop.Instance.ChangeScene(SceneName.GameScene);
 	}
-
+	
 	void StartFlipCardGame()
 	{
 		AudioManager.Instance.StopMusic();
@@ -137,7 +138,7 @@ public class MainSceneController : AbstractController {
 
 	void ShowRatePage()
 	{
-		UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.OnClickRate);
+		GoogleAnalyticsManager.LogEvent(GoogleAnalyticsManager.EventCategory.UserClickEvent, GoogleAnalyticsManager.EventAction.ClickRate);
 		string storeUrl = "";
 #if UNITY_IPHONE
 		storeUrl = "https://itunes.apple.com/us/app/flip-card-polilu/id1076638340?l=zh&ls=1&mt=8";
@@ -163,6 +164,7 @@ public class MainSceneController : AbstractController {
 
 	void OpenFacebookPage()
 	{
+		GoogleAnalyticsManager.LogEvent(GoogleAnalyticsManager.EventCategory.UserClickEvent, GoogleAnalyticsManager.EventAction.ClickFacebook);
 		Application.OpenURL("https://www.facebook.com/PlayClayStudio");
 	}
 
@@ -191,6 +193,8 @@ public class MainSceneController : AbstractController {
 
 	void BuyThemePack()
 	{
+		GoogleAnalyticsManager.LogEvent(GoogleAnalyticsManager.EventCategory.BuyTheme,
+			GoogleAnalyticsManager.EventAction.ConfirmBuyTheme, wantedTheme.themeItemId);
 		InventoryManager.Instance.BuyTheme(wantedTheme.themeItemId, BuyThemePackCallback);
 		shopView.ShowLoadingWindow();
 	}
@@ -217,7 +221,8 @@ public class MainSceneController : AbstractController {
 
 	void ShowThemeInfo(string themeItemId)
 	{
-		UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.OnClickThemeInfo);
+		GoogleAnalyticsManager.LogEvent(GoogleAnalyticsManager.EventCategory.UserClickEvent, 
+			GoogleAnalyticsManager.EventAction.ClickThemeInfo, themeItemId);
 		ThemeInfo themeInfo = InventoryManager.Instance.GetThemeInfo(themeItemId);
 		shopView.ShowThemeInfo(themeInfo.themeName, themeInfo.themeContent);
 	}

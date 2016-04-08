@@ -12,13 +12,15 @@ public class CompetitionModeJudgement : GameModeJudgement
 	bool player2Ready = false;
 	CompetitionModeView competitionModeView;
 	CompetitionModeSetting currentModeSetting;
+	FlipCardArraySetting flipCardArraySetting;
 
 	public override IEnumerator Init(GameMainView gameMainView, GameSettingView gameSettingView, AbstractView modeView)
 	{
 		yield return gameMainView.StartCoroutine(base.Init(gameMainView, gameSettingView, modeView));
-		gameMainView.LoadCard(currentCardArraySetting.row * currentCardArraySetting.column, 0);
-		gameMainView.SetUsingCard(currentCardArraySetting.row * currentCardArraySetting.column, 0);
 		currentModeSetting = GameSettingManager.GetCurrentCompetitionModeSetting();
+		flipCardArraySetting = GameSettingManager.GetFlipCardArraySetting(currentModeSetting.cardCount);
+        gameMainView.LoadCard(currentModeSetting.cardCount, 0);
+		gameMainView.SetUsingCard(currentModeSetting.cardCount, 0);
 		gameMainView.completeOneRound = RoundComplete;
 		gameMainView.cardMatch = CardMatch;
 		player1Score = 0;
@@ -37,7 +39,7 @@ public class CompetitionModeJudgement : GameModeJudgement
 	protected override IEnumerator StartGame()
 	{
 		gameMainView.SetGoldCard(currentModeSetting.goldCardCount, false);
-		yield return gameMainView.StartCoroutine(gameMainView.DealCard(currentCardArraySetting.edgeLength, GetCardPos()));
+		yield return gameMainView.StartCoroutine(gameMainView.DealCard(flipCardArraySetting.cardSize, flipCardArraySetting.realCardPosition));
 		yield return new WaitForSeconds(0.2f);
 		yield return competitionModeView.StartCoroutine(competitionModeView.FadeOutInstruction());
 		gameMainView.ToggleMask(false);
@@ -164,11 +166,11 @@ public class CompetitionModeJudgement : GameModeJudgement
 					AddScore(scoreChangeAmount, (int)currentTurn);
 
 					Vector2 pos = cards[0].GetAnchorPosition();
-					pos.x += currentCardArraySetting.edgeLength / 2 - 20f;
+					pos.x += flipCardArraySetting.cardSize / 2 - 20f;
 					gameMainView.ShowScoreText(pos, cardAScore);
 
 					pos = cards[1].GetAnchorPosition();
-					pos.x += currentCardArraySetting.edgeLength / 2 - 20f;
+					pos.x += flipCardArraySetting.cardSize / 2 - 20f;
 					gameMainView.ShowScoreText(pos, cardBScore);
 				}
 			} else

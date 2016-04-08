@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
+using UnityEngine.Advertisements;
 
 public class GameSceneController : AbstractController
 {
@@ -60,20 +60,25 @@ public class GameSceneController : AbstractController
 		{
 			if(thisTimeRecord.playTimes % 3 == 1)
 			{
-				Dictionary<string, object> eventData = new Dictionary<string, object>();
 				int level = thisTimeRecord.highLevel / 1000;
 				int round = thisTimeRecord.highLevel % 1000;
-				string gameInfo = string.Format("playTimes: {0}, highScore: {1}, highLevel: {2}-{3}", thisTimeRecord.playTimes, thisTimeRecord.highScore, level, round);
-				eventData.Add("Game Info", gameInfo);
-				eventData.Add("High Score", thisTimeRecord.highScore);
-				eventData.Add("Play Times", thisTimeRecord.playTimes);
-				UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.InfiniteGameRecord, eventData);
+				string reachLevel = string.Format("{0}-{1}", level, round);
+				long score = thisTimeRecord.lastScore[0];
+				GoogleAnalyticsManager.LogEvent(GoogleAnalyticsManager.EventCategory.GameRecord,
+					reachLevel, score);
             }
 
 			ModelManager.Instance.SaveFlipCardGameRecord(thisTimeRecord);
+		}else
+		{
+			if(GameSettingManager.currentMode == GameMode.FlipCard)
+			{
+				string currentLevel = ((FlipCardGameJudgement)judgement).GetCurrentLevel();
+				GoogleAnalyticsManager.LogEvent(GoogleAnalyticsManager.EventCategory.QuitGame, currentLevel);
+			}
 		}
 
-		GameMainLoop.Instance.ChangeScene(SceneName.MainScene, returnView);
+		StartCoroutine(WaitAdAndExit(returnView));
     }
 
 	AbstractView GetModeView()
@@ -116,6 +121,16 @@ public class GameSceneController : AbstractController
 		if(judgement != null)
 			judgement.JudgementUpdate();
     }
+
+	IEnumerator WaitAdAndExit(int returnView)
+	{
+		while(!Advertisement.IsReady())
+			yield return null;
+
+		Advertisement.Show();
+
+		GameMainLoop.Instance.ChangeScene(SceneName.MainScene, returnView);
+	}
 
 	void OnDestroy()
 	{

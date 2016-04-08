@@ -41,7 +41,7 @@
      "CardBackId": "CardBack_004", 
      "ThemeName": "A Beautiful Trap", 
      "ThemeContent": "A cerulean river flowing through Polilu's southeast prairie. This vast grasslands is covered with colorful flowers. \n\nThe beauty has danger hidden behind. Many foolish creatures passing through this place have become nutrient of the grasses. \n\nThis prairie has Polilu's most beautiful view, it is the most beautiful scenery, but also a trap.", 
-     "RequireMoni": 1250, 
+     "RequireMoni": 250, 
      "OwnedFlag": 16
  },
    {
@@ -50,7 +50,7 @@
      "CardBackId": "CardBack_005", 
      "ThemeName": "Universe Photographer", 
      "ThemeContent": "There is a pilot, his job is to travel around Polilu to take photographs, so people can see the outside world. \n\nWhen the night comes, the pilot sees the vast expanse of thesky, he always imagine what is on those shinny stars in the universe. He wonder whether if they have a pilots just like him on those planets. He thought that one day he would build a rocket ship, fly to those stars and take some pictures to show to people back home.", 
-     "RequireMoni": 250, 
+     "RequireMoni": 1250, 
      "OwnedFlag": 32
  },
    {
