@@ -48,15 +48,19 @@ public class MainSceneController : AbstractController {
 		switch(currentView)
 		{
 			case MainSceneView.MainPage:
+				GoogleAnalyticsManager.LogScreen(GoogleAnalyticsManager.ScreenName.MainSceneMainPage);
 				mainPageView.ShowUI(false);
 				break;
 			case MainSceneView.FlipCard:
+				GoogleAnalyticsManager.LogScreen(GoogleAnalyticsManager.ScreenName.MainSceneInfiniteMode);
 				flipCardView.ShowUI(false);
 				break;
 			case MainSceneView.TwoPlayer:
+				GoogleAnalyticsManager.LogScreen(GoogleAnalyticsManager.ScreenName.MainSceneTwoPlayer);
 				twoPlayerView.ShowUI(false);
 				break;
 			case MainSceneView.Shop:
+				GoogleAnalyticsManager.LogScreen(GoogleAnalyticsManager.ScreenName.MainSceneShop);
 				shopView.ShowUI(false);
 				break;
 		}
@@ -82,6 +86,7 @@ public class MainSceneController : AbstractController {
 
 	void ShowMainPage()
 	{
+		GoogleAnalyticsManager.LogScreen(GoogleAnalyticsManager.ScreenName.MainSceneMainPage);
 		switch(currentView)
 		{
 			case MainSceneView.FlipCard:
@@ -100,6 +105,7 @@ public class MainSceneController : AbstractController {
 
 	void ShowFlipCardPage()
 	{
+		GoogleAnalyticsManager.LogScreen(GoogleAnalyticsManager.ScreenName.MainSceneInfiniteMode);
 		mainPageView.HideUI(true);
 		flipCardView.ShowUI(true);
 		currentView = MainSceneView.FlipCard;
@@ -107,6 +113,7 @@ public class MainSceneController : AbstractController {
 	
 	void ShowTwoPlayers()
 	{
+		GoogleAnalyticsManager.LogScreen(GoogleAnalyticsManager.ScreenName.MainSceneTwoPlayer);
 		mainPageView.HideUI(true);
 		twoPlayerView.ShowUI(true);
 		currentView = MainSceneView.TwoPlayer;
@@ -114,7 +121,7 @@ public class MainSceneController : AbstractController {
 	
 	void ShowShop()
 	{
-		UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.OnClickShop);
+		GoogleAnalyticsManager.LogScreen(GoogleAnalyticsManager.ScreenName.MainSceneShop);
 		mainPageView.HideUI(true);
 		shopView.ShowUI(true);
 		currentView = MainSceneView.Shop;
@@ -142,7 +149,7 @@ public class MainSceneController : AbstractController {
 
 	void StillInProgress()
 	{
-		UnityAnalyticsManager.Instance.SendCustomEvent(UnityAnalyticsManager.EventType.OnClickComingSoon);
+		GoogleAnalyticsManager.LogEvent(GoogleAnalyticsManager.EventCategory.UserClickEvent, GoogleAnalyticsManager.EventAction.ClickComingSoon);
 		mainPageView.ShowUnderConstruction();
 		notifyMessage = "Please notify me when \"New Mode\" feature is launches.";
 	}
@@ -223,5 +230,10 @@ public class MainSceneController : AbstractController {
 	string MyEscapeURL(string url)
 	{
 		return WWW.EscapeURL(url).Replace("+", "%20");
+	}
+
+	void OnDestroy()
+	{
+		GoogleAnalyticsManager.LogScreen(GoogleAnalyticsManager.ScreenName.LeaveMainScene);
 	}
 }

@@ -100,8 +100,10 @@ public class GameSceneController : AbstractController
 		switch(GameSettingManager.currentMode)
 		{
 			case GameMode.FlipCard:
+				GoogleAnalyticsManager.LogScreen(GoogleAnalyticsManager.ScreenName.GameSceneInfiniteMode);
 				return new FlipCardGameJudgement();
 			case GameMode.Competition:
+				GoogleAnalyticsManager.LogScreen(GoogleAnalyticsManager.ScreenName.GameSceneTwoPlayer);
 				return new CompetitionModeJudgement();
 			default:
 				Debug.LogErrorFormat("{0}'s judgement is not implement", GameSettingManager.currentMode);
@@ -114,4 +116,9 @@ public class GameSceneController : AbstractController
 		if(judgement != null)
 			judgement.JudgementUpdate();
     }
+
+	void OnDestroy()
+	{
+		GoogleAnalyticsManager.LogScreen(GoogleAnalyticsManager.ScreenName.LeaveGameScene);
+	}
 }
