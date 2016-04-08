@@ -26,8 +26,12 @@ public class GameMainLoop : SingletonMonoBehavior<GameMainLoop> {
 	IEnumerator LoadNextLevel(string sceneName)
 	{
 		yield return StartCoroutine(loadingPage.TurnOn());
-		
+
+#if UNITY_5_3_OR_NEWER
 		AsyncOperation op = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneName);
+#else
+		AsyncOperation op = Application.LoadLevelAsync(sceneName);
+#endif
 		op.allowSceneActivation = false;
 		while (op.progress < 0.9f) {
 			yield return new WaitForEndOfFrame();
