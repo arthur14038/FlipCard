@@ -362,7 +362,7 @@ public class ShopView : AbstractView
 	{
 		AudioManager.Instance.PlayOneShot("Button_Click");
 		if(onClickEquipCard != null)
-			onClickEquipCard(cardFaceItemId, cardBackItemId);
+			onClickEquipCard(cardBackItemId, cardFaceItemId);
 	}
 
 	void OnClickThemePrice(ThemeInfo themeInfo)
