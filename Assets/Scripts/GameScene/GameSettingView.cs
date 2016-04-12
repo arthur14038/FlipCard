@@ -15,19 +15,7 @@ public class GameSettingView : AbstractView {
 	public Toggle toggle_Sound;
 	public RectTransform image_PauseWindow;
 	
-    public RectTransform group_SinglePlayer;
-	public RectTransform image_CharacterRight;
-	public RectTransform image_CharacterLeft;
-	public RectTransform button_SinglePlayerGameOverExit;
-	public RectTransform image_TimesUp;
-	public RectTransform image_GameOverWindow;
-	public CanvasGroup image_SinglePlayerScoreBoard;
-	public Text text_Score;
-	public Text text_Level;
-	public Text text_Title;
-	public Text text_PerfectCount;
-	public GameObject newHighScoreEffect;
-	public Image[] image_Task;
+	public FlipCardGameResult flipCardGameResult;
 
 	public RectTransform group_TwoPlayer;
 	public Image image_WinnerBoard;
@@ -55,9 +43,9 @@ public class GameSettingView : AbstractView {
 		yield return 0;
 		escapeEvent = OnClickEscape;
 		group_Pause.gameObject.SetActive(false);
-		group_SinglePlayer.gameObject.SetActive(false);
 		group_TwoPlayer.gameObject.SetActive(false);
-	}
+		flipCardGameResult.Init();
+    }
 	
 	public void OnClickResume()
 	{
@@ -135,99 +123,21 @@ public class GameSettingView : AbstractView {
 		yield return button_CompetitionGameOverExit.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
 	}
 
-	public void ShowSinglePlayerGameOver(int score, string level, bool recordBreak, int perfectCount, bool[] thisTimeTask)
+	public void ShowSinglePlayerGameOver(int score, string level, bool recordBreak, bool[] thisTimeTask)
 	{
 		base.ShowUI(false);
-		AudioManager.Instance.PlayOneShot("Whistle");
 		AudioManager.Instance.StopMusic();
-
-		text_Score.text = score.ToString();
-		text_Level.text = level;
-		text_PerfectCount.text = string.Format("Perfect match x {0}", perfectCount);
-
-		for(int i = 0 ; i < thisTimeTask.Length ; ++i)
-		{
-			Color taskColor = image_Task[i].color;
-			if(thisTimeTask[i])
-			{
-				taskColor.a = 1f;
-			}else
-			{
-				taskColor.a = 100f / 255f;
-			}
-			image_Task[i].color = taskColor;
-		}
-
-		if(recordBreak)
-		{
-			AudioManager.Instance.PlayOneShot("NewHighScore2");
-			newHighScoreEffect.SetActive(true);
-			text_Title.text = "New record!";
-		} else
-		{
-			newHighScoreEffect.SetActive(false);
-			string msg = "Try again";
-			if(score > 3000)
-				msg = "Incredible!";
-			else if(score > 2000)
-				msg = "Excellent!";
-			else if(score > 1000)
-				msg = "Awesome!";
-			else if(score > 500)
-				msg = "Great!";
-			text_Title.text = msg;
-		}
-		StartCoroutine(SinglePlayerGameOverEffect());
-	}
-
-	IEnumerator SinglePlayerGameOverEffect()
-	{
 		StartCoroutine(ToggleMask(true, 0.7f));
+		flipCardGameResult.SetResult(score, level, recordBreak, thisTimeTask);
+		StartCoroutine(FlipCardGameResultRoutine());
+    }
 
-		image_CharacterLeft.gameObject.SetActive(false);
-		image_CharacterRight.gameObject.SetActive(false);
-		image_SinglePlayerScoreBoard.gameObject.SetActive(false);
-		button_SinglePlayerGameOverExit.gameObject.SetActive(false);
-		text_Score.gameObject.SetActive(false);
-		text_Level.gameObject.SetActive(false);
-		image_GameOverWindow.gameObject.SetActive(false);
-		group_SinglePlayer.gameObject.SetActive(true);
-
-		image_TimesUp.gameObject.SetActive(true);
-		image_TimesUp.localScale = Vector3.zero;
-		yield return image_TimesUp.DOScale(1f, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
-		yield return new WaitForSeconds(0.4f);
-		yield return image_TimesUp.DOScale(0f, 0.3f).SetEase(Ease.InBack).WaitForCompletion();
-		image_TimesUp.gameObject.SetActive(false);
-
-		AudioManager.Instance.PlayOneShot("GameResult");
-		image_GameOverWindow.gameObject.SetActive(true);
-		image_GameOverWindow.anchoredPosition = hideUp;
-		yield return image_GameOverWindow.DOAnchorPos(Vector2.zero, 0.5f).SetEase(Ease.OutBack).WaitForCompletion();
-		
-		image_CharacterRight.anchoredPosition = new Vector2(750f, -93f);
-		image_CharacterLeft.anchoredPosition = new Vector2(-750f, -95f);
-		image_CharacterRight.gameObject.SetActive(true);
-		image_CharacterLeft.gameObject.SetActive(true);
-		image_CharacterRight.DOAnchorPos(new Vector2(247f, -93f), 0.2f).SetEase(Ease.OutCubic);
-		image_CharacterLeft.DOAnchorPos(new Vector2(-257f, -95f), 0.2f).SetEase(Ease.OutCubic);
-		
-		image_SinglePlayerScoreBoard.alpha = 0f;
-		image_SinglePlayerScoreBoard.gameObject.SetActive(true);
-		yield return image_SinglePlayerScoreBoard.DOFade(1f, 0.4f).WaitForCompletion();
-
-		text_Score.gameObject.SetActive(true);
-		yield return text_Score.rectTransform.DOScale(1.5f, 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
-		yield return text_Score.rectTransform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
-
-		text_Level.gameObject.SetActive(true);
-		yield return text_Level.rectTransform.DOScale(1.5f, 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
-		yield return text_Level.rectTransform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
-
-		button_SinglePlayerGameOverExit.localScale = Vector3.one - Vector3.up;
-		button_SinglePlayerGameOverExit.gameObject.SetActive(true);
-
-		yield return button_SinglePlayerGameOverExit.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
+	IEnumerator FlipCardGameResultRoutine()
+	{
+		yield return StartCoroutine(flipCardGameResult.ShowTimesUp());
+		yield return StartCoroutine(flipCardGameResult.ShowText());
+		yield return StartCoroutine(flipCardGameResult.ShowScoreBoard());
+		yield return StartCoroutine(flipCardGameResult.ShowTaskAndButton());
 	}
 	
 	IEnumerator ToggleMask(bool turnOn, float fadeDuration)
@@ -271,4 +181,42 @@ public class GameSettingView : AbstractView {
 		yield return image_PauseWindow.DOScale(1f, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
 		showCoroutine = null;
 	}
+
+	//void OnGUI()
+	//{
+	//	if(GUI.Button(new Rect(10, 10, 150, 50), "Init"))
+	//	{
+	//		flipCardGameResult.Init();
+	//	}
+
+	//	if(GUI.Button(new Rect(200, 10, 150, 50), "SetResult"))
+	//	{
+	//		flipCardGameResult.SetResult(600, "6-2", true, new bool[] { true, true, true, true, true, true });
+	//	}
+
+	//	if(GUI.Button(new Rect(10, 100, 150, 50), "FlipCardGameResultRoutine"))
+	//	{
+	//		StartCoroutine(FlipCardGameResultRoutine());
+	//	}
+
+	//	if(GUI.Button(new Rect(10, 100, 150, 50), "ShowText"))
+	//	{
+	//		StartCoroutine(flipCardGameResult.ShowText());
+	//	}
+
+	//	if(GUI.Button(new Rect(200, 100, 150, 50), "ShowScoreBoard"))
+	//	{
+	//		StartCoroutine(flipCardGameResult.ShowScoreBoard());
+	//	}
+
+	//	if(GUI.Button(new Rect(10, 200, 150, 50), "ShowTaskAndButton"))
+	//	{
+	//		StartCoroutine(flipCardGameResult.ShowTaskAndButton());
+	//	}
+
+	//	if(GUI.Button(new Rect(200, 200, 150, 50), "ShootStar"))
+	//	{
+	//		flipCardGameResult.ShootStar();
+	//	}
+	//}
 }

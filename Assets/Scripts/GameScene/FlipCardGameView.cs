@@ -146,17 +146,17 @@ public class FlipCardGameView : AbstractView
 		float changeAmount = (float)addScore / (0.5f/Time.deltaTime);
 		float scoreForShow = originalScore;
 		float addScoreForShow = addScore;
-		float forCountSound = scoreForShow;
-        while(addScoreForShow > 0)
+		float lastTimeSound = -0.03f;
+		while(addScoreForShow > 0)
 		{
 			scoreForShow += changeAmount;
 			addScoreForShow -= changeAmount;
 			SetCurrentScore((int)scoreForShow);
 			SetBonusScore((int)addScoreForShow);
-			if(scoreForShow - forCountSound >= 1f)
+			if(Time.time - lastTimeSound >= 0.03f)
 			{
 				AudioManager.Instance.PlayOneShot("GameResultScoreCount");
-				forCountSound = scoreForShow;
+				lastTimeSound = Time.time;
 			}
 			yield return new WaitForEndOfFrame();
 		}

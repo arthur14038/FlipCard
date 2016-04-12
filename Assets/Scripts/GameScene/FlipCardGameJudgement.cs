@@ -123,7 +123,7 @@ public class FlipCardGameJudgement : GameModeJudgement
 		if(saveGameRecord != null)
 			saveGameRecord(lastRecord);
 		
-		gameSettingView.ShowSinglePlayerGameOver(values[0], string.Format("{0}-{1}", values[1], values[2]), recordBreak, perfectCount, thisTimeChallenge);
+		gameSettingView.ShowSinglePlayerGameOver(values[0], string.Format("{0}-{1}", values[1], values[2]), recordBreak, thisTimeChallenge);
 	}
 
 	public override void JudgementUpdate()
