@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Advertisements;
 
 public class MainSceneController : AbstractController {
 	enum MainSceneView{MainPage = 0, FlipCard, TwoPlayer, Shop}
@@ -39,6 +40,7 @@ public class MainSceneController : AbstractController {
 		shopView.onClickEquipTheme = EquipTheme;
 		shopView.onClickConfirmBuyTheme = BuyThemePack;
 		shopView.onClickThemeInfo = ShowThemeInfo;
+		shopView.onClickMoniBoard = ShowAwardAd;
 
 		shopView.HideUI(false);
         mainPageView.HideUI(false);
@@ -230,6 +232,27 @@ public class MainSceneController : AbstractController {
 	void LeaveGame()
 	{
 		Application.Quit();
+	}
+
+	void ShowAwardAd()
+	{
+		if(PlayerPrefsManager.CanShowAwardAd && Advertisement.IsReady("rewardedVideo"))
+		{
+			GoogleAnalyticsManager.LogEvent(GoogleAnalyticsManager.EventCategory.UserClickEvent,
+				GoogleAnalyticsManager.EventAction.ClickMoniBoard, PlayerPrefsManager.MoniCount);
+			ShowOptions options = new ShowOptions { resultCallback = HandleShowResult };
+			Advertisement.Show("rewardedVideo", options);
+		}
+	}
+
+	void HandleShowResult(ShowResult result)
+	{
+		if(result == ShowResult.Finished)
+		{
+			InventoryManager.Instance.AddMoni(30);
+			PlayerPrefsManager.CanShowAwardAd = false;
+			shopView.ShowGetMoni(30);
+        }
 	}
 
 	string MyEscapeURL(string url)

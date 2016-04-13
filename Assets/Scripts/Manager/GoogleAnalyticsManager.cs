@@ -130,6 +130,7 @@ public class GoogleAnalyticsManager
 		public const string ClickRate = "點擊評價";
 		public const string ClickFacebook = "點擊Facebook";
 		public const string ClickTwoPlayer = "點擊雙人遊戲關卡";
+		public const string ClickMoniBoard = "點擊Moni板";
 		public const string ConfirmBuyTheme = "確認購買主題";
 		public const string CancelBuyTheme = "取消購買主題";
 	}

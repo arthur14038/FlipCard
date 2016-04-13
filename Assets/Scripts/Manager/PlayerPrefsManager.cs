@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+using System;
 
 public class PlayerPrefsManager{
 	static string encodeKey = "FlipCard";
@@ -148,6 +147,24 @@ public class PlayerPrefsManager{
 		set
 		{
 			PlayerPrefs.SetInt("OwnedTheme", value);
+		}
+	}
+
+	public static bool CanShowAwardAd
+	{
+		get
+		{
+			DateTime lastTimeShow = new DateTime(long.Parse(PlayerPrefs.GetString("CanShowAwardAd", "0")));
+			TimeSpan timeSpan = DateTime.Now - lastTimeShow;
+			if(timeSpan.TotalHours > 8)
+				return true;
+			else
+				return false;
+        }
+		set
+		{
+			if(!value)
+				PlayerPrefs.SetString("CanShowAwardAd", DateTime.Now.Ticks.ToString());
 		}
 	}
 }

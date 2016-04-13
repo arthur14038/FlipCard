@@ -56,8 +56,13 @@ public class GameSceneController : AbstractController
 				break;
 		}
 
+		bool showAd = false;
+
 		if(thisTimeRecord != null)
 		{
+			if(thisTimeRecord.lastScore[0] > 500)
+				showAd = (Random.Range(0, 1) == 0);
+
 			if(thisTimeRecord.playTimes % 3 == 1)
 			{
 				int level = thisTimeRecord.highLevel / 1000;
@@ -71,15 +76,23 @@ public class GameSceneController : AbstractController
 			ModelManager.Instance.SaveFlipCardGameRecord(thisTimeRecord);
 		}else
 		{
-			if(GameSettingManager.currentMode == GameMode.FlipCard)
+			showAd = true;
+			switch(GameSettingManager.currentMode)
 			{
-				string currentLevel = ((FlipCardGameJudgement)judgement).GetCurrentLevel();
-				GoogleAnalyticsManager.LogEvent(GoogleAnalyticsManager.EventCategory.QuitGame, currentLevel);
+				case GameMode.FlipCard:
+					string currentLevel = ((FlipCardGameJudgement)judgement).GetCurrentLevel();
+					GoogleAnalyticsManager.LogEvent(GoogleAnalyticsManager.EventCategory.QuitGame, currentLevel);
+					break;
+				case GameMode.Competition:
+                    break;
 			}
 		}
 
-		StartCoroutine(WaitAdAndExit(returnView));
-    }
+		if(showAd)
+			StartCoroutine(WaitAdAndExit(returnView));
+		else
+			GameMainLoop.Instance.ChangeScene(SceneName.MainScene, returnView);
+	}
 
 	AbstractView GetModeView()
 	{

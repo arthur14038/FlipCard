@@ -8,7 +8,7 @@ public class ShopView : AbstractView
 {
 	enum ShopGroup {Theme, Shop, None}
 	ShopGroup currentGroup = ShopGroup.None;
-	enum MsgWindowState {Close, ConfirmBuy, NotEnoughMoni, ThemeInfo}
+	enum MsgWindowState {Close, ConfirmBuy, NotEnoughMoni, ThemeInfo, GetMoni}
 	MsgWindowState currentMsgWindowState;
 	public VoidNoneParameter onClickBack;
 	public VoidString onClickThemeInfo;
@@ -16,6 +16,7 @@ public class ShopView : AbstractView
 	public VoidThemeInfo onClickThemePrice;
 	public VoidTwoString onClickEquipCard;
 	public VoidNoneParameter onClickConfirmBuyTheme;
+	public VoidNoneParameter onClickMoniBoard;
 	public Text text_CurrentMoni;
 	public RectTransform group_Shop;
 	public RectTransform content_ThemeUI;
@@ -94,6 +95,12 @@ public class ShopView : AbstractView
 		}
 		StartCoroutine(CloseMsgWindow());
 	}
+
+	public void OnClickMoniBoard()
+	{
+		if(onClickMoniBoard != null)
+			onClickMoniBoard();
+    }
 	
 	public void ToggleGroup(int groupIndex)
 	{
@@ -102,6 +109,15 @@ public class ShopView : AbstractView
 			swithToggle[groupIndex].isOn = true;
 
 		SetCurrentGroup((ShopGroup)groupIndex);
+	}
+
+	public void ShowGetMoni(int amount)
+	{
+		currentMsgWindowState = MsgWindowState.GetMoni;
+		ShowMsgWindow("Special Award!", string.Format("You get {0} Moni by watching the ad!", amount));
+		button_OK.SetActive(true);
+		button_Yes.SetActive(false);
+		button_Cancel.SetActive(false);
 	}
 
 	public void ShowMoniNotEnough()
@@ -187,6 +203,7 @@ public class ShopView : AbstractView
 				group_ThemeInfoWindow.localScale = Vector3.zero;
 				group_ThemeInfoWindow.DOScale(1f, 0.3f).SetEase(Ease.OutBack);
 				break;
+			case MsgWindowState.GetMoni:
 			case MsgWindowState.ConfirmBuy:
 			case MsgWindowState.NotEnoughMoni:
 				text_MsgTitle.text = title;
@@ -216,6 +233,7 @@ public class ShopView : AbstractView
 
 				group_MsgWindow.DOScale(0f, 0.3f).SetEase(Ease.InBack);
 				break;
+			case MsgWindowState.GetMoni:
 			case MsgWindowState.NotEnoughMoni:
 				group_MsgWindow.DOScale(0f, 0.3f).SetEase(Ease.InBack);
 				break;
