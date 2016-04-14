@@ -58,6 +58,13 @@ public class FlipCardEditor : EditorWindow
 			ClearAllMaterial(Selection.gameObjects[0]);
 		}
 		GUILayout.EndHorizontal();
+
+		GUILayout.BeginHorizontal();
+		if(GUILayout.Button("清除ShowAd"))
+		{
+			PlayerPrefs.DeleteKey("CanShowAwardAd");
+        }
+		GUILayout.EndHorizontal();
 	}
 
 	void DeleteGameRecord()

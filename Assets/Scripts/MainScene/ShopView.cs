@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine.UI;
+using UnityEngine.Advertisements;
 
 public class ShopView : AbstractView
 {
@@ -41,6 +42,7 @@ public class ShopView : AbstractView
 	public RectTransform group_ResultMsg;
 	public Text text_ResultMsg;
 	public List<ThemePackUI> themePackUIList = new List<ThemePackUI>();
+	public GameObject group_AwardAd;
 	public GameObject group_ThemeBuyingInfo;
 	public ScrollRect scrollView;
 	public GameObject group_SoldOut;
@@ -324,6 +326,12 @@ public class ShopView : AbstractView
 	void SetCurrentGroup(ShopGroup value, bool repositionScrollView = true)
 	{
 		currentGroup = value;
+
+		if(PlayerPrefsManager.CanShowAwardAd && Advertisement.IsReady("rewardedVideo"))
+			group_AwardAd.gameObject.SetActive(true);
+		else
+			group_AwardAd.gameObject.SetActive(false);
+
 		switch(currentGroup)
 		{
 			case ShopGroup.Theme:

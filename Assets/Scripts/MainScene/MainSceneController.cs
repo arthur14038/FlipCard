@@ -249,9 +249,9 @@ public class MainSceneController : AbstractController {
 	{
 		if(result == ShowResult.Finished)
 		{
-			InventoryManager.Instance.AddMoni(30);
+			InventoryManager.Instance.AddMoni(10);
 			PlayerPrefsManager.CanShowAwardAd = false;
-			shopView.ShowGetMoni(30);
+			shopView.ShowGetMoni(10);
         }
 	}
 

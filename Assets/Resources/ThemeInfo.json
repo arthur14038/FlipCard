@@ -41,7 +41,7 @@
      "CardBackId": "CardBack_004", 
      "ThemeName": "A Beautiful Trap", 
      "ThemeContent": "A cerulean river flowing through Polilu's southeast prairie. This vast grasslands is covered with colorful flowers. \n\nThe beauty has danger hidden behind. Many foolish creatures passing through this place have become nutrient of the grasses. \n\nThis prairie has Polilu's most beautiful view, it is the most beautiful scenery, but also a trap.", 
-     "RequireMoni": 250, 
+     "RequireMoni": 750, 
      "OwnedFlag": 16
  },
    {
@@ -50,7 +50,7 @@
      "CardBackId": "CardBack_005", 
      "ThemeName": "Universe Photographer", 
      "ThemeContent": "There is a pilot, his job is to travel around Polilu to take photographs, so people can see the outside world. \n\nWhen the night comes, the pilot sees the vast expanse of thesky, he always imagine what is on those shinny stars in the universe. He wonder whether if they have a pilots just like him on those planets. He thought that one day he would build a rocket ship, fly to those stars and take some pictures to show to people back home.", 
-     "RequireMoni": 1250, 
+     "RequireMoni": 1450, 
      "OwnedFlag": 32
  },
    {
@@ -59,7 +59,7 @@
      "CardBackId": "CardBack_006", 
      "ThemeName": "The Small Temple", 
      "ThemeContent": "At beginning, the temple was built on the river bank to provide travelers a place to rest. After hundreds of years of change, the river dried up, this oldest temple in Polilu is now deserted. \n\nOne day a farmer pass this place, he carried a bag full of seeds that he bought from the merchant. He have to return them because it would not grow on his farm. But the farmer got lost in this place, so he simply discard the seeds in the temple. \n\nThis temple has been standing for hundreds of years, and it is feeling lonely, so the temple decided touse its magic power to flowering those seeds and keep it company.", 
-     "RequireMoni": 850, 
+     "RequireMoni": 1250, 
      "OwnedFlag": 64
  },
    {
@@ -68,7 +68,7 @@
      "CardBackId": "CardBack_007", 
      "ThemeName": "Three Petal Flower", 
      "ThemeContent": "This ancient woods have been standing here for millions of years. It is said that in this woods have a rare plant; \n\nit flower once every ten years, and it has three orange petals on the receptacle. \n\nPolilu's residents called it three petal flower, they believe that if you drink the petal tea, your memory will improve.", 
-     "RequireMoni": 150, 
+     "RequireMoni": 850, 
      "OwnedFlag": 128
  },
    {
