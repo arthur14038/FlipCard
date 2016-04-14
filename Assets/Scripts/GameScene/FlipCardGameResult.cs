@@ -23,8 +23,8 @@ public class FlipCardGameResult
 	public Text text_MoniCount;
     public GameObject newHighScoreEffect;
 	public GameObject[] tasks;
-	public ParticleSystem ps;
-	bool recordBreak;
+	public Animator moniAnimator;
+    bool recordBreak;
 	int getMoniCount;
 	bool[] thisTimeTask;
 
@@ -125,6 +125,7 @@ public class FlipCardGameResult
 		yield return text_Score.rectTransform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutCubic).WaitForCompletion();
 		
 		group_GetMoni.gameObject.SetActive(true);
+		moniAnimator.SetTrigger("Play");
 		yield return new WaitForSeconds(0.5f);
 
 		float changeAmount = (float)getMoniCount / (0.5f / Time.deltaTime);
@@ -171,10 +172,5 @@ public class FlipCardGameResult
 		button_SinglePlayerGameOverExit.gameObject.SetActive(true);
 
 		yield return button_SinglePlayerGameOverExit.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
-	}
-
-	public void ShootStar()
-	{
-		//Particle p = ps.em
 	}
 }
