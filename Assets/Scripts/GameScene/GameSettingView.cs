@@ -213,10 +213,5 @@ public class GameSettingView : AbstractView {
 	//	{
 	//		StartCoroutine(flipCardGameResult.ShowTaskAndButton());
 	//	}
-
-	//	if(GUI.Button(new Rect(200, 200, 150, 50), "ShootStar"))
-	//	{
-	//		flipCardGameResult.ShootStar();
-	//	}
 	//}
 }

@@ -120,6 +120,7 @@ public class ShopView : AbstractView
 		button_OK.SetActive(true);
 		button_Yes.SetActive(false);
 		button_Cancel.SetActive(false);
+		UpdateAwardAd();
 	}
 
 	public void ShowMoniNotEnough()
@@ -186,6 +187,14 @@ public class ShopView : AbstractView
 			themePackUI.CheckUIState();
 		}
 		SetCurrentGroup(currentGroup, false);
+	}
+
+	void UpdateAwardAd()
+	{
+		if(PlayerPrefsManager.CanShowAwardAd && Advertisement.IsReady("rewardedVideo"))
+			group_AwardAd.gameObject.SetActive(true);
+		else
+			group_AwardAd.gameObject.SetActive(false);
 	}
 
 	void UpdateMoniCount()
@@ -327,10 +336,7 @@ public class ShopView : AbstractView
 	{
 		currentGroup = value;
 
-		if(PlayerPrefsManager.CanShowAwardAd && Advertisement.IsReady("rewardedVideo"))
-			group_AwardAd.gameObject.SetActive(true);
-		else
-			group_AwardAd.gameObject.SetActive(false);
+		UpdateAwardAd();
 
 		switch(currentGroup)
 		{

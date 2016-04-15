@@ -61,7 +61,7 @@ public class GameSceneController : AbstractController
 		if(thisTimeRecord != null)
 		{
 			if(thisTimeRecord.lastScore[0] > 500)
-				showAd = (Random.Range(0, 1) == 0);
+				showAd = (Random.Range(0, 3) == 0);
 
 			if(thisTimeRecord.playTimes % 3 == 1)
 			{
@@ -137,10 +137,10 @@ public class GameSceneController : AbstractController
 
 	IEnumerator WaitAdAndExit(int returnView)
 	{
-		while(!Advertisement.IsReady())
+		while(!Advertisement.IsReady("video"))
 			yield return null;
 
-		Advertisement.Show();
+		Advertisement.Show("video");
 
 		GameMainLoop.Instance.ChangeScene(SceneName.MainScene, returnView);
 	}
