@@ -208,10 +208,10 @@ public class MainSceneController : AbstractController {
 		if(success)
 		{
 			shopView.UpdateThemePackList();
-			message = string.Format("Buying Success!\n<color=#007A80FF>{0}</color>\nnow in the theme list.", info.themeName);
+			message = string.Format("Buying Success!\n<color=#007A80FF>{0}</color>\nnow in the theme list.", Localization.Get(info.themeName));
 		} else
 		{
-			message = string.Format("<i>{0}</i>\nBuying Failed", info.themeName);
+			message = string.Format("<i>{0}</i>\nBuying Failed", Localization.Get(info.themeName));
 		}
 		shopView.ShowBuyMsg(message);
 	}
@@ -226,7 +226,7 @@ public class MainSceneController : AbstractController {
 		GoogleAnalyticsManager.LogEvent(GoogleAnalyticsManager.EventCategory.UserClickEvent, 
 			GoogleAnalyticsManager.EventAction.ClickThemeInfo, themeItemId);
 		ThemeInfo themeInfo = InventoryManager.Instance.GetThemeInfo(themeItemId);
-		shopView.ShowThemeInfo(themeInfo.themeName, themeInfo.themeContent);
+		shopView.ShowThemeInfo(Localization.Get(themeInfo.themeName), Localization.Get(themeInfo.themeContent));
 	}
 
 	void LeaveGame()

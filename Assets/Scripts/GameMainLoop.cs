@@ -58,6 +58,7 @@ public class GameMainLoop : SingletonMonoBehavior<GameMainLoop> {
 	// Use this for initialization
 	IEnumerator Start () {
 		DontDestroyOnLoad(this.gameObject);
+		Localization.Init();
 		loadingPage.Init();
 		
 		GameSettingManager.LoadData();

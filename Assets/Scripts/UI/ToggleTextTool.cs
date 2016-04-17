@@ -31,7 +31,7 @@ public class ToggleTextTool : MonoBehaviour {
 			if(text != null)
 			{
 				if(changeTextContent)
-					text.text = onString.Replace("\\n", "\n");
+					text.text = Localization.Get(onString.Replace("\\n", "\n"));
 				if(changeColor)
 					text.color = onColor;
 			}
@@ -43,7 +43,7 @@ public class ToggleTextTool : MonoBehaviour {
 			if(text != null)
 			{
 				if(changeTextContent)
-					text.text = offString.Replace("\\n", "\n");
+					text.text = Localization.Get(offString.Replace("\\n", "\n"));
 				if(changeColor)
 					text.color = offColor;
 			}

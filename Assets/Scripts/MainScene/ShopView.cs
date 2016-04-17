@@ -18,39 +18,95 @@ public class ShopView : AbstractView
 	public VoidTwoString onClickEquipCard;
 	public VoidNoneParameter onClickConfirmBuyTheme;
 	public VoidNoneParameter onClickMoniBoard;
-	public Text text_CurrentMoni;
-	public RectTransform group_Shop;
-	public RectTransform content_ThemeUI;
-	public RectTransform group_Theme;
-	public Image image_PopUpMask;
-	public RectTransform group_MsgWindow;
-	public Text text_MsgTitle;
-	public Text text_MsgContent;
-	public Toggle[] swithToggle;
-	public Image group_LoadingWindow;
-	public RectTransform group_ThemeInfoWindow;
-	public Text text_ThemeName;
-	public Text text_ThemeInfo;
-	public RectTransform image_LoadingWindowBG;
-	public Image image_Green;
-	public Image image_Orange;
-	public Image image_Pink;
-	public Image image_Blue;
-	public Image image_Move;
-	public Text text_Loading;
-	public RectTransform group_Loading;
-	public RectTransform group_ResultMsg;
-	public Text text_ResultMsg;
-	public List<ThemePackUI> themePackUIList = new List<ThemePackUI>();
-	public GameObject group_AwardAd;
-	public GameObject group_ThemeBuyingInfo;
-	public ScrollRect scrollView;
-	public GameObject group_SoldOut;
-	public GameObject button_Cancel;
-	public GameObject button_Yes;
-	public GameObject button_OK;
+	[SerializeField]
+	Text text_CurrentMoni;
+	[SerializeField]
+	RectTransform group_Shop;
+	[SerializeField]
+	RectTransform content_ThemeUI;
+	[SerializeField]
+	RectTransform group_Theme;
+	[SerializeField]
+	Image image_PopUpMask;
+	[SerializeField]
+	RectTransform group_MsgWindow;
+	[SerializeField]
+	Text text_MsgTitle;
+	[SerializeField]
+	Text text_MsgContent;
+	[SerializeField]
+	Toggle[] swithToggle;
+	[SerializeField]
+	Image group_LoadingWindow;
+	[SerializeField]
+	RectTransform group_ThemeInfoWindow;
+	[SerializeField]
+	Text text_ThemeName;
+	[SerializeField]
+	Text text_ThemeInfo;
+	[SerializeField]
+	RectTransform image_LoadingWindowBG;
+	[SerializeField]
+	Image image_Green;
+	[SerializeField]
+	Image image_Orange;
+	[SerializeField]
+	Image image_Pink;
+	[SerializeField]
+	Image image_Blue;
+	[SerializeField]
+	Image image_Move;
+	[SerializeField]
+	Text text_Loading;
+	[SerializeField]
+	RectTransform group_Loading;
+	[SerializeField]
+	RectTransform group_ResultMsg;
+	[SerializeField]
+	Text text_ResultMsg;
+	[SerializeField]
+	List<ThemePackUI> themePackUIList = new List<ThemePackUI>();
+	[SerializeField]
+	GameObject group_AwardAd;
+	[SerializeField]
+	GameObject group_ThemeBuyingInfo;
+	[SerializeField]
+	ScrollRect scrollView;
+	[SerializeField]
+	GameObject group_SoldOut;
+	[SerializeField]
+	GameObject button_Cancel;
+	[SerializeField]
+	GameObject button_Yes;
+	[SerializeField]
+	GameObject button_OK;
 	Coroutine loadingAnimation;
 	Vector3 rotateAngle = new Vector3(0f, 0f, 120f);
+
+	[SerializeField]
+	Text text_MoniTitle;
+	[SerializeField]
+	Text text_Title;
+	[SerializeField]
+	Text text_Theme;
+	[SerializeField]
+	Text text_Shop;
+	[SerializeField]
+	Text text_WatchAdInfo;
+	[SerializeField]
+	Text text_WatchAd;
+	[SerializeField]
+	Text text_ThemeExplain;
+	[SerializeField]
+	Text text_GetNewTheme;
+	[SerializeField]
+	Text text_SoldOut;
+	[SerializeField]
+	Text text_Cancel;
+	[SerializeField]
+	Text text_Yes;
+	[SerializeField]
+	Text text_OK;
 
 	public override IEnumerator Init()
 	{
@@ -70,6 +126,15 @@ public class ShopView : AbstractView
 		currentMsgWindowState = MsgWindowState.Close;
 		SetCurrentGroup(ShopGroup.Theme);
 		yield return null;
+		UpdateText();
+		Localization.Event_ChangeLocaliztion += UpdateText;
+	}
+
+	void OnDestroy()
+	{
+		if(InventoryManager.Instance != null)
+			InventoryManager.Instance.updateCurrency -= UpdateMoniCount;
+		Localization.Event_ChangeLocaliztion -= UpdateText;
 	}
 
 	public void OnClickBack()
@@ -116,7 +181,8 @@ public class ShopView : AbstractView
 	public void ShowGetMoni(int amount)
 	{
 		currentMsgWindowState = MsgWindowState.GetMoni;
-		ShowMsgWindow("Special Award!", string.Format("You get {0} Moni by watching the ad!", amount));
+		ShowMsgWindow(Localization.Get("ShopView/WatchAdTitle"),
+			string.Format(Localization.Get("ShopView/WatchAdMsg"), amount));
 		button_OK.SetActive(true);
 		button_Yes.SetActive(false);
 		button_Cancel.SetActive(false);
@@ -126,7 +192,7 @@ public class ShopView : AbstractView
 	public void ShowMoniNotEnough()
 	{
 		currentMsgWindowState = MsgWindowState.NotEnoughMoni;
-		ShowMsgWindow("Your Moni is not enough", "You don't have enough \nMoni to buy this theme.");
+		ShowMsgWindow(Localization.Get("ShopView/MoniNotEnoughTitle"), Localization.Get("ShopView/MoniNotEnoughMsg"));
 		button_OK.SetActive(true);
 		button_Yes.SetActive(false);
 		button_Cancel.SetActive(false);
@@ -135,8 +201,8 @@ public class ShopView : AbstractView
 	public void ShowConfirmBuy(int cost)
 	{
 		currentMsgWindowState = MsgWindowState.ConfirmBuy;
-		string content = string.Format("Buying this theme will cost \n{0} Moni.\nAre you sure?", cost);
-		ShowMsgWindow("Confirm Buy", content);
+		string content = string.Format(Localization.Get("ShopView/ConfirmBuyMsg"), cost);
+		ShowMsgWindow(Localization.Get("ShopView/ConfirmBuyTitle"), content);
 		button_OK.SetActive(false);
 		button_Yes.SetActive(true);
 		button_Cancel.SetActive(true);
@@ -257,6 +323,22 @@ public class ShopView : AbstractView
 	void DoLoadingAnimation()
 	{
 		loadingAnimation = StartCoroutine(LoadingAnimation());
+	}
+
+	void UpdateText()
+	{
+		text_Title.text = Localization.Get("ShopView/Title");
+		text_MoniTitle.text = Localization.Get("ShopView/MoniTitle");
+		text_Theme.text = Localization.Get("ShopView/Theme");
+		text_Shop.text = Localization.Get("ShopView/Shop");
+		text_WatchAdInfo.text = Localization.Get("ShopView/WatchAdInfo");
+		text_WatchAd.text = Localization.Get("ShopView/WatchAd");
+		text_ThemeExplain.text = Localization.Get("ShopView/ThemeExplain");
+		text_GetNewTheme.text = Localization.Get("ShopView/GetNewTheme");
+		text_SoldOut.text = Localization.Get("ShopView/SoldOut");
+		text_Cancel.text = Localization.Get("ShopView/Cancel");
+		text_Yes.text = Localization.Get("ShopView/Yes");
+		text_OK.text = Localization.Get("ShopView/OK");
 	}
 
 	IEnumerator LoadingAnimation()
@@ -435,10 +517,4 @@ public class ShopView : AbstractView
 		yield return group_Shop.DOAnchorPos(Vector2.zero, 0.5f).SetEase(Ease.OutCubic).WaitForCompletion();
 		showCoroutine = null;
 	}	
-
-	void OnDestroy()
-	{
-		if(InventoryManager.Instance != null)
-			InventoryManager.Instance.updateCurrency -= UpdateMoniCount;
-	}
 }

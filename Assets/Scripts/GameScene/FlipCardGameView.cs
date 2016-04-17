@@ -9,33 +9,71 @@ public class FlipCardGameView : AbstractView
 	public VoidNoneParameter onClickPause;
 	public VoidNoneParameter onClickNextLevel;
 	public VoidNoneParameter onClickBonusTime;
-	public Text text_CurrentLevel;
-	public Text text_CurrentScore;
-	public Text text_Level;
-	public Text text_Round;
-	public Text text_AddScore;
-	public Text text_Task;
-	public RectTransform group_Counting;
-	public RectTransform image_Counting3;
-	public RectTransform image_Counting2;
-	public RectTransform image_Counting1;
-	public RectTransform image_CountingGo;
-	public RectTransform group_FeverTime;
-	public RectTransform group_Perfect;
-	public RectTransform image_WindowBG;
-	public RectTransform group_SpecialCard;
-	public RectTransform image_BombCard;
-	public RectTransform image_FlareCard;
-	public RectTransform group_Task;
-	public Button button_Pause;
-	public Button button_BonusTime;
-	public Button button_NextLevel;
-	public Slider timeBar;
-	public InfiniteProgressBar infiniteProgressBar;
-    public GameObject timeIsRunning;
-	public GameObject feverTimeEffect;
-	private Vector2 feverTimePos = new Vector2(0f, -832f);
-	private Vector2 nextLevelPos = new Vector2(0f, -112f);
+	[SerializeField]
+	Text text_CurrentLevel;
+	[SerializeField]
+	Text text_CurrentScore;
+	[SerializeField]
+	Text text_Level;
+	[SerializeField]
+	Text text_Round;
+	[SerializeField]
+	Text text_AddScore;
+	[SerializeField]
+	Text text_Task;
+	[SerializeField]
+	RectTransform group_Counting;
+	[SerializeField]
+	RectTransform image_Counting3;
+	[SerializeField]
+	RectTransform image_Counting2;
+	[SerializeField]
+	RectTransform image_Counting1;
+	[SerializeField]
+	RectTransform image_CountingGo;
+	[SerializeField]
+	RectTransform group_FeverTime;
+	[SerializeField]
+	RectTransform group_Perfect;
+	[SerializeField]
+	RectTransform image_WindowBG;
+	[SerializeField]
+	RectTransform group_SpecialCard;
+	[SerializeField]
+	RectTransform image_BombCard;
+	[SerializeField]
+	RectTransform image_FlareCard;
+	[SerializeField]
+	RectTransform group_Task;
+	[SerializeField]
+	Button button_Pause;
+	[SerializeField]
+	Button button_BonusTime;
+	[SerializeField]
+	Button button_NextLevel;
+	[SerializeField]
+	Slider timeBar;
+	[SerializeField]
+	InfiniteProgressBar infiniteProgressBar;
+	[SerializeField]
+	GameObject timeIsRunning;
+	[SerializeField]
+	GameObject feverTimeEffect;
+
+	[SerializeField]
+	Text text_LevelTitle;
+	[SerializeField]
+	Text text_ScoreTitle;
+
+	[SerializeField]
+	Text text_Level1;
+	[SerializeField]
+	Text text_Level1Tip;
+	[SerializeField]
+	Text text_Perfect;
+
+	Vector2 feverTimePos = new Vector2(0f, -832f);
+	Vector2 nextLevelPos = new Vector2(0f, -112f);
 	int nextLevel;
 
 	public override IEnumerator Init()
@@ -52,7 +90,23 @@ public class FlipCardGameView : AbstractView
 		text_AddScore.gameObject.SetActive(false);
 		group_Task.gameObject.SetActive(false);
 		yield return null;
+		UpdateText();
+		Localization.Event_ChangeLocaliztion += UpdateText;
 	}
+
+	void OnDestroy()
+	{
+		Localization.Event_ChangeLocaliztion -= UpdateText;
+	}
+
+	void UpdateText()
+	{
+		text_LevelTitle.text = Localization.Get("InfiniteGameView/LevelTitle");
+		text_ScoreTitle.text = Localization.Get("InfiniteGameView/ScoreTitle");
+		text_Level1.text = Localization.Get("InfiniteGameView/Level1");
+		text_Level1Tip.text = Localization.Get("InfiniteGameView/Level1Tip");
+		text_Perfect.text = Localization.Get("InfiniteGameView/Perfect");
+    }
 
 	public void OnClickPause()
 	{
@@ -172,7 +226,7 @@ public class FlipCardGameView : AbstractView
 
 		if(thisLevelTaskComplete)
 		{
-			text_Task.text = string.Format("Level {0} Task Complete!", level - 1);
+			text_Task.text = string.Format(Localization.Get("InfiniteGameView/TaskComplete"), level - 1);
 			group_Task.gameObject.SetActive(true);
 
 			group_Task.localScale = Vector3.zero;
@@ -183,8 +237,8 @@ public class FlipCardGameView : AbstractView
 			group_Task.gameObject.SetActive(false);
 		}
 
-		text_Level.text = string.Format("LEVEL {0}", level);
-		text_Round.text = string.Format("You have {0} rounds in this level.", round);
+		text_Level.text = string.Format(Localization.Get("InfiniteGameView/LevelTipTitle"), level);
+		text_Round.text = string.Format(Localization.Get("InfiniteGameView/LevelTip"), round);
 		infiniteProgressBar.SetProgress(level - 2);
 		if(specialCardType > 0)
 			group_SpecialCard.gameObject.SetActive(true);

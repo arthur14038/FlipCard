@@ -6,16 +6,28 @@ using UnityEngine.UI;
 public class MainPageView : AbstractView {
 	enum ViewState{Main, SettingWindow, LeaveWindow, UnderConstructionWindow, Close}
 	ViewState currentState;
-	public RectTransform group_Main;
-    public Image image_Mask;
-	public Image image_Theme;
-	public RectTransform image_SettingWindow;
-	public RectTransform image_LeaveWindow;
-	public RectTransform image_UnderConstructionWindow;
-	public Toggle toggle_Music;
-	public Toggle toggle_Sound;
-	public GridLayoutGroup gridLayoutGroup;
-    public RectTransform[] modeButtons;
+	[SerializeField]
+	RectTransform group_Main;
+	[SerializeField]
+	Image image_Mask;
+	[SerializeField]
+	Image image_Theme;
+	[SerializeField]
+	RectTransform image_SettingWindow;
+	[SerializeField]
+	RectTransform image_LeaveWindow;
+	[SerializeField]
+	RectTransform image_UnderConstructionWindow;
+	[SerializeField]
+	Toggle toggle_Music;
+	[SerializeField]
+	Toggle toggle_Sound;
+	[SerializeField]
+	GridLayoutGroup gridLayoutGroup;
+	[SerializeField]
+	RectTransform[] modeButtons;
+
+	#region On Click Event
 	public VoidNoneParameter onClickRate;
 	public VoidNoneParameter onClickMail;
 	public VoidNoneParameter onClickShop;
@@ -25,6 +37,54 @@ public class MainPageView : AbstractView {
 	public VoidNoneParameter onClick2P;
 	public VoidNoneParameter onClickComingSoon;
 	public VoidNoneParameter onClickGoToFacebook;
+	#endregion
+
+	[SerializeField]
+	Text text_InfiniteMode;
+	[SerializeField]
+	Text text_TwoPlayer;
+	[SerializeField]
+	Text text_Shop;
+	[SerializeField]
+	Text text_ComingSoon;
+	[SerializeField]
+	Text text_Sound;
+	[SerializeField]
+	Text text_Music;
+	[SerializeField]
+	Text text_GoldCardTitle;
+	[SerializeField]
+	Text text_GoldCardContent;
+	[SerializeField]
+	Text text_BombCardTitle;
+	[SerializeField]
+	Text text_BombCardContent;
+	[SerializeField]
+	Text text_FlareCardTitle;
+	[SerializeField]
+	Text text_FlareCardContent;
+	[SerializeField]
+	Text text_BonusCardTitle;
+	[SerializeField]
+	Text text_BonusCardContent;
+	[SerializeField]
+	Text text_Rate;
+	[SerializeField]
+	Text text_Like;
+	[SerializeField]
+	Text text_LeaveWindowTitle;
+	[SerializeField]
+	Text text_QuitGame;
+	[SerializeField]
+	Text text_ComingSoonTitle;
+	[SerializeField]
+	Text text_ComingSoonContent;
+	[SerializeField]
+	Text text_GotIt;
+	[SerializeField]
+	Text text_Notify;
+	[SerializeField]
+	Text text_WindowRate;
 
 	public override IEnumerator Init ()
 	{
@@ -34,7 +94,8 @@ public class MainPageView : AbstractView {
 		image_Mask.gameObject.SetActive(false);
 		image_LeaveWindow.gameObject.SetActive(false);
 		image_SettingWindow.anchoredPosition = hideUp;
-		image_UnderConstructionWindow.gameObject.SetActive(false);
+		image_SettingWindow.gameObject.SetActive(true);
+        image_UnderConstructionWindow.gameObject.SetActive(false);
 		group_Main.gameObject.SetActive(true);
 		escapeEvent = OnClickEscape;
 
@@ -57,6 +118,13 @@ public class MainPageView : AbstractView {
 		}
 
 		yield return 0;
+		UpdateText();
+		Localization.Event_ChangeLocaliztion += UpdateText;
+	}
+
+	void OnDestroy()
+	{
+		Localization.Event_ChangeLocaliztion -= UpdateText;
 	}
 	
 	public void OnClickFlipCard()
@@ -212,6 +280,33 @@ public class MainPageView : AbstractView {
 			OnClickExitUnderConstruction();
 			break;
 		}
+	}
+	
+	void UpdateText()
+	{
+		text_InfiniteMode.text = Localization.Get("MainView/InfiniteMode");
+		text_TwoPlayer.text = Localization.Get("MainView/TwoPlayer");
+		text_Shop.text = Localization.Get("MainView/Shop");
+		text_ComingSoon.text = Localization.Get("MainView/ComingSoon");
+		text_Sound.text = Localization.Get("Sound");
+		text_Music.text = Localization.Get("Music");
+		text_GoldCardTitle.text = Localization.Get("GoldCardTitle");
+		text_GoldCardContent.text = Localization.Get("GoldCardContent");
+		text_BombCardTitle.text = Localization.Get("BombCardTitle");
+		text_BombCardContent.text = Localization.Get("BombCardContent");
+		text_FlareCardTitle.text = Localization.Get("FlareCardTitle");
+		text_FlareCardContent.text = Localization.Get("FlareCardContent");
+		text_BonusCardTitle.text = Localization.Get("BonusCardTitle");
+		text_BonusCardContent.text = Localization.Get("BonusCardContent");
+		text_Rate.text = Localization.Get("RateThisApp");
+		text_Like.text = Localization.Get("LikeUs");
+		text_LeaveWindowTitle.text = Localization.Get("LeaveWindowTitle");
+		text_QuitGame.text = Localization.Get("QuitGame");
+		text_ComingSoonTitle.text = Localization.Get("ComingSoonTitle");
+		text_ComingSoonContent.text = Localization.Get("ComingSoonContent");
+		text_GotIt.text = Localization.Get("GotIt");
+		text_Notify.text = Localization.Get("ComingSoon/Notify");
+		text_WindowRate.text = Localization.Get("GoToRate");
 	}
 
 	IEnumerator EnterEffect(RectTransform shakeItem, float enterDuration)

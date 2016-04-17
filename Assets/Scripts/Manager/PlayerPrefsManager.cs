@@ -156,7 +156,6 @@ public class PlayerPrefsManager{
 		{
 			DateTime lastTimeShow = new DateTime(long.Parse(PlayerPrefs.GetString("CanShowAwardAd", "0")));
 			TimeSpan timeSpan = DateTime.Now - lastTimeShow;
-			Debug.Log(lastTimeShow);
 			if(timeSpan.TotalHours > 8)
 				return true;
 			else

@@ -1,19 +1,33 @@
 ﻿using UnityEngine;
 using System.Collections;
 using DG.Tweening;
+using UnityEngine.UI;
 
 public class TwoPlayerView : AbstractView
 {
 	public VoidNoneParameter onClickBack;
 	public VoidInt onClickPlay;
-	public RectTransform group_2P;
-	public RectTransform[] waveItems;
+	[SerializeField]
+	RectTransform group_2P;
+	[SerializeField]
+	RectTransform[] waveItems;
+	[SerializeField]
+	Text text_Title;
+	[SerializeField]
+	Text[] text_Play;
 
 	public override IEnumerator Init()
 	{
 		escapeEvent = OnClickBack;
 		group_2P.gameObject.SetActive(true);
 		yield return null;
+		UpdateText();
+		Localization.Event_ChangeLocaliztion += UpdateText;
+	}
+
+	void OnDestroy()
+	{
+		Localization.Event_ChangeLocaliztion -= UpdateText;
 	}
 
 	public void OnClickBack()
@@ -30,6 +44,15 @@ public class TwoPlayerView : AbstractView
 			onClickPlay(cardCount);
 	}
 	
+	void UpdateText()
+	{
+		text_Title.text = Localization.Get("TwoPlayerView/Title");
+		foreach(Text text in text_Play)
+		{
+			text.text = Localization.Get("InfiniteView/Play");
+		}
+	}
+
 	IEnumerator WaveEffect(RectTransform waveItem, float enterDuration)
 	{
 		waveItem.rotation = Quaternion.Euler(Vector3.zero);

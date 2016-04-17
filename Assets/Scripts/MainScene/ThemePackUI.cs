@@ -6,17 +6,30 @@ using DG.Tweening;
 public class ThemePackUI : MonoBehaviour {
 	enum ThemePackUIState {EquipedCard, EquipedTheme, EquipedBoth, CanBeEquiped }
 	ThemePackUIState currentState;
-	public Text text_ThemePrice;
-	public Image image_Theme;
-	public Image image_CardFace;
-	public Image image_CardBack;
-	public GameObject image_CardEquiped;
-	public GameObject image_ThemeEquiped;
-	public GameObject group_Theme;
-	public GameObject group_Shop;
-	public GameObject group_Lock;
-	public Toggle toggle_Scene;
-	public Toggle toggle_Card;
+	[SerializeField]
+	Text text_ThemePrice;
+	[SerializeField]
+	Text text_Lock;
+	[SerializeField]
+	Image image_Theme;
+	[SerializeField]
+	Image image_CardFace;
+	[SerializeField]
+	Image image_CardBack;
+	[SerializeField]
+	GameObject image_CardEquiped;
+	[SerializeField]
+	GameObject image_ThemeEquiped;
+	[SerializeField]
+	GameObject group_Theme;
+	[SerializeField]
+	GameObject group_Shop;
+	[SerializeField]
+	GameObject group_Lock;
+	[SerializeField]
+	Toggle toggle_Scene;
+	[SerializeField]
+	Toggle toggle_Card;
 	VoidString onClickThemeInfo;
 	VoidString onEquipTheme;
 	VoidTwoString onEquipCard;
@@ -58,7 +71,19 @@ public class ThemePackUI : MonoBehaviour {
 		group_Lock.SetActive(false);
 
 		CheckUIState();
+		UpdateText();
+		Localization.Event_ChangeLocaliztion += UpdateText;
 	}
+
+	void OnDestroy()
+	{
+		Localization.Event_ChangeLocaliztion -= UpdateText;
+	}
+
+	void UpdateText()
+	{
+		text_Lock.text = Localization.Get("ShopView/Lock");
+    }
 
 	public void OnClickInfo()
 	{

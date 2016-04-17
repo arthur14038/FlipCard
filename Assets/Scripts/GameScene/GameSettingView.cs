@@ -6,30 +6,88 @@ using UnityEngine.UI;
 public class GameSettingView : AbstractView {
 	public VoidNoneParameter onClickResume;
 	public VoidNoneParameter onClickExit;
-	public Sprite player1Sprite;
-	public Sprite player2Sprite;
-	public Image image_Mask;
+	[SerializeField]
+	Sprite player1Sprite;
+	[SerializeField]
+	Sprite player2Sprite;
+	[SerializeField]
+	Image image_Mask;
 
-	public CanvasGroup group_Pause;
-	public Toggle toggle_Music;
-	public Toggle toggle_Sound;
-	public RectTransform image_PauseWindow;
-	
-	public FlipCardGameResult flipCardGameResult;
+	[SerializeField]
+	CanvasGroup group_Pause;
+	[SerializeField]
+	Toggle toggle_Music;
+	[SerializeField]
+	Toggle toggle_Sound;
+	[SerializeField]
+	RectTransform image_PauseWindow;
 
-	public RectTransform group_TwoPlayer;
-	public Image image_WinnerBoard;
-	public Image image_WinnerFace;
-	public Text text_WinnerName;	
-	public Text text_Player1ResultScore;
-	public Text text_Player2ResultScore;
-	public RectTransform button_CompetitionGameOverExit;
-	public RectTransform image_Player1;
-	public RectTransform image_Player2;
+	[SerializeField]
+	FlipCardGameResult flipCardGameResult;
+
+	[SerializeField]
+	RectTransform group_TwoPlayer;
+	[SerializeField]
+	Image image_WinnerBoard;
+	[SerializeField]
+	Image image_WinnerFace;
+	[SerializeField]
+	Text text_WinnerName;
+	[SerializeField]
+	Text text_Player1ResultScore;
+	[SerializeField]
+	Text text_Player2ResultScore;
+	[SerializeField]
+	RectTransform button_CompetitionGameOverExit;
+	[SerializeField]
+	RectTransform image_Player1;
+	[SerializeField]
+	RectTransform image_Player2;
 	string player1ColorCode = "#02A887FF";
 	string player2ColorCode = "#FF4D88FF";
 	Color player1Color;
 	Color player2Color;
+
+	[SerializeField]
+	Text text_Continue;
+	[SerializeField]
+	Text text_Quit;
+	[SerializeField]
+	Text text_Pause;
+	[SerializeField]
+	Text text_Music;
+	[SerializeField]
+	Text text_Sound;
+	[SerializeField]
+	Text text_TimesUp;
+	[SerializeField]
+	Text text_ScoreTitle;
+	[SerializeField]
+	Text text_LevelTitle;
+	[SerializeField]
+	Text text_Task1;
+	[SerializeField]
+	Text text_Task2;
+	[SerializeField]
+	Text text_Task3;
+	[SerializeField]
+	Text text_Task4;
+	[SerializeField]
+	Text text_Task5;
+	[SerializeField]
+	Text text_Task6;
+	[SerializeField]
+	Text text_GameOverTitle;
+	[SerializeField]
+	Text text_Winner;
+	[SerializeField]
+	Text text_Player1Score;
+	[SerializeField]
+	Text text_Player2Score;
+	[SerializeField]
+	Text text_Player1Title;
+	[SerializeField]
+	Text text_Player2Title;
 
 	public override IEnumerator Init ()
 	{
@@ -45,8 +103,39 @@ public class GameSettingView : AbstractView {
 		group_Pause.gameObject.SetActive(false);
 		group_TwoPlayer.gameObject.SetActive(false);
 		flipCardGameResult.Init();
-    }
+		UpdateText();
+		Localization.Event_ChangeLocaliztion += UpdateText;
+	}
 	
+	void OnDestroy()
+	{
+		Localization.Event_ChangeLocaliztion -= UpdateText;
+	}
+
+	void UpdateText()
+	{
+		text_Continue.text = Localization.Get("GameSettingView/Continue");
+		text_Quit.text = Localization.Get("GameSettingView/Quit");
+		text_Pause.text = Localization.Get("GameSettingView/Pause");
+		text_Music.text = Localization.Get("Music");
+		text_Sound.text = Localization.Get("Sound");
+		text_TimesUp.text = Localization.Get("GameSettingView/TimesUp");
+		text_ScoreTitle.text = Localization.Get("GameResult/Score");
+		text_LevelTitle.text = Localization.Get("GameResult/Level");
+		text_Task1.text = Localization.Get("GameResult/Task1");
+		text_Task2.text = Localization.Get("GameResult/Task2");
+		text_Task3.text = Localization.Get("GameResult/Task3");
+		text_Task4.text = Localization.Get("GameResult/Task4");
+		text_Task5.text = Localization.Get("GameResult/Task5");
+		text_Task6.text = Localization.Get("GameResult/Task6");
+		text_GameOverTitle.text = Localization.Get("GameResult/GameOverTitle");
+		text_Winner.text = Localization.Get("GameResult/Winner");
+		text_Player1Score.text = Localization.Get("GameResult/TwoPlayerScore");
+		text_Player2Score.text = Localization.Get("GameResult/TwoPlayerScore");
+		text_Player1Title.text = Localization.Get("GameSettingView/Player1");
+		text_Player2Title.text = Localization.Get("GameSettingView/Player2");
+	}
+
 	public void OnClickResume()
 	{
 		AudioManager.Instance.PlayOneShot("Button_Click2");
@@ -81,13 +170,13 @@ public class GameSettingView : AbstractView {
 		if(player1Score > player2Score)
 		{
 			image_WinnerFace.sprite = player1Sprite;
-            text_WinnerName.text = "PLAYER 1";
+			text_WinnerName.text = Localization.Get("GameSettingView/Player1");
 			image_WinnerBoard.color = player1Color;
         }
 		else
 		{
 			image_WinnerFace.sprite = player2Sprite;
-			text_WinnerName.text = "PLAYER 2";
+			text_WinnerName.text = Localization.Get("GameSettingView/Player2");
 			image_WinnerBoard.color = player2Color;
 		}
 

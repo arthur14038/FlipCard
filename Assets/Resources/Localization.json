@@ -1,0 +1,632 @@
+﻿[
+   {
+     "Key": "Loading", 
+     "zh_tw": "讀取中…", 
+     "en_us": "Loading…"
+ },
+   {
+     "Key": "MainView/InfiniteMode", 
+     "zh_tw": "無限模式", 
+     "en_us": "INFINITE\nMODE"
+ },
+   {
+     "Key": "MainView/TwoPlayer", 
+     "zh_tw": "雙人模式", 
+     "en_us": "PLAY WITH\nFRIEND"
+ },
+   {
+     "Key": "MainView/Shop", 
+     "zh_tw": "主題商店", 
+     "en_us": "THEME\nSHOP"
+ },
+   {
+     "Key": "MainView/ComingSoon", 
+     "zh_tw": "即將推出", 
+     "en_us": "COMING\nSOON"
+ },
+   {
+     "Key": "Sound", 
+     "zh_tw": "音效", 
+     "en_us": "Sound"
+ },
+   {
+     "Key": "Music", 
+     "zh_tw": "音樂", 
+     "en_us": "Music"
+ },
+   {
+     "Key": "GoldCardTitle", 
+     "zh_tw": ".金卡.", 
+     "en_us": ".LUCKY CARD."
+ },
+   {
+     "Key": "GoldCardContent", 
+     "zh_tw": "卡片分數+4", 
+     "en_us": "Get additional 4 points."
+ },
+   {
+     "Key": "BombCardTitle", 
+     "zh_tw": ".炸彈卡.", 
+     "en_us": ".BOMB CARD."
+ },
+   {
+     "Key": "BombCardContent", 
+     "zh_tw": "將所有卡片再翻開一次", 
+     "en_us": "Match up them will\nupside down other cards."
+ },
+   {
+     "Key": "FlareCardTitle", 
+     "zh_tw": ".閃光卡.", 
+     "en_us": ".FLARE CARD."
+ },
+   {
+     "Key": "FlareCardContent", 
+     "zh_tw": "使卡片圖案出現一段時間", 
+     "en_us": "Match up them will make\nother card patterns coming out."
+ },
+   {
+     "Key": "BonusCardTitle", 
+     "zh_tw": ".加分卡.", 
+     "en_us": ".BONUS CARD."
+ },
+   {
+     "Key": "BonusCardContent", 
+     "zh_tw": "點擊越多分數越高!", 
+     "en_us": "Just tap it! More times you tap,\nmore bonus you get!"
+ },
+   {
+     "Key": "RateThisApp", 
+     "zh_tw": "給予評價", 
+     "en_us": "RATE THIS APP"
+ },
+   {
+     "Key": "LikeUs", 
+     "zh_tw": "粉絲團", 
+     "en_us": "LIKE US"
+ },
+   {
+     "Key": "LeaveWindowTitle", 
+     "zh_tw": "離開遊戲", 
+     "en_us": "CONFIRM EXIT"
+ },
+   {
+     "Key": "QuitGame", 
+     "zh_tw": "是否要離開遊戲?", 
+     "en_us": "Do you want to quit the game?"
+ },
+   {
+     "Key": "ComingSoonTitle", 
+     "zh_tw": "施工中", 
+     "en_us": "STAY TUNED!"
+ },
+   {
+     "Key": "ComingSoonContent", 
+     "zh_tw": "此功能正在製作中", 
+     "en_us": "This feature is coming soon."
+ },
+   {
+     "Key": "GotIt", 
+     "zh_tw": "瞭解", 
+     "en_us": "GOT IT"
+ },
+   {
+     "Key": "ComingSoon/Notify", 
+     "zh_tw": "喜歡我們的遊戲嗎？我們很重視玩家的意見，請去商店給予我們評價吧！", 
+     "en_us": "Are you enjoying the game? Please rate and review Flip Card. Your feedback matters!"
+ },
+   {
+     "Key": "GoToRate", 
+     "zh_tw": "給予評價", 
+     "en_us": "GO TO RATE"
+ },
+   {
+     "Key": "InfiniteView/Title", 
+     "zh_tw": "無限模式", 
+     "en_us": "INFINITE MODE"
+ },
+   {
+     "Key": "InfiniteView/Play", 
+     "zh_tw": "開始遊戲", 
+     "en_us": "PLAY"
+ },
+   {
+     "Key": "HighScoreTitle", 
+     "zh_tw": "最高分數", 
+     "en_us": "BEST SCORE"
+ },
+   {
+     "Key": "LastScoreTitle", 
+     "zh_tw": "最近遊玩分數", 
+     "en_us": "RECENT SCORE"
+ },
+   {
+     "Key": "HighLevelTitle", 
+     "zh_tw": "最佳回合數", 
+     "en_us": "BEST LEVEL"
+ },
+   {
+     "Key": "LastLevelTitle", 
+     "zh_tw": "最近遊玩回合數", 
+     "en_us": "RECENT LEVEL"
+ },
+   {
+     "Key": "InfiniteView/Task", 
+     "zh_tw": "任務 {0}/7", 
+     "en_us": "TASK {0}/7"
+ },
+   {
+     "Key": "Theme_00/Name", 
+     "zh_tw": "玻利露之海-黎明", 
+     "en_us": "Sea of Polilu- Dawn"
+ },
+   {
+     "Key": "Theme_00/Content", 
+     "zh_tw": "玻利露以北的區域大部分被海所覆蓋，高聳的雪山冒出海面形成兩座孤島，一向早起的北國人民喜歡登陸這兩座島欣賞黎明。當太陽從海平面另一端升起時，整座海面會從一片深藍霎那間轉為銀白，直到太陽完全越過島的頂端為止。北方的居民們相信，在黎明時刻出生的孩子如果帶有一頭如黎明之海般銀白色的頭髮，將會既聰明又特別幸運。", 
+     "en_us": "Most of the areas in the North Polilu are covered by sea, the towering snowy mountains formed two isolated islands above sea level. The folks of the North land are habituated to rise early and catch sunrise on these two islands. \n\nWhen the sunrises from the water, the whole sea will switch from a dark blue to silver color. This view will last until the sun completely pass over the tip of the island. \n\nNorthern folks believes that if a child born at the dawn with a silver white hair like the sea, he will be clever and lucky."
+ },
+   {
+     "Key": "Theme_01/Name", 
+     "zh_tw": "玻利露之海-夏", 
+     "en_us": "Sea of Pililu- Summer"
+ },
+   {
+     "Key": "Theme_01/Content", 
+     "zh_tw": "玻利露北方即使到了夏天，島上的冰雪依舊不會融化，生長在此的樹也對寒冷異常堅忍，這邊的居民時常坐船在兩座孤島間往返，掃除樹上累積的霜雪，那些霜雪在樹葉間被陽光照的閃閃發亮，北國人民稱呼這些霜雪為凜杉之星。", 
+     "en_us": "Even in the summer time the snow will not melt on the northern islands in Polilu, and the tree grows here had also build up a strong resistance to the harsh cold weather. \n\nResidents here often shuttle between the two islands to remove the accumulated frost on the tree. Those frost among the leaves ares hined by the sun, the northern people call them: stars of frozen fir."
+ },
+   {
+     "Key": "Theme_02/Name", 
+     "zh_tw": "三角塔的秘密", 
+     "en_us": "The Secrets of Triangular Tower"
+ },
+   {
+     "Key": "Theme_02/Content", 
+     "zh_tw": "不知何時起，玻利露中央的沙漠區就佇立了兩座三角塔，它們似乎比這區域的居民更早出現。一直以來無人能一探其中的秘密，甚至三角塔底下連個可能的入口都找不到。不過圍繞著三角塔附近的區域倒是少見的生氣蓬勃，充足的水源附近長了許多葉子瘦長的樹，沙漠居民視此處為重要的資源採集場。", 
+     "en_us": "No one know since when, Polilu's central desert region stands two triangular towers, they seem to appear earlier than the inhabitants of this area. Nobody has been able to discover the secret of it, even under the triangular tower, there is no possible entry can be found. \n\nHowever, the area around the towers is rarely prosperous. Near the sufficient water source, many long slender leave trees grows. Desert dwellers see here as an important resource acquisition field."
+ },
+   {
+     "Key": "Theme_03/Name", 
+     "zh_tw": "玻利露的蕾絲公主", 
+     "en_us": "Princess Lace of Polilu"
+ },
+   {
+     "Key": "Theme_03/Content", 
+     "zh_tw": "沙漠區的蕾絲公主非常喜歡蕾絲做成的東西，她穿戴的服裝和頭飾都綴有高雅華美的蕾絲，甚至使用的餐具和寢具，都可看到繪師精心設計的蕾絲圖案。公主使用的蕾絲服飾，是採自三角塔附近生長的樹葉，摘取三天內新生的嫩葉，抽取葉中最軟最細的纖維，浸泡在三角塔旁的湖水中三十天, 再請玻利露手藝最巧的一批蕾絲工藝師精心製作了三個月才完成的。", 
+     "en_us": "Princess Lace in the desert region is very fond of lace. Her clothing and headgear are decorated with elegant and gorgeous lace, even the cutlery and bedding she uses can see the design painting of lace patterns. \n\nPrincess's dress is made from the leaves grows around the triangular towers. It only collect the newborn leaves within three days, and extract the softest finest fibers, immersed them in the lake next to triangular towers for thirty days, then a group of most skillful lace craftsmen in Polilu will complete it in three months."
+ },
+   {
+     "Key": "Theme_04/Name", 
+     "zh_tw": "宇宙攝影師", 
+     "en_us": "A Beautiful Trap"
+ },
+   {
+     "Key": "Theme_04/Content", 
+     "zh_tw": "有個飛行員，他的工作就是在玻利露各地旅行拍照，讓其他人也能夠看看外面的世界。然而每當夜晚，飛行員看向一望無際的星空，總是在猜想宇宙中那些閃閃發亮的星球上到底有些什麼，不知道那些星球上是否也有跟他一樣的飛行員。他心想，總有一天他要打造出一台火箭，飛到那些星球上拍些照片帶回來給大家看。", 
+     "en_us": "A cerulean river flowing through Polilu's southeast prairie. This vast grasslands is covered with colorful flowers. \n\nThe beauty has danger hidden behind. Many foolish creatures passing through this place have become nutrient of the grasses. \n\nThis prairie has Polilu's most beautiful view, it is the most beautiful scenery, but also a trap."
+ },
+   {
+     "Key": "Theme_05/Name", 
+     "zh_tw": "美麗的陷阱", 
+     "en_us": "Universe Photographer"
+ },
+   {
+     "Key": "Theme_05/Content", 
+     "zh_tw": "蔚藍的河流流過玻利露東南方這片一望無際的大草原，草原上長滿了五彩繽紛的花草。美麗的背後暗藏著危機，行經於此的愚昧生物都已經成了這片草原的養分，這片草原有著玻利露最美的草原，這裡是美景，也是陷阱。", 
+     "en_us": "There is a pilot, his job is to travel around Polilu to take photographs, so people can see the outside world. \n\nWhen the night comes, the pilot sees the vast expanse of thesky, he always imagine what is on those shinny stars in the universe. He wonder whether if they have a pilots just like him on those planets. He thought that one day he would build a rocket ship, fly to those stars and take some pictures to show to people back home."
+ },
+   {
+     "Key": "Theme_06/Name", 
+     "zh_tw": "花前小廟", 
+     "en_us": "The Small Temple"
+ },
+   {
+     "Key": "Theme_06/Content", 
+     "zh_tw": "最早的時候，廟依著河岸而建，供路過旅客休憩，歷經幾百年的變遷，河道乾涸，這座玻利露歷史最悠久的小廟已人跡不再。有天一名農夫行經至此，他背上的袋子裝有向商人買的種子，這些種子在他的田裏怎樣都種不出東西，原本他想找回那個商人，卻在此迷了路，農夫乾脆將種子丟棄在小廟前便隨即離去。在此佇立幾百年的小廟有感於孤寂，於是決定發揮神力讓種子的花開滿整片河床來陪伴祂。", 
+     "en_us": "At beginning, the temple was built on the river bank to provide travelers a place to rest. After hundreds of years of change, the river dried up, this oldest temple in Polilu is now deserted. \n\nOne day a farmer pass this place, he carried a bag full of seeds that he bought from the merchant. He have to return them because it would not grow on his farm. But the farmer got lost in this place, so he simply discard the seeds in the temple. \n\nThis temple has been standing for hundreds of years, and it is feeling lonely, so the temple decided touse its magic power to flowering those seeds and keep it company."
+ },
+   {
+     "Key": "Theme_07/Name", 
+     "zh_tw": "三瓣花", 
+     "en_us": "Three Petal Flower"
+ },
+   {
+     "Key": "Theme_07/Content", 
+     "zh_tw": "這片古老的樹林在此已屹立百萬年，據說這座樹林裏長有一種稀有的植物，這個植物每十年才會開一次花，花托上長有三個橘紅色的花瓣，玻利露的居民稱其為三瓣花，他們相信如果喝了這個花瓣泡的茶，記性就會變好。", 
+     "en_us": "This ancient woods have been standing here for millions of years. It is said that in this woods have a rare plant; \n\nit flower once every ten years, and it has three orange petals on the receptacle. \n\nPolilu's residents called it three petal flower, they believe that if you drink the petal tea, your memory will improve."
+ },
+   {
+     "Key": "Theme_08/Name", 
+     "zh_tw": "白花池塘", 
+     "en_us": "White Flower Pond"
+ },
+   {
+     "Key": "Theme_08/Content", 
+     "zh_tw": "這座池塘上的白花是屬於一個熱愛水生植物的小女孩所擁有的，那是她爸爸在她八歲生日那天送給她的禮物，爸爸跟小女孩說這種植物還能開出不同顏色的花，但是從來沒人看過它開出白色以外的花，縱使如此小女孩還是相信他爸爸，而且立志長大要成為一個植物學者，才可以跟爸爸一起研究如何讓白花池塘開出更多不同顏色的花。", 
+     "en_us": "The white flowers in this pondis belong to a little girl who love aquatic plant. Those flowers are her eight years birthday gift from her father. Her father told the little girl that it will blossom in many different colors, but no one has ever seen it other than white. \n\nEven so, the little girl still believe in her father, and determined to be a botanist when she grow up, so she can research with her father to make the white flower pond blossom with other colors."
+ },
+   {
+     "Key": "FirstRewardGoal", 
+     "zh_tw": "在無限模式總計獲得40000分", 
+     "en_us": "Collect 40000 score in Infinite mode."
+ },
+   {
+     "Key": "Task1Name", 
+     "zh_tw": "無限模式<color=#099393FF>關卡1</color>任務", 
+     "en_us": "Infinite mode level <color=#099393FF>1</color> task."
+ },
+   {
+     "Key": "Task1Explain", 
+     "zh_tw": "每一回合都完美過關", 
+     "en_us": "Get all perfect match."
+ },
+   {
+     "Key": "Task2Name", 
+     "zh_tw": "無限模式<color=#099393FF>關卡2</color>任務", 
+     "en_us": "Infinite mode level <color=#099393FF>2</color> task."
+ },
+   {
+     "Key": "Task2Explain", 
+     "zh_tw": "進入加分模式時還剩10秒鐘以上", 
+     "en_us": "10 seconds left before entering bonus time."
+ },
+   {
+     "Key": "Task3Name", 
+     "zh_tw": "無限模式<color=#099393FF>關卡3</color>任務", 
+     "en_us": "Infinite mode level <color=#099393FF>3</color> task."
+ },
+   {
+     "Key": "Task3Explain", 
+     "zh_tw": "在每一回合的最後才配對炸彈卡或閃光卡", 
+     "en_us": "Keep bomb cards or flare cards been matched up in the end of round."
+ },
+   {
+     "Key": "Task4Name", 
+     "zh_tw": "無限模式<color=#099393FF>關卡4</color>任務", 
+     "en_us": "Infinite mode level <color=#099393FF>4</color> task."
+ },
+   {
+     "Key": "Task4Explain", 
+     "zh_tw": "在加分模式時不獲得任何分數", 
+     "en_us": "Don't get any score in bonus time."
+ },
+   {
+     "Key": "Task5Name", 
+     "zh_tw": "無限模式<color=#099393FF>關卡5</color>任務", 
+     "en_us": "Infinite mode level <color=#099393FF>5</color> task."
+ },
+   {
+     "Key": "Task5Explain", 
+     "zh_tw": "在加分模式獲得80分以上", 
+     "en_us": "Get 80 score in bonus time."
+ },
+   {
+     "Key": "Task6Name", 
+     "zh_tw": "無限模式<color=#099393FF>關卡6</color>任務", 
+     "en_us": "Infinite mode level <color=#099393FF>6</color> task."
+ },
+   {
+     "Key": "Task6Explain", 
+     "zh_tw": "達到6-10回合", 
+     "en_us": "Reach 6-10."
+ },
+   {
+     "Key": "TwoPlayerView/Title", 
+     "zh_tw": "雙人模式", 
+     "en_us": "PLAY WITH FRIEND"
+ },
+   {
+     "Key": "ShopView/Title", 
+     "zh_tw": "主題商店", 
+     "en_us": "THEME SHOP"
+ },
+   {
+     "Key": "ShopView/MoniTitle", 
+     "zh_tw": "我的莫尼", 
+     "en_us": "MY MONI"
+ },
+   {
+     "Key": "ShopView/Theme", 
+     "zh_tw": "擁有的主題", 
+     "en_us": "THEME"
+ },
+   {
+     "Key": "ShopView/Shop", 
+     "zh_tw": "可購買的主題", 
+     "en_us": "SHOP"
+ },
+   {
+     "Key": "ShopView/Equiped", 
+     "zh_tw": "使用中", 
+     "en_us": "EQUIPED"
+ },
+   {
+     "Key": "ShopView/Card", 
+     "zh_tw": "卡片造型", 
+     "en_us": "CARD"
+ },
+   {
+     "Key": "ShopView/Scene", 
+     "zh_tw": "場景", 
+     "en_us": "SCENE"
+ },
+   {
+     "Key": "ShopView/Lock", 
+     "zh_tw": "完成任務以解鎖", 
+     "en_us": "COMPLETE TASK TO GET"
+ },
+   {
+     "Key": "ON", 
+     "zh_tw": "開啟", 
+     "en_us": "ON"
+ },
+   {
+     "Key": "OFF", 
+     "zh_tw": "關閉", 
+     "en_us": "OFF"
+ },
+   {
+     "Key": "InfiniteView/SecondRewardName", 
+     "zh_tw": "200 莫尼", 
+     "en_us": "Moni x 220"
+ },
+   {
+     "Key": "ShopView/WatchAdInfo", 
+     "zh_tw": "觀看廣告可以獲得\n10個免費的莫尼喔!", 
+     "en_us": "Watch an Ad to get 10 Moni for FREEEEEEEEE!"
+ },
+   {
+     "Key": "ShopView/WatchAd", 
+     "zh_tw": "觀看廣告", 
+     "en_us": "WATCH AD"
+ },
+   {
+     "Key": "ShopView/ThemeExplain", 
+     "zh_tw": "主題中包含場景與卡片，使用不同的場景可更換遊戲背景，使用不同的卡片可以變更遊戲中的卡片風格", 
+     "en_us": "Theme include scene and card. Equip scene will change the app background. Equip card will change the card style in the game."
+ },
+   {
+     "Key": "ShopView/GetNewTheme", 
+     "zh_tw": "看更多主題", 
+     "en_us": "GET NEW THEME"
+ },
+   {
+     "Key": "ShopView/SoldOut", 
+     "zh_tw": "哇！沒貨啦！感謝您的支持，我們會盡快上架新貨的！", 
+     "en_us": "Wow! Thank you for your enthusiastic support. New themes will soon be released."
+ },
+   {
+     "Key": "ShopView/WatchAdTitle", 
+     "zh_tw": "觀看廣告獎勵", 
+     "en_us": "Watch Ad Reward"
+ },
+   {
+     "Key": "ShopView/WatchAdMsg", 
+     "zh_tw": "您因為觀看廣告而獲得{0}個莫尼", 
+     "en_us": "You get {0} Moni by watching the ad!"
+ },
+   {
+     "Key": "ShopView/MoniNotEnoughTitle", 
+     "zh_tw": "莫尼不足", 
+     "en_us": "Your Moni is not enough"
+ },
+   {
+     "Key": "ShopView/MoniNotEnoughMsg", 
+     "zh_tw": "您的莫尼不夠購買此主題", 
+     "en_us": "You don't have enough \nMoni to buy this theme."
+ },
+   {
+     "Key": "ShopView/ConfirmBuyTitle", 
+     "zh_tw": "購買確認", 
+     "en_us": "Confirm Buy"
+ },
+   {
+     "Key": "ShopView/ConfirmBuyMsg", 
+     "zh_tw": "此主題將花費您\n{0}莫尼\n是否購買？", 
+     "en_us": "Buying this theme will cost \n{0} Moni.\nAre you sure?"
+ },
+   {
+     "Key": "ShopView/Cancel", 
+     "zh_tw": "取消", 
+     "en_us": "CANCEL"
+ },
+   {
+     "Key": "ShopView/Yes", 
+     "zh_tw": "確認", 
+     "en_us": "YES"
+ },
+   {
+     "Key": "ShopView/OK", 
+     "zh_tw": "好", 
+     "en_us": "OK"
+ },
+   {
+     "Key": "GameSettingView/Player1", 
+     "zh_tw": "玩家 1", 
+     "en_us": "PLAYER 1"
+ },
+   {
+     "Key": "GameSettingView/Player2", 
+     "zh_tw": "玩家 2", 
+     "en_us": "PLAYER 2"
+ },
+   {
+     "Key": "GameSettingView/Continue", 
+     "zh_tw": "繼續遊戲", 
+     "en_us": "CONTINUE"
+ },
+   {
+     "Key": "GameSettingView/Quit", 
+     "zh_tw": "放棄遊戲", 
+     "en_us": "QUIT"
+ },
+   {
+     "Key": "GameSettingView/Pause", 
+     "zh_tw": "遊戲暫停", 
+     "en_us": "PAUSE"
+ },
+   {
+     "Key": "GameResult/NewRecord", 
+     "zh_tw": "破紀錄啦!", 
+     "en_us": "New record!"
+ },
+   {
+     "Key": "GameResult/TryAgain", 
+     "zh_tw": "再接再厲", 
+     "en_us": "Try again"
+ },
+   {
+     "Key": "GameResult/Incredible", 
+     "zh_tw": "怎麼可能?!", 
+     "en_us": "Incredible!"
+ },
+   {
+     "Key": "GameResult/Excellent", 
+     "zh_tw": "太神啦!", 
+     "en_us": "Excellent!"
+ },
+   {
+     "Key": "GameResult/Awesome", 
+     "zh_tw": "太厲害啦!", 
+     "en_us": "Awesome!"
+ },
+   {
+     "Key": "GameResult/Great", 
+     "zh_tw": "好棒!", 
+     "en_us": "Great!"
+ },
+   {
+     "Key": "GameSettingView/TimesUp", 
+     "zh_tw": "時間到!", 
+     "en_us": "TIME'S UP"
+ },
+   {
+     "Key": "GameResult/Score", 
+     "zh_tw": ".得分.", 
+     "en_us": ".SCORE."
+ },
+   {
+     "Key": "GameResult/Level", 
+     "zh_tw": ".回合.", 
+     "en_us": ".LEVEL."
+ },
+   {
+     "Key": "GameResult/Task1", 
+     "zh_tw": "關卡1任務完成", 
+     "en_us": "Complete level 1 task."
+ },
+   {
+     "Key": "GameResult/Task2", 
+     "zh_tw": "關卡2任務完成", 
+     "en_us": "Complete level 2 task."
+ },
+   {
+     "Key": "GameResult/Task3", 
+     "zh_tw": "關卡3任務完成", 
+     "en_us": "Complete level 3 task."
+ },
+   {
+     "Key": "GameResult/Task4", 
+     "zh_tw": "關卡4任務完成", 
+     "en_us": "Complete level 4 task."
+ },
+   {
+     "Key": "GameResult/Task5", 
+     "zh_tw": "關卡5任務完成", 
+     "en_us": "Complete level 5 task."
+ },
+   {
+     "Key": "GameResult/Task6", 
+     "zh_tw": "關卡6任務完成", 
+     "en_us": "Complete level 6 task."
+ },
+   {
+     "Key": "GameResult/GameOverTitle", 
+     "zh_tw": "遊戲結束", 
+     "en_us": "GAME OVER"
+ },
+   {
+     "Key": "GameResult/Winner", 
+     "zh_tw": "優勝者", 
+     "en_us": "WINNER"
+ },
+   {
+     "Key": "GameResult/TwoPlayerScore", 
+     "zh_tw": "得分", 
+     "en_us": "SCORE"
+ },
+   {
+     "Key": "InfiniteGameView/ScoreTitle", 
+     "zh_tw": "得分", 
+     "en_us": "SCORE"
+ },
+   {
+     "Key": "InfiniteGameView/LevelTitle", 
+     "zh_tw": "回合", 
+     "en_us": "LEVEL"
+ },
+   {
+     "Key": "InfiniteGameView/Level1", 
+     "zh_tw": "關卡1", 
+     "en_us": "LEVEL 1"
+ },
+   {
+     "Key": "InfiniteGameView/Level1Tip", 
+     "zh_tw": "此關卡有6個回合", 
+     "en_us": "You have 6 rounds in this level."
+ },
+   {
+     "Key": "InfiniteGameView/Perfect", 
+     "zh_tw": "完美配對!", 
+     "en_us": "Perfect Match!"
+ },
+   {
+     "Key": "InfiniteGameView/TaskComplete", 
+     "zh_tw": "關卡{0}任務達成!", 
+     "en_us": "Level {0} Task Complete!"
+ },
+   {
+     "Key": "InfiniteGameView/LevelTip", 
+     "zh_tw": "此關卡有{0}個回合", 
+     "en_us": "You have {0} rounds in this level."
+ },
+   {
+     "Key": "CompetitionGameView/TapToReady", 
+     "zh_tw": "準備好請點擊按鈕", 
+     "en_us": "TAP TO READY"
+ },
+   {
+     "Key": "CompetitionGameView/Player1Title", 
+     "zh_tw": "玩家 1\n\n\n得分", 
+     "en_us": "Player 1\n\n\nscore"
+ },
+   {
+     "Key": "CompetitionGameView/Player2Title", 
+     "zh_tw": "玩家 2\n\n\n得分", 
+     "en_us": "Player 2\n\n\nscore"
+ },
+   {
+     "Key": "CompetitionGameView/Player1First", 
+     "zh_tw": "玩家 1先手!", 
+     "en_us": "Player1 First!"
+ },
+   {
+     "Key": "CompetitionGameView/Player2First", 
+     "zh_tw": "玩家 2先手!", 
+     "en_us": "Player2 First!"
+ },
+   {
+     "Key": "CompetitionGameView/Player1Turn", 
+     "zh_tw": "輪到玩家1了!", 
+     "en_us": "Player1's Turn!"
+ },
+   {
+     "Key": "CompetitionGameView/Player2Turn", 
+     "zh_tw": "輪到玩家2了!", 
+     "en_us": "Player2's Turn!"
+ },
+   {
+     "Key": "InfiniteGameView/LevelTipTitle", 
+     "zh_tw": "關卡{0}", 
+     "en_us": "LEVEL {0}"
+ }
+]

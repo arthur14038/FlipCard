@@ -6,24 +6,42 @@ using UnityEngine.UI;
 [System.Serializable]
 public class FlipCardGameResult
 {
-	public RectTransform group_SinglePlayer;
-	public RectTransform image_NewRecordHeader;
-	public RectTransform image_CharacterRight;
-	public RectTransform image_CharacterLeft;
-	public RectTransform button_SinglePlayerGameOverExit;
-	public RectTransform image_TimesUp;
-	public RectTransform image_GameOverWindow;
-	public RectTransform image_Header;
-	public RectTransform group_GetMoni;
-    public CanvasGroup image_SinglePlayerScoreBoard;
-	public CanvasGroup image_TaskBG;
-	public Text text_Score;
-	public Text text_Level;
-	public Text text_Title;
-	public Text text_MoniCount;
-    public GameObject newHighScoreEffect;
-	public GameObject[] tasks;
-	public Animator moniAnimator;
+	[SerializeField]
+	RectTransform group_SinglePlayer;
+	[SerializeField]
+	RectTransform image_NewRecordHeader;
+	[SerializeField]
+	RectTransform image_CharacterRight;
+	[SerializeField]
+	RectTransform image_CharacterLeft;
+	[SerializeField]
+	RectTransform button_SinglePlayerGameOverExit;
+	[SerializeField]
+	RectTransform image_TimesUp;
+	[SerializeField]
+	RectTransform image_GameOverWindow;
+	[SerializeField]
+	RectTransform image_Header;
+	[SerializeField]
+	RectTransform group_GetMoni;
+	[SerializeField]
+	CanvasGroup image_SinglePlayerScoreBoard;
+	[SerializeField]
+	CanvasGroup image_TaskBG;
+	[SerializeField]
+	Text text_Score;
+	[SerializeField]
+	Text text_Level;
+	[SerializeField]
+	Text text_Title;
+	[SerializeField]
+	Text text_MoniCount;
+	[SerializeField]
+	GameObject newHighScoreEffect;
+	[SerializeField]
+	GameObject[] tasks;
+	[SerializeField]
+	Animator moniAnimator;
     bool recordBreak;
 	int getMoniCount;
 	bool[] thisTimeTask;
@@ -54,18 +72,18 @@ public class FlipCardGameResult
 		this.thisTimeTask = thisTimeTask;
         if(recordBreak)
 		{
-            text_Title.text = "New record!";
+            text_Title.text = Localization.Get("GameResult/NewRecord");
 		} else
 		{
-			string msg = "Try again";
+			string msg = Localization.Get("GameResult/TryAgain");
 			if(score > 3000)
-				msg = "Incredible!";
+				msg = Localization.Get("GameResult/Incredible");
 			else if(score > 2000)
-				msg = "Excellent!";
+				msg = Localization.Get("GameResult/Excellent");
 			else if(score > 1000)
-				msg = "Awesome!";
+				msg = Localization.Get("GameResult/Awesome");
 			else if(score > 500)
-				msg = "Great!";
+				msg = Localization.Get("GameResult/Great");
 			text_Title.text = msg;
 		}
 

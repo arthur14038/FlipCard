@@ -7,13 +7,25 @@ public class CompetitionModeView : AbstractView
 {
 	public IEnumeratorNoneParameter onTwoPlayerReady;
 	public VoidNoneParameter onClickPause;
-	public Text text_Player1Score;
-	public Text text_Player2Score;
-	public Text text_Instruction;
-	public CanvasGroup group_Instruction;
-	public RectTransform image_Player1Arrow;
-	public RectTransform image_Player2Arrow;
+	[SerializeField]
+	Text text_ScorePlayer1Title;
+	[SerializeField]
+	Text text_ScorePlayer2Title;
+	[SerializeField]
+	Text text_Player1Score;
+	[SerializeField]
+	Text text_Player2Score;
+	[SerializeField]
+	Text text_Instruction;
+	[SerializeField]
+	CanvasGroup group_Instruction;
+	[SerializeField]
+	RectTransform image_Player1Arrow;
+	[SerializeField]
+	RectTransform image_Player2Arrow;
+	[SerializeField]
 	public PressButtonTool button_Player1;
+	[SerializeField]
 	public PressButtonTool button_Player2;
 
 	public override IEnumerator Init()
@@ -22,8 +34,21 @@ public class CompetitionModeView : AbstractView
 		group_Instruction.alpha = 1f;
 		text_Instruction.gameObject.SetActive(true);
 		TogglePlayerArrow(3);
-		StartCoroutine(ShowInstruction("TAP TO READY"));
+		StartCoroutine(ShowInstruction(Localization.Get("CompetitionGameView/TapToReady")));
 		yield return null;
+		UpdateText();
+		Localization.Event_ChangeLocaliztion += UpdateText;
+	}
+
+	void OnDestroy()
+	{
+		Localization.Event_ChangeLocaliztion -= UpdateText;
+	}
+
+	void UpdateText()
+	{
+		text_ScorePlayer1Title.text = Localization.Get("CompetitionGameView/Player1Title");
+		text_ScorePlayer2Title.text = Localization.Get("CompetitionGameView/Player2Title");
 	}
 
 	public void OnClickPause()
@@ -48,12 +73,12 @@ public class CompetitionModeView : AbstractView
 			case CompetitionModeJudgement.WhosTurn.Player1Playing:
 				button_Player1.UpdateButton(PressButtonTool.PressButtonState.LightUp);
 				button_Player2.UpdateButton(PressButtonTool.PressButtonState.Disable);
-				msg = "Player1 First!";
+				msg = Localization.Get("CompetitionGameView/Player1First");
 				break;
 			case CompetitionModeJudgement.WhosTurn.Player2Playing:
 				button_Player1.UpdateButton(PressButtonTool.PressButtonState.Disable);
 				button_Player2.UpdateButton(PressButtonTool.PressButtonState.LightUp);
-				msg = "Player2 First!";
+				msg = Localization.Get("CompetitionGameView/Player2First");
 				break;
 		}
 		
@@ -127,12 +152,12 @@ public class CompetitionModeView : AbstractView
 
 		if(currentTurn == CompetitionModeJudgement.WhosTurn.WaitingPlayer1)
 		{
-			msg = "Player1's Turn!";
+			msg = Localization.Get("CompetitionGameView/Player1Turn");
 			TogglePlayerArrow(1);
 		}
 		else if(currentTurn == CompetitionModeJudgement.WhosTurn.WaitingPlayer2)
 		{
-			msg = "Player2's Turn!";
+			msg = Localization.Get("CompetitionGameView/Player2Turn");
 			TogglePlayerArrow(2);
 		}
 

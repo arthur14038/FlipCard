@@ -7,19 +7,81 @@ public class FlipCardView : AbstractView
 {
 	public VoidNoneParameter onClickBack;
 	public VoidNoneParameter onClickPlay;
-	public RectTransform group_FlipCard;
-	public RectTransform image_ShakeCircle;
-	public CanvasGroup group_Achievement;
-	public GameObject image_ScoreGet;
-	public GameObject image_ScoreNotGet;
-	public GameObject[] image_Check;
-	public GameObject[] image_Uncheck;
-	public Text text_Score;
-	public Text text_HighScore;
-	public Text text_HighLevel;
-	public Text text_LastScore;
-	public Text text_LastLevel;
-	public Text text_Task;
+	[SerializeField]
+	RectTransform group_FlipCard;
+	[SerializeField]
+	RectTransform image_ShakeCircle;
+	[SerializeField]
+	CanvasGroup group_Achievement;
+	[SerializeField]
+	GameObject image_ScoreGet;
+	[SerializeField]
+	GameObject image_ScoreNotGet;
+	[SerializeField]
+	GameObject[] image_Check;
+	[SerializeField]
+	GameObject[] image_Uncheck;
+
+	[SerializeField]
+	Text text_Score;
+	[SerializeField]
+	Text text_HighScoreTitle;
+	[SerializeField]
+	Text text_HighScore;
+	[SerializeField]
+	Text text_HighLevelTitle;
+	[SerializeField]
+	Text text_HighLevel;
+	[SerializeField]
+	Text text_LastScoreTitle;
+	[SerializeField]
+	Text text_LastScore;
+	[SerializeField]
+	Text text_LastLevelTitle;
+	[SerializeField]
+	Text text_LastLevel;
+	[SerializeField]
+	Text text_Task;
+
+	[SerializeField]
+	Text text_InfiniteModeTitle;
+	[SerializeField]
+	Text text_Play;
+
+	[SerializeField]
+	Text text_FirstRewardName;
+	[SerializeField]
+	Text text_FirstRewardGoal;
+
+	[SerializeField]
+	Text text_SecondRewardName;
+	[SerializeField]
+	Text text_Task1;
+	[SerializeField]
+	Text text_Task1Explain;
+	[SerializeField]
+	Text text_Task2;
+	[SerializeField]
+	Text text_Task2Explain;
+	[SerializeField]
+	Text text_Task3;
+	[SerializeField]
+	Text text_Task3Explain;
+
+	[SerializeField]
+	Text text_ThirdRewardName;
+	[SerializeField]
+	Text text_Task4;
+	[SerializeField]
+	Text text_Task4Explain;
+	[SerializeField]
+	Text text_Task5;
+	[SerializeField]
+	Text text_Task5Explain;
+	[SerializeField]
+	Text text_Task6;
+	[SerializeField]
+	Text text_Task6Explain;
 
 	public override IEnumerator Init()
 	{
@@ -100,8 +162,15 @@ public class FlipCardView : AbstractView
 			}
 		}
 
-		text_Task.text = string.Format("TASK {0}/7", targetCount);
-    }
+		text_Task.text = string.Format(Localization.Get("InfiniteView/Task"), targetCount);
+		UpdateText();
+		Localization.Event_ChangeLocaliztion += UpdateText;
+	}
+
+	void OnDestroy()
+	{
+		Localization.Event_ChangeLocaliztion -= UpdateText;
+	}
 
 	public void OnClickBack()
 	{
@@ -134,6 +203,32 @@ public class FlipCardView : AbstractView
 				group_Achievement.gameObject.SetActive(false);
 			}
 		);
+	}
+
+	void UpdateText()
+	{
+		text_InfiniteModeTitle.text = Localization.Get("InfiniteView/Title");
+		text_Play.text = Localization.Get("InfiniteView/Play");
+		text_HighScoreTitle.text = Localization.Get("HighScoreTitle");
+		text_HighLevelTitle.text = Localization.Get("HighLevelTitle");
+		text_LastLevelTitle.text = Localization.Get("LastLevelTitle");
+		text_LastScoreTitle.text = Localization.Get("LastScoreTitle");
+		text_FirstRewardName.text = string.Format("\"{0}\"", Localization.Get("Theme_08/Name"));
+		text_FirstRewardGoal.text = Localization.Get("FirstRewardGoal");
+		text_SecondRewardName.text = Localization.Get("InfiniteView/SecondRewardName");
+		text_Task1.text = Localization.Get("Task1Name");
+		text_Task1Explain.text = Localization.Get("Task1Explain");
+		text_Task2.text = Localization.Get("Task2Name");
+		text_Task2Explain.text = Localization.Get("Task2Explain");
+		text_Task3.text = Localization.Get("Task3Name");
+		text_Task3Explain.text = Localization.Get("Task3Explain");
+		text_ThirdRewardName.text = string.Format("\"{0}\"", Localization.Get("Theme_02/Name"));
+		text_Task4.text = Localization.Get("Task4Name");
+		text_Task4Explain.text = Localization.Get("Task4Explain");
+		text_Task5.text = Localization.Get("Task5Name");
+		text_Task5Explain.text = Localization.Get("Task5Explain");
+		text_Task6.text = Localization.Get("Task6Name");
+		text_Task6Explain.text = Localization.Get("Task6Explain");
 	}
 
 	public IEnumerator ShakeEffect(RectTransform shakeItem, float enterDuration)

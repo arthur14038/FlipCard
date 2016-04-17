@@ -17,7 +17,8 @@ public class LoadingPageManager : MonoBehaviour {
 	public void Init()
 	{
 		thisCanvasGroup = this.GetComponent<CanvasGroup>();
-	}
+		text_Loading.text = Localization.Get("Loading");
+    }
 
 	void DoLoadingAnimation()
 	{
