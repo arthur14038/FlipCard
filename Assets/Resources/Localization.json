@@ -196,22 +196,22 @@
  },
    {
      "Key": "Theme_04/Name", 
-     "zh_tw": "宇宙攝影師", 
+     "zh_tw": "美麗的陷阱", 
      "en_us": "A Beautiful Trap"
  },
    {
      "Key": "Theme_04/Content", 
-     "zh_tw": "有個飛行員，他的工作就是在玻利露各地旅行拍照，讓其他人也能夠看看外面的世界。然而每當夜晚，飛行員看向一望無際的星空，總是在猜想宇宙中那些閃閃發亮的星球上到底有些什麼，不知道那些星球上是否也有跟他一樣的飛行員。他心想，總有一天他要打造出一台火箭，飛到那些星球上拍些照片帶回來給大家看。", 
+     "zh_tw": "蔚藍的河流流過玻利露東南方這片一望無際的大草原，草原上長滿了五彩繽紛的花草。美麗的背後暗藏著危機，行經於此的愚昧生物都已經成了這片草原的養分，這片草原有著玻利露最美的草原，這裡是美景，也是陷阱。", 
      "en_us": "A cerulean river flowing through Polilu's southeast prairie. This vast grasslands is covered with colorful flowers. \n\nThe beauty has danger hidden behind. Many foolish creatures passing through this place have become nutrient of the grasses. \n\nThis prairie has Polilu's most beautiful view, it is the most beautiful scenery, but also a trap."
  },
    {
      "Key": "Theme_05/Name", 
-     "zh_tw": "美麗的陷阱", 
+     "zh_tw": "宇宙攝影師", 
      "en_us": "Universe Photographer"
  },
    {
      "Key": "Theme_05/Content", 
-     "zh_tw": "蔚藍的河流流過玻利露東南方這片一望無際的大草原，草原上長滿了五彩繽紛的花草。美麗的背後暗藏著危機，行經於此的愚昧生物都已經成了這片草原的養分，這片草原有著玻利露最美的草原，這裡是美景，也是陷阱。", 
+     "zh_tw": "有個飛行員，他的工作就是在玻利露各地旅行拍照，讓其他人也能夠看看外面的世界。然而每當夜晚，飛行員看向一望無際的星空，總是在猜想宇宙中那些閃閃發亮的星球上到底有些什麼，不知道那些星球上是否也有跟他一樣的飛行員。他心想，總有一天他要打造出一台火箭，飛到那些星球上拍些照片帶回來給大家看。", 
      "en_us": "There is a pilot, his job is to travel around Polilu to take photographs, so people can see the outside world. \n\nWhen the night comes, the pilot sees the vast expanse of thesky, he always imagine what is on those shinny stars in the universe. He wonder whether if they have a pilots just like him on those planets. He thought that one day he would build a rocket ship, fly to those stars and take some pictures to show to people back home."
  },
    {
@@ -597,12 +597,12 @@
    {
      "Key": "CompetitionGameView/Player1Title", 
      "zh_tw": "玩家 1\n\n\n得分", 
-     "en_us": "Player 1\n\n\nscore"
+     "en_us": "Player 1\n\n\nSCORE"
  },
    {
      "Key": "CompetitionGameView/Player2Title", 
      "zh_tw": "玩家 2\n\n\n得分", 
-     "en_us": "Player 2\n\n\nscore"
+     "en_us": "Player 2\n\n\nSCORE"
  },
    {
      "Key": "CompetitionGameView/Player1First", 
