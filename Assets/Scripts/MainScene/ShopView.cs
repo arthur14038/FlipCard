@@ -336,9 +336,9 @@ public class ShopView : AbstractView
 		text_ThemeExplain.text = Localization.Get("ShopView/ThemeExplain");
 		text_GetNewTheme.text = Localization.Get("ShopView/GetNewTheme");
 		text_SoldOut.text = Localization.Get("ShopView/SoldOut");
-		text_Cancel.text = Localization.Get("ShopView/Cancel");
+		text_Cancel.text = Localization.Get("Cancel");
 		text_Yes.text = Localization.Get("ShopView/Yes");
-		text_OK.text = Localization.Get("ShopView/OK");
+		text_OK.text = Localization.Get("OK");
 	}
 
 	IEnumerator LoadingAnimation()

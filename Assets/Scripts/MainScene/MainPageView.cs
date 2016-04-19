@@ -85,6 +85,10 @@ public class MainPageView : AbstractView {
 	Text text_Notify;
 	[SerializeField]
 	Text text_WindowRate;
+	[SerializeField]
+	Text text_No;
+	[SerializeField]
+	Text text_Yes;
 
 	public override IEnumerator Init ()
 	{
@@ -307,6 +311,8 @@ public class MainPageView : AbstractView {
 		text_GotIt.text = Localization.Get("GotIt");
 		text_Notify.text = Localization.Get("ComingSoon/Notify");
 		text_WindowRate.text = Localization.Get("GoToRate");
+		text_Yes.text = Localization.Get("Yes");
+		text_No.text = Localization.Get("No");
 	}
 
 	IEnumerator EnterEffect(RectTransform shakeItem, float enterDuration)

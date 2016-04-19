@@ -256,7 +256,7 @@
  },
    {
      "Key": "Task1Explain", 
-     "zh_tw": "每一回合都完美過關", 
+     "zh_tw": "每一回合都完美配對", 
      "en_us": "Get all perfect match."
  },
    {
@@ -266,7 +266,7 @@
  },
    {
      "Key": "Task2Explain", 
-     "zh_tw": "進入加分模式時還剩10秒鐘以上", 
+     "zh_tw": "進入BonusTime時還剩10秒鐘以上", 
      "en_us": "10 seconds left before entering bonus time."
  },
    {
@@ -286,7 +286,7 @@
  },
    {
      "Key": "Task4Explain", 
-     "zh_tw": "在加分模式時不獲得任何分數", 
+     "zh_tw": "在BonusTime不獲得任何分數", 
      "en_us": "Don't get any score in bonus time."
  },
    {
@@ -296,7 +296,7 @@
  },
    {
      "Key": "Task5Explain", 
-     "zh_tw": "在加分模式獲得80分以上", 
+     "zh_tw": "在BonusTime獲得80分以上", 
      "en_us": "Get 80 score in bonus time."
  },
    {
@@ -425,7 +425,7 @@
      "en_us": "Buying this theme will cost \n{0} Moni.\nAre you sure?"
  },
    {
-     "Key": "ShopView/Cancel", 
+     "Key": "Cancel", 
      "zh_tw": "取消", 
      "en_us": "CANCEL"
  },
@@ -435,9 +435,19 @@
      "en_us": "YES"
  },
    {
-     "Key": "ShopView/OK", 
+     "Key": "OK", 
      "zh_tw": "好", 
      "en_us": "OK"
+ },
+   {
+     "Key": "Yes", 
+     "zh_tw": "是", 
+     "en_us": "YES"
+ },
+   {
+     "Key": "No", 
+     "zh_tw": "不要", 
+     "en_us": "NO"
  },
    {
      "Key": "GameSettingView/Player1", 
@@ -628,5 +638,10 @@
      "Key": "InfiniteGameView/LevelTipTitle", 
      "zh_tw": "關卡{0}", 
      "en_us": "LEVEL {0}"
+ },
+   {
+     "Key": "InfiniteGameView/SpecialCardAppear", 
+     "zh_tw": "會出現的特殊卡", 
+     "en_us": "Special cards appear."
  }
 ]

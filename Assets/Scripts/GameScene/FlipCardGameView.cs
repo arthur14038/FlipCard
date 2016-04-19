@@ -71,6 +71,8 @@ public class FlipCardGameView : AbstractView
 	Text text_Level1Tip;
 	[SerializeField]
 	Text text_Perfect;
+	[SerializeField]
+	Text text_SpecialCard;
 
 	Vector2 feverTimePos = new Vector2(0f, -832f);
 	Vector2 nextLevelPos = new Vector2(0f, -112f);
@@ -106,6 +108,7 @@ public class FlipCardGameView : AbstractView
 		text_Level1.text = Localization.Get("InfiniteGameView/Level1");
 		text_Level1Tip.text = Localization.Get("InfiniteGameView/Level1Tip");
 		text_Perfect.text = Localization.Get("InfiniteGameView/Perfect");
+		text_SpecialCard.text = Localization.Get("InfiniteGameView/SpecialCardAppear");
     }
 
 	public void OnClickPause()

@@ -88,6 +88,10 @@ public class GameSettingView : AbstractView {
 	Text text_Player1Title;
 	[SerializeField]
 	Text text_Player2Title;
+	[SerializeField]
+	Text text_OK;
+	[SerializeField]
+	Text text_TwoPlayerOK;
 
 	public override IEnumerator Init ()
 	{
@@ -134,6 +138,8 @@ public class GameSettingView : AbstractView {
 		text_Player2Score.text = Localization.Get("GameResult/TwoPlayerScore");
 		text_Player1Title.text = Localization.Get("GameSettingView/Player1");
 		text_Player2Title.text = Localization.Get("GameSettingView/Player2");
+		text_OK.text = Localization.Get("OK");
+		text_TwoPlayerOK.text = Localization.Get("OK");
 	}
 
 	public void OnClickResume()
