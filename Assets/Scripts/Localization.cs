@@ -7,7 +7,6 @@ public class Localization{
 	static Dictionary<string, StringTable> dic_Localization = new Dictionary<string, StringTable>();
 	public enum LocalizationType { zh_tw, en_us }
 	static LocalizationType currentType = LocalizationType.zh_tw;
-	//static LocalizationType currentType = LocalizationType.en_us;
 	public static Action Event_ChangeLocaliztion = delegate { };
 
 	public static void Init()
@@ -26,6 +25,7 @@ public class Localization{
 				dic_Localization.Add(table.key, table);
             }
 		}
+#if !UNITY_EDITOR
 		switch(Application.systemLanguage)
 		{
 			case SystemLanguage.Chinese:
@@ -37,6 +37,7 @@ public class Localization{
 				currentType = LocalizationType.en_us;
 				break;
 		}
+#endif
 	}
 
 	public static string Get(string key)

@@ -7,17 +7,17 @@
    {
      "Key": "MainView/InfiniteMode", 
      "zh_tw": "無限模式", 
-     "en_us": "INFINITE\nMODE"
+     "en_us": "Infinite\nMode"
  },
    {
      "Key": "MainView/TwoPlayer", 
      "zh_tw": "雙人模式", 
-     "en_us": "PLAY WITH\nFRIEND"
+     "en_us": "Play With\nFriend"
  },
    {
      "Key": "MainView/Shop", 
      "zh_tw": "主題商店", 
-     "en_us": "THEME\nSHOP"
+     "en_us": "Theme\nShop"
  },
    {
      "Key": "MainView/ComingSoon", 
@@ -41,7 +41,7 @@
  },
    {
      "Key": "GoldCardContent", 
-     "zh_tw": "卡片分數+4", 
+     "zh_tw": "配對金卡額外再得4分", 
      "en_us": "Get additional 4 points."
  },
    {
@@ -51,7 +51,7 @@
  },
    {
      "Key": "BombCardContent", 
-     "zh_tw": "將所有卡片再翻開一次", 
+     "zh_tw": "成功配對會讓場上所有卡片\n再翻開一次", 
      "en_us": "Match up them will\nupside down other cards."
  },
    {
@@ -61,7 +61,7 @@
  },
    {
      "Key": "FlareCardContent", 
-     "zh_tw": "使卡片圖案出現一段時間", 
+     "zh_tw": "成功配對會讓卡片圖案現身一段時間", 
      "en_us": "Match up them will make\nother card patterns coming out."
  },
    {
@@ -71,7 +71,7 @@
  },
    {
      "Key": "BonusCardContent", 
-     "zh_tw": "點擊越多分數越高!", 
+     "zh_tw": "加分模式會出現此卡\n點擊越多分數越高!", 
      "en_us": "Just tap it! More times you tap,\nmore bonus you get!"
  },
    {
@@ -101,7 +101,7 @@
  },
    {
      "Key": "ComingSoonContent", 
-     "zh_tw": "此功能正在製作中", 
+     "zh_tw": "等等,此功能正在製作中...", 
      "en_us": "This feature is coming soon."
  },
    {
@@ -111,7 +111,7 @@
  },
    {
      "Key": "ComingSoon/Notify", 
-     "zh_tw": "喜歡我們的遊戲嗎？我們很重視玩家的意見，請去商店給予我們評價吧！", 
+     "zh_tw": "喜歡我們的遊戲嗎？我們很重視玩家的意見\n請去商店給予我們評價吧！", 
      "en_us": "Are you enjoying the game? Please rate and review Flip Card. Your feedback matters!"
  },
    {
@@ -122,7 +122,7 @@
    {
      "Key": "InfiniteView/Title", 
      "zh_tw": "無限模式", 
-     "en_us": "INFINITE MODE"
+     "en_us": "Infinite Mode"
  },
    {
      "Key": "InfiniteView/Play", 
@@ -132,27 +132,27 @@
    {
      "Key": "HighScoreTitle", 
      "zh_tw": "最高分數", 
-     "en_us": "BEST SCORE"
+     "en_us": "Best Score"
  },
    {
      "Key": "LastScoreTitle", 
-     "zh_tw": "最近遊玩分數", 
-     "en_us": "RECENT SCORE"
+     "zh_tw": "最近遊玩得分", 
+     "en_us": "Recent Score"
  },
    {
      "Key": "HighLevelTitle", 
      "zh_tw": "最佳回合數", 
-     "en_us": "BEST LEVEL"
+     "en_us": "Best Level"
  },
    {
      "Key": "LastLevelTitle", 
-     "zh_tw": "最近遊玩回合數", 
-     "en_us": "RECENT LEVEL"
+     "zh_tw": "最近完成回合數", 
+     "en_us": "Recent Level"
  },
    {
      "Key": "InfiniteView/Task", 
      "zh_tw": "任務 {0}/7", 
-     "en_us": "TASK {0}/7"
+     "en_us": "Task {0}/7"
  },
    {
      "Key": "Theme_00/Name", 
@@ -266,7 +266,7 @@
  },
    {
      "Key": "Task2Explain", 
-     "zh_tw": "進入BonusTime時還剩10秒鐘以上", 
+     "zh_tw": "進入加分模式時還剩10秒鐘以上", 
      "en_us": "10 seconds left before entering bonus time."
  },
    {
@@ -286,7 +286,7 @@
  },
    {
      "Key": "Task4Explain", 
-     "zh_tw": "在BonusTime不獲得任何分數", 
+     "zh_tw": "在加分模式不獲得任何分數", 
      "en_us": "Don't get any score in bonus time."
  },
    {
@@ -296,7 +296,7 @@
  },
    {
      "Key": "Task5Explain", 
-     "zh_tw": "在BonusTime獲得80分以上", 
+     "zh_tw": "在加分模式獲得80分以上", 
      "en_us": "Get 80 score in bonus time."
  },
    {
@@ -312,12 +312,12 @@
    {
      "Key": "TwoPlayerView/Title", 
      "zh_tw": "雙人模式", 
-     "en_us": "PLAY WITH FRIEND"
+     "en_us": "Play With Friend"
  },
    {
      "Key": "ShopView/Title", 
      "zh_tw": "主題商店", 
-     "en_us": "THEME SHOP"
+     "en_us": "Theme Shop"
  },
    {
      "Key": "ShopView/MoniTitle", 
@@ -326,13 +326,13 @@
  },
    {
      "Key": "ShopView/Theme", 
-     "zh_tw": "擁有的主題", 
-     "en_us": "THEME"
+     "zh_tw": "我的主題", 
+     "en_us": "MY THEME"
  },
    {
      "Key": "ShopView/Shop", 
-     "zh_tw": "可購買的主題", 
-     "en_us": "SHOP"
+     "zh_tw": "挑選新主題", 
+     "en_us": "THEME SHOP"
  },
    {
      "Key": "ShopView/Equiped", 
@@ -341,18 +341,18 @@
  },
    {
      "Key": "ShopView/Card", 
-     "zh_tw": "卡片造型", 
+     "zh_tw": "套用卡片", 
      "en_us": "CARD"
  },
    {
      "Key": "ShopView/Scene", 
-     "zh_tw": "場景", 
+     "zh_tw": "套用場景", 
      "en_us": "SCENE"
  },
    {
      "Key": "ShopView/Lock", 
-     "zh_tw": "完成任務以解鎖", 
-     "en_us": "COMPLETE TASK TO GET"
+     "zh_tw": "需要完成任務", 
+     "en_us": "Complete task to get"
  },
    {
      "Key": "ON", 
@@ -381,7 +381,7 @@
  },
    {
      "Key": "ShopView/ThemeExplain", 
-     "zh_tw": "主題中包含場景與卡片，使用不同的場景可更換遊戲背景，使用不同的卡片可以變更遊戲中的卡片風格", 
+     "zh_tw": "主題中包含場景與卡片，套用不同的場景可更換遊戲背景，套用不同的卡片可更換遊戲中的卡片造型", 
      "en_us": "Theme include scene and card. Equip scene will change the app background. Equip card will change the card style in the game."
  },
    {
@@ -406,8 +406,8 @@
  },
    {
      "Key": "ShopView/MoniNotEnoughTitle", 
-     "zh_tw": "莫尼不足", 
-     "en_us": "Your Moni is not enough"
+     "zh_tw": "喔喔...莫尼不足", 
+     "en_us": "Oops, not enough Moni."
  },
    {
      "Key": "ShopView/MoniNotEnoughMsg", 
@@ -421,8 +421,8 @@
  },
    {
      "Key": "ShopView/ConfirmBuyMsg", 
-     "zh_tw": "此主題將花費您\n{0}莫尼\n是否購買？", 
-     "en_us": "Buying this theme will cost \n{0} Moni.\nAre you sure?"
+     "zh_tw": "購買\"{1}\"\n將會消耗<color=#FF4949FF>{0}莫尼</color>", 
+     "en_us": "Buying theme \n\"{1}\"\nwill cost <color=#FF4949FF>{0} Moni</color>"
  },
    {
      "Key": "Cancel", 
@@ -496,12 +496,12 @@
  },
    {
      "Key": "GameResult/Awesome", 
-     "zh_tw": "太厲害啦!", 
+     "zh_tw": "有夠厲害!", 
      "en_us": "Awesome!"
  },
    {
      "Key": "GameResult/Great", 
-     "zh_tw": "好棒!", 
+     "zh_tw": "真棒!", 
      "en_us": "Great!"
  },
    {
@@ -601,8 +601,8 @@
  },
    {
      "Key": "CompetitionGameView/TapToReady", 
-     "zh_tw": "準備好請點擊按鈕", 
-     "en_us": "TAP TO READY"
+     "zh_tw": "準備好請點擊頭像", 
+     "en_us": "Tap icon to ready"
  },
    {
      "Key": "CompetitionGameView/Player1Title", 
@@ -626,13 +626,13 @@
  },
    {
      "Key": "CompetitionGameView/Player1Turn", 
-     "zh_tw": "輪到玩家1了!", 
-     "en_us": "Player1's Turn!"
+     "zh_tw": "輪到玩家1了", 
+     "en_us": "Player1's Turn"
  },
    {
      "Key": "CompetitionGameView/Player2Turn", 
-     "zh_tw": "輪到玩家2了!", 
-     "en_us": "Player2's Turn!"
+     "zh_tw": "輪到玩家2了", 
+     "en_us": "Player2's Turn"
  },
    {
      "Key": "InfiniteGameView/LevelTipTitle", 

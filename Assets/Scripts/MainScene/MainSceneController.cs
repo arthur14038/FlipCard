@@ -188,7 +188,7 @@ public class MainSceneController : AbstractController {
 	{
 		wantedTheme = themeInfo;
 		if(InventoryManager.Instance.CanAfford(wantedTheme.themeItemId))
-			shopView.ShowConfirmBuy(wantedTheme.requireMoni);
+			shopView.ShowConfirmBuy(wantedTheme.requireMoni, Localization.Get(wantedTheme.themeName));
 		else
 			shopView.ShowMoniNotEnough();
 	}

@@ -198,10 +198,10 @@ public class ShopView : AbstractView
 		button_Cancel.SetActive(false);
 	}
 
-	public void ShowConfirmBuy(int cost)
+	public void ShowConfirmBuy(int cost, string themeName)
 	{
 		currentMsgWindowState = MsgWindowState.ConfirmBuy;
-		string content = string.Format(Localization.Get("ShopView/ConfirmBuyMsg"), cost);
+		string content = string.Format(Localization.Get("ShopView/ConfirmBuyMsg"), cost, themeName);
 		ShowMsgWindow(Localization.Get("ShopView/ConfirmBuyTitle"), content);
 		button_OK.SetActive(false);
 		button_Yes.SetActive(true);
