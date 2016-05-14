@@ -15,10 +15,18 @@ public class TestCardArrayEditor : Editor
 		myTarget.totalCardCount = EditorGUILayout.IntField("Total Card Count", myTarget.totalCardCount);
 		myTarget.cardSize = EditorGUILayout.FloatField("Card Size", myTarget.cardSize);
 
+		myTarget.currentMode = (GameMode)EditorGUILayout.EnumPopup(myTarget.currentMode);
+
 		if(EditorApplication.isPlaying)
 			if(GUILayout.Button("Show Cards"))
 			{
 				myTarget.LoadAndShowCards();
+			}
+
+		if(EditorApplication.isPlaying)
+			if(GUILayout.Button("PrintPos"))
+			{
+				myTarget.PrintPos();
 			}
 		//EditorGUILayout.LabelField("Level", myTarget.Level.ToString());
 	}

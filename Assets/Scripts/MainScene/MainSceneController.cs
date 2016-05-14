@@ -3,12 +3,13 @@ using System.Collections;
 using UnityEngine.Advertisements;
 
 public class MainSceneController : AbstractController {
-	enum MainSceneView{MainPage = 0, FlipCard, TwoPlayer, Shop}
+	enum MainSceneView{MainPage = 0, FlipCard, TwoPlayer, Shop, PickCard}
 	MainSceneView currentView;
 	public MainPageView mainPageView;
 	public FlipCardView flipCardView;
 	public TwoPlayerView twoPlayerView;
 	public ShopView shopView;
+	public PickCardView pickCardView;
 	string notifyMessage;
 	ThemeInfo wantedTheme;
 		
@@ -18,6 +19,7 @@ public class MainSceneController : AbstractController {
 		yield return StartCoroutine(flipCardView.Init());
 		yield return StartCoroutine(twoPlayerView.Init());
 		yield return StartCoroutine(shopView.Init());
+		yield return StartCoroutine(pickCardView.Init());
 
 		currentView = (MainSceneView)GameMainLoop.Instance.showView;
 
@@ -28,7 +30,8 @@ public class MainSceneController : AbstractController {
 		mainPageView.onClickRate = ShowRatePage;
 		mainPageView.onClickLeaveGame = LeaveGame;
 		mainPageView.onClickNotify = SendNotifyMail;
-		mainPageView.onClickComingSoon = StillInProgress;
+		//mainPageView.onClickComingSoon = StillInProgress;
+		mainPageView.onClickComingSoon = ShowPickCardPage;
 		mainPageView.onClickGoToFacebook = OpenFacebookPage;
         flipCardView.onClickBack = ShowMainPage;
 		flipCardView.onClickPlay = StartFlipCardGame;
@@ -41,11 +44,14 @@ public class MainSceneController : AbstractController {
 		shopView.onClickConfirmBuyTheme = BuyThemePack;
 		shopView.onClickThemeInfo = ShowThemeInfo;
 		shopView.onClickMoniBoard = ShowAwardAd;
+		pickCardView.onClickBack = ShowMainPage;
+		pickCardView.onClickPlay = StartPickCardGame;
 
 		shopView.HideUI(false);
         mainPageView.HideUI(false);
 		flipCardView.HideUI(false);
 		twoPlayerView.HideUI(false);
+		pickCardView.HideUI(false);
 
 		switch(currentView)
 		{
@@ -65,9 +71,20 @@ public class MainSceneController : AbstractController {
 				GoogleAnalyticsManager.LogScreen(GoogleAnalyticsManager.ScreenName.MainSceneShop);
 				shopView.ShowUI(false);
 				break;
+			case MainSceneView.PickCard:
+				GoogleAnalyticsManager.LogScreen(GoogleAnalyticsManager.ScreenName.MainScenePickMode);
+				pickCardView.ShowUI(false);
+				break;
 		}
 		
 		AudioManager.Instance.PlayMusic("FlipCardBGM3", true); 
+	}
+
+	void StartPickCardGame()
+	{
+		AudioManager.Instance.StopMusic();
+		GameSettingManager.currentMode = GameMode.PickCard;
+		GameMainLoop.Instance.ChangeScene(SceneName.GameScene);
 	}
 
 	void StartTwoPlayerGame(int cardCount)
@@ -101,6 +118,9 @@ public class MainSceneController : AbstractController {
 			case MainSceneView.Shop:
 				shopView.HideUI(true);
 				break;
+			case MainSceneView.PickCard:
+				pickCardView.HideUI(true);
+				break;
 		}
 		mainPageView.ShowUI(true);
 		currentView = MainSceneView.MainPage;
@@ -128,6 +148,14 @@ public class MainSceneController : AbstractController {
 		mainPageView.HideUI(true);
 		shopView.ShowUI(true);
 		currentView = MainSceneView.Shop;
+	}
+
+	void ShowPickCardPage()
+	{
+		GoogleAnalyticsManager.LogScreen(GoogleAnalyticsManager.ScreenName.MainScenePickMode);
+		mainPageView.HideUI(true);
+		pickCardView.ShowUI(true);
+		currentView = MainSceneView.PickCard;
 	}
 
 	void SendNotifyMail()

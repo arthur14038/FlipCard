@@ -109,9 +109,11 @@ public class GoogleAnalyticsManager
 		public const string MainSceneShop = "主場景-商店";
 		public const string MainSceneTwoPlayer = "主場景-雙人";
 		public const string MainSceneInfiniteMode = "主場景-無限";
+		public const string MainScenePickMode = "主場景-小女孩";
 		public const string LeaveMainScene = "離開主場景";
 		public const string GameSceneTwoPlayer = "遊戲場景-雙人";
 		public const string GameSceneInfiniteMode = "遊戲場景-無限";
+		public const string GameScenePickMode = "遊戲場景-小女孩";
 		public const string LeaveGameScene = "離開遊戲場景";
 	}
 

@@ -21,6 +21,10 @@ public class FlipCardView : AbstractView
 	GameObject[] image_Check;
 	[SerializeField]
 	GameObject[] image_Uncheck;
+	[SerializeField]
+	Image button_Play;
+	[SerializeField]
+	GameObject button_Skip;
 
 	[SerializeField]
 	Text text_Score;
@@ -83,6 +87,8 @@ public class FlipCardView : AbstractView
 	[SerializeField]
 	Text text_Task6Explain;
 
+	int canSkipToLevel = 0;
+
 	public override IEnumerator Init()
 	{
 		GameRecord record = ModelManager.Instance.GetFlipCardGameRecord();
@@ -96,10 +102,16 @@ public class FlipCardView : AbstractView
 			int level = record.highLevel / 1000;
 			int round = record.highLevel % 1000;
 			text_HighLevel.text = string.Format("{0}-{1}", level, round);
-		} else
+			//button_Skip.SetActive(true);
+			//button_Play.rectTransform.sizeDelta = new Vector2(600f, 181.5f);
+			canSkipToLevel = level;
+        } else
 		{
-			text_HighLevel.text = "- -";
+			canSkipToLevel = 0;
+            text_HighLevel.text = "- -";
 		}
+		button_Skip.SetActive(false);
+		button_Play.rectTransform.sizeDelta = new Vector2(848f, 181.5f);
 		string lastLevel = "";
 		for(int i = 0 ; i < record.lastLevel.Length ; ++i)
 		{
@@ -161,7 +173,7 @@ public class FlipCardView : AbstractView
 				image_Uncheck[i].SetActive(true);
 			}
 		}
-
+		
 		text_Task.text = string.Format(Localization.Get("InfiniteView/Task"), targetCount);
 		UpdateText();
 		Localization.Event_ChangeLocaliztion += UpdateText;
@@ -184,6 +196,12 @@ public class FlipCardView : AbstractView
 		AudioManager.Instance.PlayOneShot("Button_Click");
 		if(onClickPlay != null)
 			onClickPlay();
+	}
+
+	public void OnClickSkip()
+	{
+		AudioManager.Instance.PlayOneShot("Button_Click");
+
 	}
 
 	public void OnClickTask()

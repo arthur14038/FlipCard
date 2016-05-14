@@ -161,6 +161,7 @@ public class FlipCardGameResult
 			}
 			yield return new WaitForEndOfFrame();
 		}
+		text_MoniCount.text = getMoniCount.ToString();
 	}
 
 	public IEnumerator ShowTaskAndButton()
