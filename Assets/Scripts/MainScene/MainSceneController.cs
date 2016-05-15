@@ -84,7 +84,7 @@ public class MainSceneController : AbstractController {
 	{
 		AudioManager.Instance.StopMusic();
 		GameSettingManager.currentMode = GameMode.PickCard;
-		GameMainLoop.Instance.ChangeScene(SceneName.GameScene);
+		GameMainLoop.Instance.ChangeScene(SceneName.PickGameScene);
 	}
 
 	void StartTwoPlayerGame(int cardCount)

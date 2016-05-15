@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public enum SceneName{FirstScene = 0, MainScene, GameScene, TestMain, TestGame}
+public enum SceneName{FirstScene = 0, MainScene, GameScene, PickGameScene}
 public class GameMainLoop : SingletonMonoBehavior<GameMainLoop> {
 	IController controller;
 	public LoadingPageManager loadingPage;

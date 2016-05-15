@@ -12,24 +12,25 @@ public class PickGameView : AbstractView
 	[SerializeField]
 	RectTransform group_Heart;
 	[SerializeField]
-	RectTransform[] image_Hearts;
-	[SerializeField]
-	Image image_Cardback;
-	[SerializeField]
-	Image image_CardImage;
+	Image[] image_Hearts;
 	[SerializeField]
 	Text text_CurrentScore;
 	[SerializeField]
-	RectTransform group_Ready;
+	CanvasGroup group_Ready;
 	[SerializeField]
-	RectTransform button_Ready;
+	Button button_Ready;
+	[SerializeField]
+	Text text_CurrentLevel;
 	Vector2 group_HeartPos = new Vector2(168f, 44f);
+	CardBase pickCard;
 
 	public override IEnumerator Init()
 	{
 		group_Ready.gameObject.SetActive(true);
-		button_Ready.gameObject.SetActive(true);
-		foreach(RectTransform image_Heart in image_Hearts)
+		group_Ready.alpha = 1f;
+        button_Ready.gameObject.SetActive(true);
+		button_Ready.interactable = true;
+        foreach(Image image_Heart in image_Hearts)
 		{
 			image_Heart.gameObject.SetActive(true);
         }
@@ -47,6 +48,11 @@ public class PickGameView : AbstractView
 	{
 
 	}
+	
+	public void SetCurrentLevel(int level)
+	{
+		text_CurrentLevel.text = level.ToString();
+    }
 
 	public void SetCurrentScore(int score)
 	{
@@ -57,12 +63,12 @@ public class PickGameView : AbstractView
 	{
 		for(int i = 0 ; i < image_Hearts.Length ; ++i)
 		{
-			if(i > count)
+			if(i < count)
 			{
-				image_Hearts[i].gameObject.SetActive(true);
+				image_Hearts[i].color = Color.white;
 			}else
 			{
-				image_Hearts[i].gameObject.SetActive(false);
+				image_Hearts[i].color = Color.gray;
 			}
 		}
 		if(needShake)
@@ -71,14 +77,15 @@ public class PickGameView : AbstractView
 
 	public void OnClickReadyButton()
 	{
-		AudioManager.Instance.PlayOneShot("Button_Click");
-		if(onClickReadyButton != null)
-			onClickReadyButton();
+		if(AudioManager.Instance)
+			AudioManager.Instance.PlayOneShot("Button_Click");
+		StartCoroutine(PlayerReadyEffect());
 	}
 
 	public void OnClickPauseButton()
 	{
-		AudioManager.Instance.PlayOneShot("Button_Click");
+		if(AudioManager.Instance)
+			AudioManager.Instance.PlayOneShot("Button_Click");
 		if(onClickPause != null)
 			onClickPause();
 	}
@@ -88,12 +95,22 @@ public class PickGameView : AbstractView
 		button_Pause.interactable = value;
 	}
 
+	IEnumerator PlayerReadyEffect()
+	{
+		button_Ready.interactable = false;		
+		yield return group_Ready.DOFade(0f, 0.25f).SetDelay(0.3f).WaitForCompletion();
+		group_Ready.gameObject.SetActive(false);
+
+		if(onClickReadyButton != null)
+			StartCoroutine(onClickReadyButton());
+	}
+
 	IEnumerator HeartShakeEffect()
 	{
-		yield return group_Heart.DOAnchorPosY(48f, 0.1f).WaitForCompletion();
-		yield return group_Heart.DOAnchorPosY(40f, 0.1f).WaitForCompletion();
-		yield return group_Heart.DOAnchorPosY(48f, 0.1f).WaitForCompletion();
-		yield return group_Heart.DOAnchorPosY(44f, 0.1f).WaitForCompletion();
+		yield return group_Heart.DOAnchorPosY(18f, 0.1f).WaitForCompletion();
+		yield return group_Heart.DOAnchorPosY(10f, 0.1f).WaitForCompletion();
+		yield return group_Heart.DOAnchorPosY(18f, 0.1f).WaitForCompletion();
+		yield return group_Heart.DOAnchorPosY(14f, 0.1f).WaitForCompletion();
 	}
 
 	protected override IEnumerator HideUIAnimation()
@@ -107,12 +124,4 @@ public class PickGameView : AbstractView
 		yield return null;
 		showCoroutine = null;
 	}
-
-	//void OnGUI()
-	//{
-	//	if(GUI.Button(new Rect(10, 10, 150, 50), "HeartShakeEffect"))
-	//	{
-	//		StartCoroutine(HeartShakeEffect());
-	//	}
-	//}
 }

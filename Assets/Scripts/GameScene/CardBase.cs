@@ -237,12 +237,15 @@ public class CardBase : MonoBehaviour {
 	
 	void FlipByUser()
 	{
-		if(checkCanFlipCard(this))
+		if(checkCanFlipCard != null)
 		{
-			AudioManager.Instance.PlayOneShot("GamePlayChooseCard");
-			if(flipAnimation != null)
-				StopCoroutine(flipAnimation);
-			flipAnimation = StartCoroutine(FlipAniamtion(true));
+			if(checkCanFlipCard(this))
+			{
+				AudioManager.Instance.PlayOneShot("GamePlayChooseCard");
+				if(flipAnimation != null)
+					StopCoroutine(flipAnimation);
+				flipAnimation = StartCoroutine(FlipAniamtion(true));
+			}
 		}
 	}
 

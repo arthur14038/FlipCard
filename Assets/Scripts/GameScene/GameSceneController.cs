@@ -108,11 +108,11 @@ public class GameSceneController : AbstractController
 				Canvas competitionModeViewCanvas = competitionModeView.GetComponent<Canvas>();
 				competitionModeViewCanvas.worldCamera = Camera.main;
 				return competitionModeView.GetComponent<AbstractView>();
-			case GameMode.PickCard:
-				GameObject pickGameView = Instantiate(Resources.Load("UI/PickGameView")) as GameObject;
-				Canvas pickModeViewCanvas = pickGameView.GetComponent<Canvas>();
-				pickModeViewCanvas.worldCamera = Camera.main;
-				return pickGameView.GetComponent<AbstractView>();
+			//case GameMode.PickCard:
+			//	GameObject pickGameView = Instantiate(Resources.Load("UI/PickGameView")) as GameObject;
+			//	Canvas pickModeViewCanvas = pickGameView.GetComponent<Canvas>();
+			//	pickModeViewCanvas.worldCamera = Camera.main;
+			//	return pickGameView.GetComponent<AbstractView>();
 			default:
 				return null;
 		}
@@ -128,9 +128,9 @@ public class GameSceneController : AbstractController
 			case GameMode.Competition:
 				GoogleAnalyticsManager.LogScreen(GoogleAnalyticsManager.ScreenName.GameSceneTwoPlayer);
 				return new CompetitionModeJudgement();
-			case GameMode.PickCard:
-				GoogleAnalyticsManager.LogScreen(GoogleAnalyticsManager.ScreenName.GameScenePickMode);
-				return new PickModeJudgement();
+			//case GameMode.PickCard:
+			//	GoogleAnalyticsManager.LogScreen(GoogleAnalyticsManager.ScreenName.GameScenePickMode);
+			//	return new PickModeJudgement();
 			default:
 				Debug.LogErrorFormat("{0}'s judgement is not implement", GameSettingManager.currentMode);
 				return null;

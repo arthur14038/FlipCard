@@ -15,18 +15,18 @@ public class GameMainView : AbstractView
 	public Image image_Mask;
 	public VoidNoneParameter completeOneRound;
 	public VoidBoolAndCards cardMatch;
-	Sprite[] cardImage;
+	protected Sprite[] cardImage;
 	Sprite bombSprite;
 	Sprite flashbangSprite;
 	Queue<ScoreText> scoreTextQueue = new Queue<ScoreText>();
-	Vector2 shiftAmount = new Vector2(-100, 50);
-	float appearDuration = 0.3f;
-	float dealTime = 0.5f;
+	protected Vector2 shiftAmount = new Vector2(-100, 50);
+	protected float appearDuration = 0.3f;
+	protected float dealTime = 0.5f;
 	Queue<CardBase> waitForCompare = new Queue<CardBase>();
 	Queue<CardBase> waitForMatch = new Queue<CardBase>();
-	List<CardBase> usingCardDeck = new List<CardBase>();
-	List<CardBase> cardsOnTable = new List<CardBase>();
-	List<CardBase> normalCardDeck = new List<CardBase>();
+	protected List<CardBase> usingCardDeck = new List<CardBase>();
+	protected List<CardBase> cardsOnTable = new List<CardBase>();
+	protected List<CardBase> normalCardDeck = new List<CardBase>();
 	List<UnknownCard> unknownCardDeck = new List<UnknownCard>();
 	int goldCardCount = 0;
 	int bombCardCount;
@@ -118,11 +118,10 @@ public class GameMainView : AbstractView
 			usingCardDeck.Add(unknownCardDeck[i]);
 	}
 
-	public IEnumerator DealCard(float cardSize, Vector2[] cardPos, int bombCardCount = 0, int flashbangCardCount = 0)
+	public virtual IEnumerator DealCard(float cardSize, Vector2[] cardPos, int bombCardCount = 0, int flashbangCardCount = 0)
 	{		
 		this.bombCardCount = bombCardCount;
 		this.flashbangCardCount = flashbangCardCount;
-		//this.flashbangCardCount = 2;
 
 		ShuffleCardDeck();
 		float delayDuration = dealTime / usingCardDeck.Count;		
@@ -189,7 +188,7 @@ public class GameMainView : AbstractView
 		}
 	}
 
-	bool CanFlipCardNow(CardBase card)
+	protected virtual bool CanFlipCardNow(CardBase card)
 	{
 		if(lockFlipCard)
 			return false;
@@ -212,7 +211,7 @@ public class GameMainView : AbstractView
 		return true;
 	}
 
-	void CardFlipFinish(CardBase card)
+	protected virtual void CardFlipFinish(CardBase card)
 	{
 		waitForMatch.Enqueue(card);
 		if(waitForMatch.Count > 1)
@@ -284,12 +283,12 @@ public class GameMainView : AbstractView
 			StartCoroutine(card.FlareEffect());
 	}
 	
-	void SaveScoreText(ScoreText st)
+	protected void SaveScoreText(ScoreText st)
 	{
 		scoreTextQueue.Enqueue(st);
 	}
 	
-	void ShuffleCardDeck()
+	protected virtual void ShuffleCardDeck()
 	{
 		Sprite[] thisTimeCardImage = GetCardImage(usingCardDeck.Count);
 

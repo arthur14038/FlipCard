@@ -139,6 +139,7 @@ public class PickGameSetting
 {
 	public int level;
 	public int cardCount;
+	public int targetCardCount;
 	public float showCardTime;
 }
 
