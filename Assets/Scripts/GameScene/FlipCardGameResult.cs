@@ -167,15 +167,18 @@ public class FlipCardGameResult
 	public IEnumerator ShowTaskAndButton()
 	{
 		int index = 0;
-		for(int i = 0 ; i < thisTimeTask.Length ; ++i)
+		if(thisTimeTask != null)
 		{
-			if(thisTimeTask[i])
+			for(int i = 0 ; i < thisTimeTask.Length ; ++i)
 			{
-				++index;
-				tasks[i].SetActive(true);
-			} else
-			{
-				tasks[i].SetActive(false);
+				if(thisTimeTask[i])
+				{
+					++index;
+					tasks[i].SetActive(true);
+				} else
+				{
+					tasks[i].SetActive(false);
+				}
 			}
 		}
 

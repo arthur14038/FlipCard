@@ -22,7 +22,7 @@ public class PickGameMainView : GameMainView {
 		yield return StartCoroutine(base.Init());
 	}
 	
-	public void LoadCard()
+	public void LoadCard(BoolCardBase canFlipCardNow)
 	{
 		GameObject cardPrefab = Resources.Load("Card/CardBase") as GameObject;
 
@@ -36,7 +36,7 @@ public class PickGameMainView : GameMainView {
 				tmp.transform.localScale = Vector3.one;
 				tmp.SetActive(false);
 				PickCard pickCard = tmp.AddComponent<PickCard>();
-				pickCard.Init(CanFlipCardNow, CardFlipFinish);
+				pickCard.Init(canFlipCardNow, CardFlipFinish);
 				normalCardDeck.Add(pickCard);
 			}else
 			{
@@ -52,23 +52,64 @@ public class PickGameMainView : GameMainView {
 		}
 	}
 
+	protected override void CardFlipFinish(CardBase card)
+	{
+		bool match = card.GetCardId() == targetCard.GetCardId();
+
+		if(match)
+		{
+			AudioManager.Instance.PlayOneShot("GamePlayGetPair");
+			cardsOnTable.Remove(card);
+			card.Match();
+		}
+		else
+		{
+			card.MisMatch();
+		}
+
+		cardMatch(match, card);
+	}
+
 	public void SetUsingCard(int cardCount)
 	{
+		if(cardCount > normalCardDeck.Count)
+		{
+			Debug.LogError("Normal Card Deck have no enough cards.");
+			return;
+		}
+		
 		usingCardDeck.Clear();
 
 		for(int i = 0 ; i < cardCount ; ++i)
 			usingCardDeck.Add(normalCardDeck[i]);
 	}
 
+	public void FlipAllCard(bool flipTargetCard)
+	{
+		if(flipTargetCard)
+			targetCard.FlipBySystem();
+
+		foreach(CardBase card in cardsOnTable)
+			card.FlipBySystem();
+	}
+
+	public void ClearAllCard()
+	{
+		targetCard.Match();
+
+		foreach(CardBase card in cardsOnTable)
+			card.Match();
+	}
+	
 	public IEnumerator DealCard(float cardSize, Vector2[] cardPos, int targetCardCount)
 	{
 		this.targetCardCount = targetCardCount;
-		Debug.LogFormat("DealCard cardSize: {0}, targetCardCount: {1}", cardSize, targetCardCount);
 
 		ShuffleCardDeck();
 		targetCard.DealCard(Vector2.zero, shiftAmount, 0f, appearDuration, 200f);
 		float delayDuration = dealTime / usingCardDeck.Count;
-		for(int i = 0 ; i < usingCardDeck.Count ; ++i)
+		cardsOnTable.Clear();
+        for(int i = 0 ; i < usingCardDeck.Count ; ++i)
 		{
 			cardsOnTable.Add(usingCardDeck[i]);
 			usingCardDeck[i].DealCard(cardPos[i], shiftAmount, delayDuration * i, appearDuration, cardSize);
@@ -78,7 +119,6 @@ public class PickGameMainView : GameMainView {
 
 	protected override void ShuffleCardDeck()
 	{
-		Debug.LogFormat("ShuffleCardDeck usingCardDeck.Count: {0}", usingCardDeck.Count);
 		Sprite[] thisTimeCardImage = GetCardImage(usingCardDeck.Count, targetCardCount);
 
 		for(int i = 0 ; i < usingCardDeck.Count ; ++i)
@@ -87,42 +127,54 @@ public class PickGameMainView : GameMainView {
 			usingCardDeck[i].SetCardId(thisTimeCardImage[i].name);
 		}
 
-		for(int i = 0 ; i < usingCardDeck.Count ; ++i)
+		if(usingCardDeck.Count > 2)
 		{
-			int randomIndex = Random.Range(0, usingCardDeck.Count);
-			while(randomIndex == i)
-				randomIndex = Random.Range(0, usingCardDeck.Count);
+			for(int i = 0 ; i < usingCardDeck.Count ; ++i)
+			{
+				int randomIndex = Random.Range(0, usingCardDeck.Count);
+				while(randomIndex == i)
+					randomIndex = Random.Range(0, usingCardDeck.Count);
 
-			CardBase tmp = normalCardDeck[i];
-			usingCardDeck[i] = usingCardDeck[randomIndex];
-			usingCardDeck[randomIndex] = tmp;
+				CardBase tmp = usingCardDeck[i];
+				usingCardDeck[i] = usingCardDeck[randomIndex];
+				usingCardDeck[randomIndex] = tmp;
+			}
+		}else if(usingCardDeck.Count == 2)
+		{
+			bool swap = Random.Range(0, 2) == 0;
+			if(swap)
+			{
+				CardBase tmp = usingCardDeck[0];
+				usingCardDeck[0] = usingCardDeck[1];
+				usingCardDeck[1] = tmp;
+			}
 		}
 	}
 
 	Sprite[] GetCardImage(int cardCount, int targetCardCount)
 	{
-		Debug.LogFormat("GetCardImage cardCount: {0}, targetCardCount: {1}", cardCount, targetCardCount);
-		Sprite[] chooseCardImage = new Sprite[cardCount];
+		Sprite[] choosenCardImage = new Sprite[cardCount];
 
-		List<Sprite> nonetargetCardImage = new List<Sprite>(cardImage);
-		int targetIndex = Random.Range(0, nonetargetCardImage.Count);
-		Sprite targetCardSprite = nonetargetCardImage[targetIndex];
-		nonetargetCardImage.RemoveAt(targetIndex);
+		List<Sprite> unchooseCardImage = new List<Sprite>(cardImage);
+
+		int targetIndex = Random.Range(0, unchooseCardImage.Count);
+		Sprite targetCardSprite = unchooseCardImage[targetIndex];
+		unchooseCardImage.RemoveAt(targetIndex);
 
 		targetCard.SetSprite(targetCardSprite, CardState.Back);
 		targetCard.SetCardId(targetCardSprite.name);
-
-		for(int i = 0 ; i < cardCount ; ++i)
+		
+		for(int i = 0 ; i < choosenCardImage.Length ; ++i)
 		{
 			if(i < targetCardCount)
 			{
-				chooseCardImage[i] = targetCardSprite;
-            } else
+				choosenCardImage[i] = targetCardSprite;
+			} else
 			{
-				chooseCardImage[i] = nonetargetCardImage[Random.Range(0, nonetargetCardImage.Count)];
-            }
+				choosenCardImage[i] = unchooseCardImage[Random.Range(0, unchooseCardImage.Count)];
+			}
 		}
 
-		return chooseCardImage;
+		return choosenCardImage;
 	}
 }

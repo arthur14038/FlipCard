@@ -59,7 +59,7 @@ public class PickGameView : AbstractView
 		text_CurrentScore.text = score.ToString();
 	}
 
-	public void SetHeart(int count, bool needShake = false)
+	public void SetHeart(float count, bool needShake = false)
 	{
 		for(int i = 0 ; i < image_Hearts.Length ; ++i)
 		{
@@ -79,6 +79,7 @@ public class PickGameView : AbstractView
 	{
 		if(AudioManager.Instance)
 			AudioManager.Instance.PlayOneShot("Button_Click");
+		
 		StartCoroutine(PlayerReadyEffect());
 	}
 
@@ -97,8 +98,8 @@ public class PickGameView : AbstractView
 
 	IEnumerator PlayerReadyEffect()
 	{
-		button_Ready.interactable = false;		
-		yield return group_Ready.DOFade(0f, 0.25f).SetDelay(0.3f).WaitForCompletion();
+		button_Ready.interactable = false;
+		yield return group_Ready.DOFade(0f, 0.25f).WaitForCompletion();
 		group_Ready.gameObject.SetActive(false);
 
 		if(onClickReadyButton != null)

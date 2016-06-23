@@ -188,7 +188,7 @@ public class GameMainView : AbstractView
 		}
 	}
 
-	protected virtual bool CanFlipCardNow(CardBase card)
+	bool CanFlipCardNow(CardBase card)
 	{
 		if(lockFlipCard)
 			return false;
