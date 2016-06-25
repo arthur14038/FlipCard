@@ -29,7 +29,8 @@ public class PickModeJudgement : GameModeJudgement
 		pickGameMainView = (PickGameMainView)gameMainView;
 		pickGameMainView.LoadCard(CanFlipCardNow);
 		pickGameMainView.SetUsingCard(pickGameSetting.cardCount);
-		pickGameMainView.cardMatch = CardMatch;
+		pickGameMainView.SetHint(0, 0);
+        pickGameMainView.cardMatch = CardMatch;
 
 		pickGameView = (PickGameView)modeView;
 		pickGameView.onClickPause = PauseGame;
@@ -44,6 +45,7 @@ public class PickModeJudgement : GameModeJudgement
 	{
 		yield return pickGameMainView.StartCoroutine(pickGameMainView.DealCard(pickCardArraySetting.cardSize, pickCardArraySetting.realCardPosition, pickGameSetting.targetCardCount));
 		yield return new WaitForSeconds(0.2f);
+		pickGameMainView.SetHint(pickGameSetting.targetCardCount, pickGameSetting.targetCardCount);
 
 		pickGameMainView.FlipAllCard(true);
 		yield return new WaitForSeconds(0.35f);
@@ -65,6 +67,7 @@ public class PickModeJudgement : GameModeJudgement
 		}else
 		{
 			++flipCardTimes;
+			pickGameMainView.SetHint(pickGameSetting.targetCardCount, pickGameSetting.targetCardCount - flipCardTimes);
 			return true;
 		}
 	}
@@ -97,6 +100,7 @@ public class PickModeJudgement : GameModeJudgement
 			yield return new WaitForSeconds(0.35f + additionWaitTime);
 		}
 
+		pickGameMainView.SetHint(0, 0);
 		pickGameMainView.ClearAllCard();
 
 		SetCurrentState(GameState.Waiting);
@@ -152,6 +156,7 @@ public class PickModeJudgement : GameModeJudgement
 		yield return new WaitForSeconds(0.5f);
 		yield return pickGameMainView.StartCoroutine(pickGameMainView.DealCard(pickCardArraySetting.cardSize, pickCardArraySetting.realCardPosition, pickGameSetting.targetCardCount));
 		yield return new WaitForSeconds(0.2f);
+		pickGameMainView.SetHint(pickGameSetting.targetCardCount, pickGameSetting.targetCardCount);
 
 		pickGameMainView.FlipAllCard(true);
 		yield return new WaitForSeconds(0.35f);

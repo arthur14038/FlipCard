@@ -123,7 +123,10 @@ public class GameSettingView : AbstractView {
 		text_Pause.text = Localization.Get("GameSettingView/Pause");
 		text_Music.text = Localization.Get("Music");
 		text_Sound.text = Localization.Get("Sound");
-		text_TimesUp.text = Localization.Get("GameSettingView/TimesUp");
+		if(GameSettingManager.currentMode == GameMode.PickCard)
+			text_TimesUp.text = Localization.Get("PickGameOver");
+		else
+			text_TimesUp.text = Localization.Get("GameSettingView/TimesUp");
 		text_ScoreTitle.text = Localization.Get("GameResult/Score");
 		text_LevelTitle.text = Localization.Get("GameResult/Level");
 		text_Task1.text = Localization.Get("GameResult/Task1");

@@ -14,6 +14,7 @@ public class PickGameMainView : GameMainView {
 	Image[] hints;
 	PickCard targetCard;
 	int targetCardCount;
+	Color hintActiveColor = new Color(2/255f, 1f, 99/255f);
 
 	public override IEnumerator Init()
 	{
@@ -115,6 +116,30 @@ public class PickGameMainView : GameMainView {
 			usingCardDeck[i].DealCard(cardPos[i], shiftAmount, delayDuration * i, appearDuration, cardSize);
 		}
 		yield return new WaitForSeconds(dealTime);
+	}
+
+	public void SetHint(int totalCount, int activeCount)
+	{
+		if(totalCount > -1 && totalCount < hints.Length)
+		{
+			for(int i = 0 ; i < hints.Length ; ++i)
+			{
+				if(i < totalCount)
+				{
+					if(!hints[i].gameObject.activeSelf)
+						hints[i].gameObject.SetActive(true);
+
+					if(i < activeCount)
+						hints[i].color = hintActiveColor;
+					else
+						hints[i].color = Color.gray;
+				} else
+				{
+					if(hints[i].gameObject.activeSelf)
+						hints[i].gameObject.SetActive(false);
+				}
+			}
+		}
 	}
 
 	protected override void ShuffleCardDeck()

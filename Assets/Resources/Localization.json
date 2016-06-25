@@ -643,5 +643,15 @@
      "Key": "InfiniteGameView/SpecialCardAppear", 
      "zh_tw": "會出現的特殊卡", 
      "en_us": "Special cards appear."
+ },
+   {
+     "Key": "PickCardView/Title", 
+     "zh_tw": "挑選模式", 
+     "en_us": "Pick Mode"
+ },
+   {
+     "Key": "PickGameOver", 
+     "zh_tw": "遊戲結束", 
+     "en_us": "GAME OVER"
  }
 ]
