@@ -118,6 +118,9 @@ public class PickModeJudgement : GameModeJudgement
 
 		}else
 		{
+			currentScore += 8;
+			pickGameView.SetCurrentScore(currentScore);
+			pickGameMainView.StartCoroutine(pickGameMainView.PerfectEffect());
 			heart += 1f;
 		}
 

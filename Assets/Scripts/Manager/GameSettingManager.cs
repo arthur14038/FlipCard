@@ -9,8 +9,10 @@ public class GameSettingManager{
 	static Dictionary<int, FlipCardArraySetting> flipCardArraySettings = new Dictionary<int, FlipCardArraySetting>();
 	static Dictionary<int, PickGameSetting> pickGameSettings = new Dictionary<int, PickGameSetting>();
 	static Dictionary<int, PickCardArraySetting> pickCardArraySettings = new Dictionary<int, PickCardArraySetting>();
-	public static GameMode currentMode;
+	static Dictionary<int, CardImageGroup> cardImageGroupSetting = new Dictionary<int, CardImageGroup>();
+    public static GameMode currentMode;
 	public static int currentCardCount;
+	public static int totalImageGroupCount;
 
 	public static void LoadData()
 	{
@@ -67,7 +69,16 @@ public class GameSettingManager{
 			if(!pickGameSettings.ContainsKey(s.cardCount))
 				pickGameSettings.Add(s.level, s);
 		}
-	}
+
+		jsonString = ((TextAsset)Resources.Load("CardImageGroup")).text;
+		List<CardImageGroup> tmp7 = JsonConvert.DeserializeObject<List<CardImageGroup>>(jsonString);
+		foreach(CardImageGroup s in tmp7)
+		{
+			if(!cardImageGroupSetting.ContainsKey(s.groupIndex))
+				cardImageGroupSetting.Add(s.groupIndex, s);
+		}
+		totalImageGroupCount = cardImageGroupSetting.Count;
+    }
 	
 	public static FlipCardGameSetting GetFlipCardGameSetting(int level)
 	{
@@ -105,6 +116,14 @@ public class GameSettingManager{
 	{
 		if(pickCardArraySettings.ContainsKey(cardCount))
 			return pickCardArraySettings[cardCount];
+		else
+			return null;
+	}
+
+	public static CardImageGroup GetCardImageGroup(int index)
+	{
+		if(cardImageGroupSetting.ContainsKey(index))
+			return cardImageGroupSetting[index];
 		else
 			return null;
 	}
@@ -149,4 +168,11 @@ public class PickCardArraySetting
 	public float cardSize;
 	public string[] cardPosition;
 	public Vector2[] realCardPosition;
+}
+
+public class CardImageGroup
+{
+	public int groupIndex;
+	public int imageCount;
+	public string[] imageNames;
 }

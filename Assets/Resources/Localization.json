@@ -647,11 +647,11 @@
    {
      "Key": "PickCardView/Title", 
      "zh_tw": "挑選模式", 
-     "en_us": "Pick Mode"
+     "en_us": "Pick Me"
  },
    {
      "Key": "PickGameOver", 
      "zh_tw": "遊戲結束", 
-     "en_us": "GAME OVER"
+     "en_us": "Game Over"
  }
 ]

@@ -11,6 +11,8 @@ public class PickGameMainView : GameMainView {
 	Text text_PickTitle;
 	[SerializeField]
 	RectTransform group_Hint;
+	[SerializeField]
+	RectTransform group_Perfect;
 	Image[] hints;
 	PickCard targetCard;
 	int targetCardCount;
@@ -19,6 +21,7 @@ public class PickGameMainView : GameMainView {
 	public override IEnumerator Init()
 	{
 		hints = group_Hint.GetComponentsInChildren<Image>(true);
+		group_Perfect.gameObject.SetActive(false);
 
 		yield return StartCoroutine(base.Init());
 	}
@@ -118,6 +121,18 @@ public class PickGameMainView : GameMainView {
 		yield return new WaitForSeconds(dealTime);
 	}
 
+	public IEnumerator PerfectEffect()
+	{
+		group_Perfect.gameObject.SetActive(true);
+
+		group_Perfect.localScale = Vector3.zero;
+		yield return group_Perfect.DOScale(1f, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
+		yield return new WaitForSeconds(0.2f);
+		yield return group_Perfect.DOScale(0f, 0.3f).SetEase(Ease.InBack).WaitForCompletion();
+
+		group_Perfect.gameObject.SetActive(false);
+	}
+
 	public void SetHint(int totalCount, int activeCount)
 	{
 		if(totalCount > -1 && totalCount < hints.Length)
@@ -180,10 +195,12 @@ public class PickGameMainView : GameMainView {
 	{
 		Sprite[] choosenCardImage = new Sprite[cardCount];
 
-		List<Sprite> unchooseCardImage = new List<Sprite>(cardImage);
+		int chooseCardGroup = Random.Range(0, GameSettingManager.totalImageGroupCount);
+		CardImageGroup group = GameSettingManager.GetCardImageGroup(chooseCardGroup);
+		List<string> unchooseCardImage = new List<string>(group.imageNames);
 
 		int targetIndex = Random.Range(0, unchooseCardImage.Count);
-		Sprite targetCardSprite = unchooseCardImage[targetIndex];
+		Sprite targetCardSprite = cardImageDictionary[unchooseCardImage[targetIndex]];
 		unchooseCardImage.RemoveAt(targetIndex);
 
 		targetCard.SetSprite(targetCardSprite, CardState.Back);
@@ -196,7 +213,7 @@ public class PickGameMainView : GameMainView {
 				choosenCardImage[i] = targetCardSprite;
 			} else
 			{
-				choosenCardImage[i] = unchooseCardImage[Random.Range(0, unchooseCardImage.Count)];
+				choosenCardImage[i] = cardImageDictionary[unchooseCardImage[Random.Range(0, unchooseCardImage.Count)]];
 			}
 		}
 

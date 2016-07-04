@@ -15,7 +15,7 @@ public class GameMainView : AbstractView
 	public Image image_Mask;
 	public VoidNoneParameter completeOneRound;
 	public VoidBoolAndCards cardMatch;
-	protected Sprite[] cardImage;
+	protected Dictionary<string, Sprite> cardImageDictionary;
 	Sprite bombSprite;
 	Sprite flashbangSprite;
 	Queue<ScoreText> scoreTextQueue = new Queue<ScoreText>();
@@ -51,13 +51,13 @@ public class GameMainView : AbstractView
 			SaveScoreText(st);
 		}
 		scoreTextPrefab = null;
-		cardImage = new Sprite[30];
+		cardImageDictionary = new Dictionary<string, Sprite>();
 		ResourceRequest request = null;
         for(int i = 0 ; i < 30 ; ++i)
 		{
 			request = Resources.LoadAsync<Sprite>(string.Format("CardImage/CardImage_{0}", i.ToString("D3")));
 			yield return request;
-			cardImage[i] = (Sprite)request.asset;
+			cardImageDictionary.Add(request.asset.name, (Sprite)request.asset);
 		}
 
 		if(GameSettingManager.currentMode == GameMode.FlipCard)
@@ -326,11 +326,11 @@ public class GameMainView : AbstractView
 			choosenCardFace[count] = flashbangSprite;
 		}
 
-		if(cardImage.Length > count / 2)
+		if(cardImageDictionary.Count > count / 2)
 		{
 			int[] chooseCardIndex = new int[count / 2];
 			List<int> tickets = new List<int>();
-			for(int i = 0 ; i < cardImage.Length ; ++i)
+			for(int i = 0 ; i < cardImageDictionary.Count ; ++i)
 				tickets.Add(i);
 
 			for(int i = 0 ; i < chooseCardIndex.Length ; ++i)
@@ -342,13 +342,15 @@ public class GameMainView : AbstractView
 
 			for(int i = 0 ; i < count ; ++i)
 			{
-				choosenCardFace[i] = cardImage[chooseCardIndex[i / 2]];
+				string key = string.Format("CardImage_{0}", chooseCardIndex[i / 2].ToString("D3"));
+				choosenCardFace[i] = cardImageDictionary[key];
 			}
-		} else if(cardImage.Length == count / 2)
+		} else if(cardImageDictionary.Count == count / 2)
 		{
 			for(int i = 0 ; i < count ; ++i)
 			{
-				choosenCardFace[i] = cardImage[i / 2];
+				string key = string.Format("CardImage_{0}", (i / 2).ToString("D3"));
+				choosenCardFace[i] = cardImageDictionary[key];
 			}
 		} else
 		{

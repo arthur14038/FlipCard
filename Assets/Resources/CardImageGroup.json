@@ -1,0 +1,26 @@
+﻿[
+   {
+     "GroupIndex": 0, 
+     "GroupName": "圓形", 
+     "ImageCount": 6, 
+     "ImageNames": ["CardImage_010", "CardImage_011", "CardImage_012", "CardImage_013", "CardImage_014", "CardImage_019"]
+ },
+   {
+     "GroupIndex": 1, 
+     "GroupName": "紅色", 
+     "ImageCount": 9, 
+     "ImageNames": ["CardImage_000", "CardImage_003", "CardImage_005", "CardImage_010", "CardImage_011", "CardImage_013", "CardImage_021", "CardImage_025", "CardImage_027"]
+ },
+   {
+     "GroupIndex": 2, 
+     "GroupName": "綠色", 
+     "ImageCount": 8, 
+     "ImageNames": ["CardImage_001", "CardImage_006", "CardImage_007", "CardImage_012", "CardImage_014", "CardImage_015", "CardImage_019", "CardImage_024"]
+ },
+   {
+     "GroupIndex": 3, 
+     "GroupName": "暗色", 
+     "ImageCount": 9, 
+     "ImageNames": ["CardImage_002", "CardImage_004", "CardImage_008", "CardImage_009", "CardImage_020", "CardImage_022", "CardImage_023", "CardImage_026", "CardImage_028"]
+ }
+]
