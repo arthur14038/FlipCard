@@ -34,7 +34,16 @@ public class ModelManager : SingletonMonoBehavior<ModelManager> {
 			if(flipCardGameRecord.achievement == null)
 				flipCardGameRecord.achievement = new bool[] { false, false, false, false, false, false };
 		}
-    }
+
+		string pickGameRecordPath = GetSaveFilePath(pickGameRecordFileName);
+		encodedString = WriteFileTool.LoadFile(pickGameRecordPath);
+
+		if(!string.IsNullOrEmpty(encodedString))
+		{
+			string jsonString = EncodeTool.GetDecodedBase64(encodedString, encodeKey, encodeIV);
+			pickGameRecord = JsonConvert.DeserializeObject<PickGameRecord>(jsonString);
+		}
+	}
 
 	public void SaveFlipCardGameRecord(NormalGameRecord record)
 	{
@@ -64,8 +73,8 @@ public class ModelManager : SingletonMonoBehavior<ModelManager> {
 		if(flipCardGameRecord == null)
 		{
 			flipCardGameRecord = new NormalGameRecord();
-			flipCardGameRecord.lastLevels = new int[] { 0, 0, 0 };
-			flipCardGameRecord.lastScores = new int[] { 0, 0, 0 };
+			flipCardGameRecord.lastLevel = new int[] { 0, 0, 0 };
+			flipCardGameRecord.lastScore = new int[] { 0, 0, 0 };
 			flipCardGameRecord.achievement = new bool[] { false, false, false, false, false, false };
             flipCardGameRecord.playTimes = 0;
 			flipCardGameRecord.highLevel = 0;
@@ -125,9 +134,9 @@ public class ModelManager : SingletonMonoBehavior<ModelManager> {
 public class NormalGameRecord
 {
 	public int highLevel;
-	public int[] lastLevels;
+	public int[] lastLevel;
 	public int highScore;
-	public int[] lastScores;
+	public int[] lastScore;
 	public bool[] achievement;
 	public int playTimes;
 }

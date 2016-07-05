@@ -101,13 +101,13 @@ public class FlipCardGameJudgement : GameModeJudgement
 			lastRecord.highLevel = thisTimeLevel;
         }
 
-		lastRecord.lastLevels[2] = lastRecord.lastLevels[1];
-		lastRecord.lastLevels[1] = lastRecord.lastLevels[0];
-		lastRecord.lastLevels[0] = thisTimeLevel;
+		lastRecord.lastLevel[2] = lastRecord.lastLevel[1];
+		lastRecord.lastLevel[1] = lastRecord.lastLevel[0];
+		lastRecord.lastLevel[0] = thisTimeLevel;
 
-		lastRecord.lastScores[2] = lastRecord.lastScores[1];
-		lastRecord.lastScores[1] = lastRecord.lastScores[0];
-		lastRecord.lastScores[0] = thisTimeScore;
+		lastRecord.lastScore[2] = lastRecord.lastScore[1];
+		lastRecord.lastScore[1] = lastRecord.lastScore[0];
+		lastRecord.lastScore[0] = thisTimeScore;
 
 		for(int i = 0 ; i < lastRecord.achievement.Length ; ++i)
 		{

@@ -61,7 +61,7 @@ public class GameSceneController : AbstractController
 
 		if(thisTimeRecord != null)
 		{
-			if(thisTimeRecord.lastScores[0] > 500)
+			if(thisTimeRecord.lastScore[0] > 500)
 				showAd = (Random.Range(0, 3) == 0);
 
 			if(thisTimeRecord.playTimes % 3 == 1)
@@ -69,7 +69,7 @@ public class GameSceneController : AbstractController
 				int level = thisTimeRecord.highLevel / 1000;
 				int round = thisTimeRecord.highLevel % 1000;
 				string reachLevel = string.Format("{0}-{1}", level, round);
-				long score = thisTimeRecord.lastScores[0];
+				long score = thisTimeRecord.lastScore[0];
 				GoogleAnalyticsManager.LogEvent(GoogleAnalyticsManager.EventCategory.GameRecord,
 					reachLevel, score);
             }

@@ -152,12 +152,14 @@ public class PickModeJudgement : GameModeJudgement
 		if(correctRate < 0.33f)
 		{
 			heart -= 1f;
-		}else if(correctRate < 0.66f)
+			yield return new WaitForSeconds(0.3f);
+		} else if(correctRate < 0.66f)
 		{
 			heart -= 0.5f;
-        } else if(correctRate < 0.99f)
+			yield return new WaitForSeconds(0.3f);
+		} else if(correctRate < 0.99f)
 		{
-
+			yield return new WaitForSeconds(0.3f);
 		}else
 		{
 			currentScore += 8;
