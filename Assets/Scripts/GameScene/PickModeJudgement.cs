@@ -3,7 +3,8 @@ using System.Collections;
 
 public class PickModeJudgement : GameModeJudgement
 {
-	PickGameView pickGameView;
+	public VoidPickGameRecord saveGameRecord;
+    PickGameView pickGameView;
 	PickGameMainView pickGameMainView;
     PickGameSetting pickGameSetting;
 	PickCardArraySetting pickCardArraySetting;
@@ -57,6 +58,47 @@ public class PickModeJudgement : GameModeJudgement
 		SetCurrentState(GameState.Playing);
 		pickGameView.SetPauseButtonState(true);
 		AudioManager.Instance.PlayMusic("GamePlayBGM", true);
+	}
+
+	protected override void GameOver(params int[] values)
+	{
+		base.GameOver(values);
+
+		bool recordBreak = false;
+		int thisTimeScore = values[0];
+		int thisTimeLevel = values[1];
+
+		PickGameRecord record = ModelManager.Instance.GetPickGameRecord();
+
+		if(thisTimeScore > record.highScore)
+		{
+			recordBreak = true;
+			record.highScore = thisTimeScore;
+		}
+
+		if(thisTimeLevel > record.highLevel)
+		{
+			recordBreak = true;
+			record.highLevel = thisTimeLevel;
+		}
+
+		record.lastLevels[2] = record.lastLevels[1];
+		record.lastLevels[1] = record.lastLevels[0];
+		record.lastLevels[0] = thisTimeLevel;
+
+		record.lastScores[2] = record.lastScores[1];
+		record.lastScores[1] = record.lastScores[0];
+		record.lastScores[0] = thisTimeScore;
+
+		int thisTimeGetMoni = thisTimeScore / 10;
+		InventoryManager.Instance.AddMoni(thisTimeGetMoni);
+
+		record.playTimes += 1;
+
+		if(saveGameRecord != null)
+			saveGameRecord(record);
+
+		gameSettingView.ShowSinglePlayerGameOver(thisTimeScore, thisTimeLevel.ToString(), recordBreak, null);
 	}
 
 	bool CanFlipCardNow(CardBase card)
@@ -120,7 +162,7 @@ public class PickModeJudgement : GameModeJudgement
 		{
 			currentScore += 8;
 			pickGameView.SetCurrentScore(currentScore);
-			pickGameMainView.StartCoroutine(pickGameMainView.PerfectEffect());
+			yield return pickGameMainView.StartCoroutine(pickGameMainView.PerfectEffect());
 			heart += 1f;
 		}
 
@@ -134,7 +176,7 @@ public class PickModeJudgement : GameModeJudgement
 		if(currentLevel >= 20)
 		{
 			//達到最後一關結束
-			gameSettingView.ShowSinglePlayerGameOver(currentScore, currentLevel.ToString(), false, null);
+			GameOver(currentScore, currentLevel);
 		} else if(heart > 0)
 		{
 			//愛心足夠往下一關
@@ -150,13 +192,13 @@ public class PickModeJudgement : GameModeJudgement
 		} else
 		{
 			//愛心花完
-			gameSettingView.ShowSinglePlayerGameOver(currentScore, currentLevel.ToString(), false, null);
+			GameOver(currentScore, currentLevel);
 		}
 	}
 
 	IEnumerator NewRoundRoutine()
 	{
-		yield return new WaitForSeconds(0.5f);
+		yield return new WaitForSeconds(0.2f);
 		yield return pickGameMainView.StartCoroutine(pickGameMainView.DealCard(pickCardArraySetting.cardSize, pickCardArraySetting.realCardPosition, pickGameSetting.targetCardCount));
 		yield return new WaitForSeconds(0.2f);
 		pickGameMainView.SetHint(pickGameSetting.targetCardCount, pickGameSetting.targetCardCount);

@@ -127,7 +127,7 @@ public class PickGameMainView : GameMainView {
 
 		group_Perfect.localScale = Vector3.zero;
 		yield return group_Perfect.DOScale(1f, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
-		yield return new WaitForSeconds(0.2f);
+		yield return new WaitForSeconds(0.4f);
 		yield return group_Perfect.DOScale(0f, 0.3f).SetEase(Ease.InBack).WaitForCompletion();
 
 		group_Perfect.gameObject.SetActive(false);
@@ -195,7 +195,19 @@ public class PickGameMainView : GameMainView {
 	{
 		Sprite[] choosenCardImage = new Sprite[cardCount];
 
+		bool getHard = false;
+		int dice = Random.Range(0, 8);
+        if(targetCardCount > 4)
+			getHard = dice > 5;
+
 		int chooseCardGroup = Random.Range(0, GameSettingManager.totalImageGroupCount);
+		if(getHard)
+		{
+			if(dice == 6)
+				chooseCardGroup = 0;
+			if(dice == 7)
+				chooseCardGroup = 7;
+		}
 		CardImageGroup group = GameSettingManager.GetCardImageGroup(chooseCardGroup);
 		List<string> unchooseCardImage = new List<string>(group.imageNames);
 

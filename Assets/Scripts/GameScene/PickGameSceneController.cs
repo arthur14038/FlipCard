@@ -8,7 +8,7 @@ public class PickGameSceneController : AbstractController
 	public GameSettingView gameSettingView;
 	public GameMainView gameMainView;
 	PickModeJudgement judgement;
-	GameRecord thisTimeRecord;
+	PickGameRecord thisTimeRecord;
 
 	protected override void Start()
 	{
@@ -36,7 +36,7 @@ public class PickGameSceneController : AbstractController
 	{
 	}
 
-	void SaveTmpGameRecord(GameRecord record)
+	void SaveTmpGameRecord(PickGameRecord record)
 	{
 		thisTimeRecord = record;
 	}
@@ -48,6 +48,11 @@ public class PickGameSceneController : AbstractController
 
 		bool showAd = false;
 		
+		if(thisTimeRecord != null)
+		{
+			ModelManager.Instance.SavePickGameRecord(thisTimeRecord);
+		}
+
 		if(showAd)
 			StartCoroutine(WaitAdAndExit(returnView));
 		else

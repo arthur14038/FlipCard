@@ -8,7 +8,7 @@ public class GameSceneController : AbstractController
 	public GameMainView gameMainView;
 	AbstractView modeView;
 	GameModeJudgement judgement;
-	GameRecord thisTimeRecord;
+	NormalGameRecord thisTimeRecord;
 
     protected override void Start()
     {
@@ -21,7 +21,8 @@ public class GameSceneController : AbstractController
 		modeView = GetModeView();
 		judgement = GetJudgement();
 		judgement.exitGame = ExitGame;
-		judgement.saveGameRecord = SaveTmpGameRecord;
+		if(GameSettingManager.currentMode == GameMode.FlipCard)
+			((FlipCardGameJudgement)judgement).saveGameRecord = SaveTmpGameRecord;
 		yield return StartCoroutine(gameSettingView.Init());
 		yield return StartCoroutine(gameMainView.Init());
 		yield return StartCoroutine(modeView.Init());
@@ -37,7 +38,7 @@ public class GameSceneController : AbstractController
 		modeView.ShowUI(true);
     }
 
-	void SaveTmpGameRecord(GameRecord record)
+	void SaveTmpGameRecord(NormalGameRecord record)
 	{
 		thisTimeRecord = record;
 	}
@@ -60,7 +61,7 @@ public class GameSceneController : AbstractController
 
 		if(thisTimeRecord != null)
 		{
-			if(thisTimeRecord.lastScore[0] > 500)
+			if(thisTimeRecord.lastScores[0] > 500)
 				showAd = (Random.Range(0, 3) == 0);
 
 			if(thisTimeRecord.playTimes % 3 == 1)
@@ -68,7 +69,7 @@ public class GameSceneController : AbstractController
 				int level = thisTimeRecord.highLevel / 1000;
 				int round = thisTimeRecord.highLevel % 1000;
 				string reachLevel = string.Format("{0}-{1}", level, round);
-				long score = thisTimeRecord.lastScore[0];
+				long score = thisTimeRecord.lastScores[0];
 				GoogleAnalyticsManager.LogEvent(GoogleAnalyticsManager.EventCategory.GameRecord,
 					reachLevel, score);
             }
@@ -108,11 +109,6 @@ public class GameSceneController : AbstractController
 				Canvas competitionModeViewCanvas = competitionModeView.GetComponent<Canvas>();
 				competitionModeViewCanvas.worldCamera = Camera.main;
 				return competitionModeView.GetComponent<AbstractView>();
-			//case GameMode.PickCard:
-			//	GameObject pickGameView = Instantiate(Resources.Load("UI/PickGameView")) as GameObject;
-			//	Canvas pickModeViewCanvas = pickGameView.GetComponent<Canvas>();
-			//	pickModeViewCanvas.worldCamera = Camera.main;
-			//	return pickGameView.GetComponent<AbstractView>();
 			default:
 				return null;
 		}
@@ -128,9 +124,6 @@ public class GameSceneController : AbstractController
 			case GameMode.Competition:
 				GoogleAnalyticsManager.LogScreen(GoogleAnalyticsManager.ScreenName.GameSceneTwoPlayer);
 				return new CompetitionModeJudgement();
-			//case GameMode.PickCard:
-			//	GoogleAnalyticsManager.LogScreen(GoogleAnalyticsManager.ScreenName.GameScenePickMode);
-			//	return new PickModeJudgement();
 			default:
 				Debug.LogErrorFormat("{0}'s judgement is not implement", GameSettingManager.currentMode);
 				return null;

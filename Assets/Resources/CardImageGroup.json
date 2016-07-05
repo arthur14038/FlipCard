@@ -1,6 +1,6 @@
 ﻿[
    {
-     "GroupIndex": 0, 
+     "GroupIndex": 6, 
      "GroupName": "圓形", 
      "ImageCount": 6, 
      "ImageNames": ["CardImage_010", "CardImage_011", "CardImage_012", "CardImage_013", "CardImage_014", "CardImage_019"]
@@ -14,13 +14,37 @@
    {
      "GroupIndex": 2, 
      "GroupName": "綠色", 
-     "ImageCount": 8, 
-     "ImageNames": ["CardImage_001", "CardImage_006", "CardImage_007", "CardImage_012", "CardImage_014", "CardImage_015", "CardImage_019", "CardImage_024"]
+     "ImageCount": 7, 
+     "ImageNames": ["CardImage_001", "CardImage_006", "CardImage_007", "CardImage_012", "CardImage_014", "CardImage_015", "CardImage_024"]
  },
    {
      "GroupIndex": 3, 
      "GroupName": "暗色", 
-     "ImageCount": 9, 
-     "ImageNames": ["CardImage_002", "CardImage_004", "CardImage_008", "CardImage_009", "CardImage_020", "CardImage_022", "CardImage_023", "CardImage_026", "CardImage_028"]
+     "ImageCount": 7, 
+     "ImageNames": ["CardImage_002", "CardImage_004", "CardImage_008", "CardImage_009", "CardImage_020", "CardImage_022", "CardImage_028"]
+ },
+   {
+     "GroupIndex": 4, 
+     "GroupName": "全身", 
+     "ImageCount": 8, 
+     "ImageNames": ["CardImage_002", "CardImage_003", "CardImage_015", "CardImage_016", "CardImage_017", "CardImage_018", "CardImage_022", "CardImage_029"]
+ },
+   {
+     "GroupIndex": 5, 
+     "GroupName": "大頭", 
+     "ImageCount": 13, 
+     "ImageNames": ["CardImage_000", "CardImage_001", "CardImage_004", "CardImage_005", "CardImage_006", "CardImage_007", "CardImage_008", "CardImage_009", "CardImage_020", "CardImage_021", "CardImage_024", "CardImage_027", "CardImage_028"]
+ },
+   {
+     "GroupIndex": 0, 
+     "GroupName": "困難", 
+     "ImageCount": 4, 
+     "ImageNames": ["CardImage_023", "CardImage_026", "CardImage_028", "CardImage_008"]
+ },
+   {
+     "GroupIndex": 7, 
+     "GroupName": "能量球", 
+     "ImageCount": 3, 
+     "ImageNames": ["CardImage_010", "CardImage_013", "CardImage_014"]
  }
 ]

@@ -13,9 +13,52 @@ public class PickCardView : AbstractView
 	RectTransform image_ShakeCircle;
 	[SerializeField]
 	Text text_PickModeTitle;
+	[SerializeField]
+	Text text_HighScore;
+	[SerializeField]
+	Text text_HighLevel;
+	[SerializeField]
+	Text text_LastLevel;
+	[SerializeField]
+	Text text_LastScore;
 
 	public override IEnumerator Init()
 	{
+		PickGameRecord record = ModelManager.Instance.GetPickGameRecord();
+
+		if(record.highScore > 0)
+			text_HighScore.text = record.highScore.ToString();
+		else
+			text_HighScore.text = "- -";
+
+		if(record.highLevel > 0)
+			text_HighLevel.text = record.highLevel.ToString();
+		else
+			text_HighLevel.text = "- -";
+
+		string lastLevel = "";
+		for(int i = 0 ; i < record.lastLevels.Length ; ++i)
+		{
+			if(record.lastLevels[i] > 0)
+				lastLevel += record.lastLevels[i] + "\n";
+		}
+		if(string.IsNullOrEmpty(lastLevel))
+			text_LastLevel.text = "- -";
+		else
+			text_LastLevel.text = lastLevel;
+
+		string lastScore = "";
+		for(int i = 0 ; i < record.lastScores.Length ; ++i)
+		{
+			if(record.lastScores[i] > 0)
+				lastScore += record.lastScores[i] + "\n";
+		}
+		if(string.IsNullOrEmpty(lastScore))
+			text_LastScore.text = "- -";
+		else
+			text_LastScore.text = lastScore;
+
+		escapeEvent = OnClickBack;
 		yield return null;
 		UpdateText();
 		Localization.Event_ChangeLocaliztion += UpdateText;

@@ -91,7 +91,7 @@ public class FlipCardView : AbstractView
 
 	public override IEnumerator Init()
 	{
-		GameRecord record = ModelManager.Instance.GetFlipCardGameRecord();
+		NormalGameRecord record = ModelManager.Instance.GetFlipCardGameRecord();
 		if(record.highScore > 0)
 			text_HighScore.text = record.highScore.ToString();
 		else
@@ -113,12 +113,12 @@ public class FlipCardView : AbstractView
 		button_Skip.SetActive(false);
 		button_Play.rectTransform.sizeDelta = new Vector2(848f, 181.5f);
 		string lastLevel = "";
-		for(int i = 0 ; i < record.lastLevel.Length ; ++i)
+		for(int i = 0 ; i < record.lastLevels.Length ; ++i)
 		{
-			if(record.lastLevel[i] > 0)
+			if(record.lastLevels[i] > 0)
 			{
-				int level = record.lastLevel[i] / 1000;
-				int round = record.lastLevel[i] % 1000;
+				int level = record.lastLevels[i] / 1000;
+				int round = record.lastLevels[i] % 1000;
 				lastLevel += string.Format("{0}-{1}\n", level, round);
 			}
 		}
@@ -128,11 +128,11 @@ public class FlipCardView : AbstractView
 			text_LastLevel.text = lastLevel;
 
 		string lastScore = "";
-		for(int i = 0 ; i < record.lastScore.Length ; ++i)
+		for(int i = 0 ; i < record.lastScores.Length ; ++i)
 		{
-			if(record.lastScore[i] > 0)
+			if(record.lastScores[i] > 0)
 			{
-				lastScore += record.lastScore[i] + "\n";
+				lastScore += record.lastScores[i] + "\n";
 			}
 		}
 		if(string.IsNullOrEmpty(lastScore))

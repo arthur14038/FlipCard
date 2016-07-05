@@ -3,7 +3,8 @@ using System.Collections;
 
 public class FlipCardGameJudgement : GameModeJudgement
 {
-	FlipCardGameSetting currentGameSetting;
+	public VoidGameRecord saveGameRecord;
+    FlipCardGameSetting currentGameSetting;
 	FlipCardArraySetting flipCardArraySetting;
 	FlipCardGameView flipCardGameView;
     int currentLevel;
@@ -86,7 +87,7 @@ public class FlipCardGameJudgement : GameModeJudgement
 		int thisTimeLevel = values[1] * 1000 + values[2];
 		int thisTimeScore = values[0];
 
-		GameRecord lastRecord = ModelManager.Instance.GetFlipCardGameRecord();
+		NormalGameRecord lastRecord = ModelManager.Instance.GetFlipCardGameRecord();
 
 		if(thisTimeScore > lastRecord.highScore)
 		{
@@ -100,13 +101,13 @@ public class FlipCardGameJudgement : GameModeJudgement
 			lastRecord.highLevel = thisTimeLevel;
         }
 
-		lastRecord.lastLevel[2] = lastRecord.lastLevel[1];
-		lastRecord.lastLevel[1] = lastRecord.lastLevel[0];
-		lastRecord.lastLevel[0] = thisTimeLevel;
+		lastRecord.lastLevels[2] = lastRecord.lastLevels[1];
+		lastRecord.lastLevels[1] = lastRecord.lastLevels[0];
+		lastRecord.lastLevels[0] = thisTimeLevel;
 
-		lastRecord.lastScore[2] = lastRecord.lastScore[1];
-		lastRecord.lastScore[1] = lastRecord.lastScore[0];
-		lastRecord.lastScore[0] = thisTimeScore;
+		lastRecord.lastScores[2] = lastRecord.lastScores[1];
+		lastRecord.lastScores[1] = lastRecord.lastScores[0];
+		lastRecord.lastScores[0] = thisTimeScore;
 
 		for(int i = 0 ; i < lastRecord.achievement.Length ; ++i)
 		{
