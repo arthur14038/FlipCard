@@ -62,11 +62,11 @@ public class FlipCardGameResult
 		image_TaskBG.gameObject.SetActive(false);
     }
 
-	public void SetResult(int score, string level, bool recordBreak, bool[] thisTimeTask)
+	public void SetResult(int score, string level, bool recordBreak, bool[] thisTimeTask, string msg, int getMoni)
 	{
 		text_Score.text = score.ToString();
 		text_Level.text = level;
-		getMoniCount = score / 10;
+		getMoniCount = getMoni;
 
 		this.recordBreak = recordBreak;
 		this.thisTimeTask = thisTimeTask;
@@ -74,16 +74,7 @@ public class FlipCardGameResult
 		{
             text_Title.text = Localization.Get("GameResult/NewRecord");
 		} else
-		{
-			string msg = Localization.Get("GameResult/TryAgain");
-			if(score > 3000)
-				msg = Localization.Get("GameResult/Incredible");
-			else if(score > 2000)
-				msg = Localization.Get("GameResult/Excellent");
-			else if(score > 1000)
-				msg = Localization.Get("GameResult/Awesome");
-			else if(score > 500)
-				msg = Localization.Get("GameResult/Great");
+		{			
 			text_Title.text = msg;
 		}
 

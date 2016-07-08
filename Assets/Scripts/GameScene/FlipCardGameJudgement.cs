@@ -123,8 +123,18 @@ public class FlipCardGameJudgement : GameModeJudgement
 		
 		if(saveGameRecord != null)
 			saveGameRecord(lastRecord);
-		
-		gameSettingView.ShowSinglePlayerGameOver(values[0], string.Format("{0}-{1}", values[1], values[2]), recordBreak, thisTimeChallenge);
+
+		string msg = Localization.Get("GameResult/TryAgain");
+		if(thisTimeScore > 3000)
+			msg = Localization.Get("GameResult/Incredible");
+		else if(thisTimeScore > 2000)
+			msg = Localization.Get("GameResult/Excellent");
+		else if(thisTimeScore > 1000)
+			msg = Localization.Get("GameResult/Awesome");
+		else if(thisTimeScore > 500)
+			msg = Localization.Get("GameResult/Great");
+
+		gameSettingView.ShowSinglePlayerGameOver(values[0], string.Format("{0}-{1}", values[1], values[2]), recordBreak, thisTimeChallenge, msg, thisTimeGetMoni);
 	}
 
 	public override void JudgementUpdate()

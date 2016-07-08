@@ -332,7 +332,7 @@
    {
      "Key": "ShopView/Shop", 
      "zh_tw": "挑選新主題", 
-     "en_us": "THEME SHOP"
+     "en_us": "SHOP"
  },
    {
      "Key": "ShopView/Equiped", 
@@ -653,5 +653,10 @@
      "Key": "PickGameOver", 
      "zh_tw": "遊戲結束", 
      "en_us": "Game Over"
+ },
+   {
+     "Key": "PickGameFinish", 
+     "zh_tw": "全數通關", 
+     "en_us": "You Win!"
  }
 ]

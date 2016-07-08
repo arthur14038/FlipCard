@@ -40,7 +40,8 @@ public class PickModeJudgement : GameModeJudgement
 		pickGameView.SetCurrentScore(currentScore);
 		pickGameView.SetCurrentLevel(currentLevel);
         pickGameView.SetPauseButtonState(false);
-	}
+		pickGameView.ToggleFeverTimeEffect(false);
+    }
 	
 	protected override IEnumerator StartGame()
 	{
@@ -89,16 +90,25 @@ public class PickModeJudgement : GameModeJudgement
 		record.lastScores[2] = record.lastScores[1];
 		record.lastScores[1] = record.lastScores[0];
 		record.lastScores[0] = thisTimeScore;
-
-		int thisTimeGetMoni = thisTimeScore / 10;
-		InventoryManager.Instance.AddMoni(thisTimeGetMoni);
+		
+		InventoryManager.Instance.AddMoni(thisTimeScore);
 
 		record.playTimes += 1;
 
 		if(saveGameRecord != null)
 			saveGameRecord(record);
 
-		gameSettingView.ShowSinglePlayerGameOver(thisTimeScore, thisTimeLevel.ToString(), recordBreak, null);
+		string msg = Localization.Get("GameResult/TryAgain");
+		if(thisTimeScore > 200)
+			msg = Localization.Get("GameResult/Incredible");
+		else if(thisTimeScore > 150)
+			msg = Localization.Get("GameResult/Excellent");
+		else if(thisTimeScore > 100)
+			msg = Localization.Get("GameResult/Awesome");
+		else if(thisTimeScore > 50)
+			msg = Localization.Get("GameResult/Great");
+
+		gameSettingView.ShowSinglePlayerGameOver(thisTimeScore, thisTimeLevel.ToString(), recordBreak, null, msg, thisTimeScore);
 	}
 
 	bool CanFlipCardNow(CardBase card)
@@ -179,10 +189,13 @@ public class PickModeJudgement : GameModeJudgement
 		{
 			//達到最後一關結束
 			GameOver(currentScore, currentLevel);
+			pickGameView.ToggleFeverTimeEffect(false);
 		} else if(heart > 0)
 		{
 			//愛心足夠往下一關
 			++currentLevel;
+			if(currentLevel == 20)
+				pickGameView.ToggleFeverTimeEffect(true);
 			pickGameSetting = GameSettingManager.GetPickGameSetting(currentLevel);
 			pickCardArraySetting = GameSettingManager.GetPickCardArraySetting(pickGameSetting.cardCount);
 			pickGameMainView.SetUsingCard(pickGameSetting.cardCount);

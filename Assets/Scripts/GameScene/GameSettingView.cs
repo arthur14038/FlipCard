@@ -123,10 +123,6 @@ public class GameSettingView : AbstractView {
 		text_Pause.text = Localization.Get("GameSettingView/Pause");
 		text_Music.text = Localization.Get("Music");
 		text_Sound.text = Localization.Get("Sound");
-		if(GameSettingManager.currentMode == GameMode.PickCard)
-			text_TimesUp.text = Localization.Get("PickGameOver");
-		else
-			text_TimesUp.text = Localization.Get("GameSettingView/TimesUp");
 		text_ScoreTitle.text = Localization.Get("GameResult/Score");
 		text_LevelTitle.text = Localization.Get("GameResult/Level");
 		text_Task1.text = Localization.Get("GameResult/Task1");
@@ -221,12 +217,20 @@ public class GameSettingView : AbstractView {
 		yield return button_CompetitionGameOverExit.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
 	}
 
-	public void ShowSinglePlayerGameOver(int score, string level, bool recordBreak, bool[] thisTimeTask)
+	public void ShowSinglePlayerGameOver(int score, string level, bool recordBreak, bool[] thisTimeTask, string msg, int getMoni)
 	{
+		if(GameSettingManager.currentMode == GameMode.PickCard)
+		{
+			if(level == "20")
+				text_TimesUp.text = Localization.Get("PickGameFinish");
+			else
+				text_TimesUp.text = Localization.Get("PickGameOver");
+		} else
+			text_TimesUp.text = Localization.Get("GameSettingView/TimesUp");
 		base.ShowUI(false);
 		AudioManager.Instance.StopMusic();
 		StartCoroutine(ToggleMask(true, 0.7f));
-		flipCardGameResult.SetResult(score, level, recordBreak, thisTimeTask);
+		flipCardGameResult.SetResult(score, level, recordBreak, thisTimeTask, msg, getMoni);
 		StartCoroutine(FlipCardGameResultRoutine());
     }
 

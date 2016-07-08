@@ -72,7 +72,7 @@ public class Localization{
 
 class StringTable
 {
-	public string key;
-	public string zh_tw;
-	public string en_us;
+	public string key = null;
+	public string zh_tw = null;
+	public string en_us = null;
 }

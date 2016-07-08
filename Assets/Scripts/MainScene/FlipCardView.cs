@@ -86,9 +86,7 @@ public class FlipCardView : AbstractView
 	Text text_Task6;
 	[SerializeField]
 	Text text_Task6Explain;
-
-	int canSkipToLevel = 0;
-
+	
 	public override IEnumerator Init()
 	{
 		NormalGameRecord record = ModelManager.Instance.GetFlipCardGameRecord();
@@ -102,12 +100,8 @@ public class FlipCardView : AbstractView
 			int level = record.highLevel / 1000;
 			int round = record.highLevel % 1000;
 			text_HighLevel.text = string.Format("{0}-{1}", level, round);
-			//button_Skip.SetActive(true);
-			//button_Play.rectTransform.sizeDelta = new Vector2(600f, 181.5f);
-			canSkipToLevel = level;
         } else
 		{
-			canSkipToLevel = 0;
             text_HighLevel.text = "- -";
 		}
 		button_Skip.SetActive(false);

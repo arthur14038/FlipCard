@@ -21,7 +21,8 @@ public class PickGameView : AbstractView
 	Button button_Ready;
 	[SerializeField]
 	Text text_CurrentLevel;
-	Vector2 group_HeartPos = new Vector2(168f, 44f);
+	[SerializeField]
+	GameObject feverTimeEffect;
 	CardBase pickCard;
 
 	public override IEnumerator Init()
@@ -94,6 +95,12 @@ public class PickGameView : AbstractView
 	public void SetPauseButtonState(bool value)
 	{
 		button_Pause.interactable = value;
+	}
+
+	public void ToggleFeverTimeEffect(bool value)
+	{
+		if(feverTimeEffect.activeSelf != value)
+			feverTimeEffect.SetActive(value);
 	}
 
 	IEnumerator PlayerReadyEffect()

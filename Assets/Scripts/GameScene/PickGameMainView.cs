@@ -68,6 +68,7 @@ public class PickGameMainView : GameMainView {
 		}
 		else
 		{
+			AudioManager.Instance.PlayOneShot("BossWailing");
 			card.MisMatch();
 		}
 
