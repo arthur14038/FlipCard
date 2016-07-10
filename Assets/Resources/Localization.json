@@ -7,17 +7,22 @@
    {
      "Key": "MainView/InfiniteMode", 
      "zh_tw": "無限模式", 
-     "en_us": "Infinite\nMode"
+     "en_us": "INFINITE\nMODE"
  },
    {
      "Key": "MainView/TwoPlayer", 
      "zh_tw": "雙人模式", 
-     "en_us": "Play With\nFriend"
+     "en_us": "PLAY WITH\nFRIEND"
  },
    {
      "Key": "MainView/Shop", 
      "zh_tw": "主題商店", 
-     "en_us": "Theme\nShop"
+     "en_us": "THEME\nSHOP"
+ },
+   {
+     "Key": "MainView/PickMe", 
+     "zh_tw": "挑選模式", 
+     "en_us": "PICK\nME"
  },
    {
      "Key": "MainView/ComingSoon", 
@@ -371,13 +376,13 @@
  },
    {
      "Key": "ShopView/WatchAdInfo", 
-     "zh_tw": "觀看廣告可以獲得\n10個免費的莫尼喔!", 
-     "en_us": "Watch an Ad to get 10 Moni for FREEEEEEEEE!"
+     "zh_tw": "觀看廣告可以獲得\n免費的莫尼喔!", 
+     "en_us": "Watch an Ad to get Free Moni!"
  },
    {
      "Key": "ShopView/WatchAd", 
-     "zh_tw": "觀看廣告", 
-     "en_us": "WATCH AD"
+     "zh_tw": "領取禮物", 
+     "en_us": "Get Gift"
  },
    {
      "Key": "ShopView/ThemeExplain", 

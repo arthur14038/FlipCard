@@ -30,8 +30,8 @@ public class MainSceneController : AbstractController {
 		mainPageView.onClickRate = ShowRatePage;
 		mainPageView.onClickLeaveGame = LeaveGame;
 		mainPageView.onClickNotify = SendNotifyMail;
-		//mainPageView.onClickComingSoon = StillInProgress;
-		mainPageView.onClickComingSoon = ShowPickCardPage;
+		mainPageView.onClickComingSoon = StillInProgress;
+		mainPageView.onClickPickMe = ShowPickCardPage;
 		mainPageView.onClickGoToFacebook = OpenFacebookPage;
         flipCardView.onClickBack = ShowMainPage;
 		flipCardView.onClickPlay = StartFlipCardGame;

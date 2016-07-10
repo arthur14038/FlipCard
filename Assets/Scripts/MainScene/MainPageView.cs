@@ -35,6 +35,7 @@ public class MainPageView : AbstractView {
 	public VoidNoneParameter onClickNotify;
 	public VoidNoneParameter onClickFlipCard;
 	public VoidNoneParameter onClick2P;
+	public VoidNoneParameter onClickPickMe;
 	public VoidNoneParameter onClickComingSoon;
 	public VoidNoneParameter onClickGoToFacebook;
 	#endregion
@@ -46,7 +47,7 @@ public class MainPageView : AbstractView {
 	[SerializeField]
 	Text text_Shop;
 	[SerializeField]
-	Text text_ComingSoon;
+	Text text_PickMe;
 	[SerializeField]
 	Text text_Sound;
 	[SerializeField]
@@ -145,6 +146,13 @@ public class MainPageView : AbstractView {
 			onClick2P();
 	}
 	
+	public void OnClickPickMe()
+	{
+		AudioManager.Instance.PlayOneShot("Button_Click");
+		if(onClickPickMe != null)
+			onClickPickMe();
+	}
+
 	public void OnClickComingSoon()
 	{
 		AudioManager.Instance.PlayOneShot("Button_Click");
@@ -291,7 +299,7 @@ public class MainPageView : AbstractView {
 		text_InfiniteMode.text = Localization.Get("MainView/InfiniteMode");
 		text_TwoPlayer.text = Localization.Get("MainView/TwoPlayer");
 		text_Shop.text = Localization.Get("MainView/Shop");
-		text_ComingSoon.text = Localization.Get("MainView/ComingSoon");
+		text_PickMe.text = Localization.Get("MainView/PickMe");
 		text_Sound.text = Localization.Get("Sound");
 		text_Music.text = Localization.Get("Music");
 		text_GoldCardTitle.text = Localization.Get("GoldCardTitle");
