@@ -136,7 +136,7 @@ public class PickModeJudgement : GameModeJudgement
 			++failTimes;
 		}
 
-		if(matchTimes + failTimes == pickGameSetting.targetCardCount)
+		if(matchTimes + failTimes >= pickGameSetting.targetCardCount)
 			pickGameMainView.StartCoroutine(CompleteOneRound());
 	}
 
@@ -200,9 +200,6 @@ public class PickModeJudgement : GameModeJudgement
 			pickCardArraySetting = GameSettingManager.GetPickCardArraySetting(pickGameSetting.cardCount);
 			pickGameMainView.SetUsingCard(pickGameSetting.cardCount);
 			pickGameView.SetCurrentLevel(currentLevel);
-			flipCardTimes = 0;
-			matchTimes = 0;
-			failTimes = 0;
             pickGameMainView.StartCoroutine(NewRoundRoutine());
 		} else
 		{
@@ -223,6 +220,9 @@ public class PickModeJudgement : GameModeJudgement
 		yield return new WaitForSeconds(pickGameSetting.showCardTime);
 		pickGameMainView.FlipAllCard(false);
 		pickGameMainView.ToggleMask(false);
+		flipCardTimes = 0;
+		matchTimes = 0;
+		failTimes = 0;
 		yield return new WaitForSeconds(0.35f);
 
 		SetCurrentState(GameState.Playing);
