@@ -217,7 +217,7 @@ public class GameSettingView : AbstractView {
 		yield return button_CompetitionGameOverExit.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
 	}
 
-	public void ShowSinglePlayerGameOver(int score, string level, bool recordBreak, bool[] thisTimeTask, string msg, int getMoni)
+	public void ShowSinglePlayerGameOver(int score, string level, bool recordBreak, bool[] thisTimeTask, string msg, int getMoni, bool recordBreakFirst = true)
 	{
 		if(GameSettingManager.currentMode == GameMode.PickCard)
 		{
@@ -230,7 +230,7 @@ public class GameSettingView : AbstractView {
 		base.ShowUI(false);
 		AudioManager.Instance.StopMusic();
 		StartCoroutine(ToggleMask(true, 0.7f));
-		flipCardGameResult.SetResult(score, level, recordBreak, thisTimeTask, msg, getMoni);
+		flipCardGameResult.SetResult(score, level, recordBreak, thisTimeTask, msg, getMoni, recordBreakFirst);
 		StartCoroutine(FlipCardGameResultRoutine());
     }
 

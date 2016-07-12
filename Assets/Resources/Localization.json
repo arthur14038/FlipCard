@@ -510,6 +510,11 @@
      "en_us": "Great!"
  },
    {
+     "Key": "GameResult/PerfectClear", 
+     "zh_tw": "完美過關!", 
+     "en_us": "Perfect Clear!"
+ },
+   {
      "Key": "GameSettingView/TimesUp", 
      "zh_tw": "時間到!", 
      "en_us": "TIME'S UP"
@@ -663,5 +668,30 @@
      "Key": "PickGameFinish", 
      "zh_tw": "全數通關", 
      "en_us": "You Win!"
+ },
+   {
+     "Key": "PickGameView/PickMe", 
+     "zh_tw": "找出相同的卡", 
+     "en_us": "PICK ME"
+ },
+   {
+     "Key": "PickGameView/Perfect", 
+     "zh_tw": "零失誤加分!", 
+     "en_us": "Perfect Bonus!"
+ },
+   {
+     "Key": "PickGameView/Level", 
+     "zh_tw": "回合", 
+     "en_us": "LEVEL"
+ },
+   {
+     "Key": "PickGameView/Score", 
+     "zh_tw": "得分", 
+     "en_us": "SCORE"
+ },
+   {
+     "Key": "PickGameView/Ready", 
+     "zh_tw": "開始", 
+     "en_us": "Ready"
  }
 ]

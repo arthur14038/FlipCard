@@ -99,7 +99,12 @@ public class PickModeJudgement : GameModeJudgement
 			saveGameRecord(record);
 
 		string msg = Localization.Get("GameResult/TryAgain");
-		if(thisTimeScore > 200)
+		if(thisTimeScore >= 237)
+		{
+			recordBreak = true;
+			msg = Localization.Get("GameResult/PerfectClear");
+		}
+		else if(thisTimeScore > 200)
 			msg = Localization.Get("GameResult/Incredible");
 		else if(thisTimeScore > 150)
 			msg = Localization.Get("GameResult/Excellent");
@@ -108,7 +113,7 @@ public class PickModeJudgement : GameModeJudgement
 		else if(thisTimeScore > 50)
 			msg = Localization.Get("GameResult/Great");
 
-		gameSettingView.ShowSinglePlayerGameOver(thisTimeScore, thisTimeLevel.ToString(), recordBreak, null, msg, thisTimeScore);
+		gameSettingView.ShowSinglePlayerGameOver(thisTimeScore, thisTimeLevel.ToString(), recordBreak, null, msg, thisTimeScore, false);
 	}
 
 	bool CanFlipCardNow(CardBase card)

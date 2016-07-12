@@ -62,7 +62,7 @@ public class FlipCardGameResult
 		image_TaskBG.gameObject.SetActive(false);
     }
 
-	public void SetResult(int score, string level, bool recordBreak, bool[] thisTimeTask, string msg, int getMoni)
+	public void SetResult(int score, string level, bool recordBreak, bool[] thisTimeTask, string msg, int getMoni, bool recordBreakFirst)
 	{
 		text_Score.text = score.ToString();
 		text_Level.text = level;
@@ -70,7 +70,7 @@ public class FlipCardGameResult
 
 		this.recordBreak = recordBreak;
 		this.thisTimeTask = thisTimeTask;
-        if(recordBreak)
+        if(recordBreak && recordBreakFirst)
 		{
             text_Title.text = Localization.Get("GameResult/NewRecord");
 		} else

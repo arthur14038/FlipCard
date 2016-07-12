@@ -24,6 +24,12 @@ public class PickGameView : AbstractView
 	[SerializeField]
 	GameObject feverTimeEffect;
 	CardBase pickCard;
+	[SerializeField]
+	Text text_ScoreTitle;
+	[SerializeField]
+	Text text_LevelTitle;
+	[SerializeField]
+	Text text_Ready;
 
 	public override IEnumerator Init()
 	{
@@ -47,7 +53,9 @@ public class PickGameView : AbstractView
 
 	void UpdateText()
 	{
-
+		text_ScoreTitle.text = Localization.Get("PickGameView/Score");
+		text_LevelTitle.text = Localization.Get("PickGameView/Level");
+		text_Ready.text = Localization.Get("PickGameView/Ready");
 	}
 	
 	public void SetCurrentLevel(int level)

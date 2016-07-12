@@ -21,6 +21,16 @@ public class PickCardView : AbstractView
 	Text text_LastLevel;
 	[SerializeField]
 	Text text_LastScore;
+	[SerializeField]
+	Text text_HighScoreTitle;
+	[SerializeField]
+	Text text_HighLevelTitle;
+	[SerializeField]
+	Text text_LastLevelTitle;
+	[SerializeField]
+	Text text_LastScoreTitle;
+	[SerializeField]
+	Text text_Play;
 
 	public override IEnumerator Init()
 	{
@@ -72,7 +82,12 @@ public class PickCardView : AbstractView
 	void UpdateText()
 	{
 		text_PickModeTitle.text = Localization.Get("PickCardView/Title");
-    }
+		text_Play.text = Localization.Get("InfiniteView/Play");
+		text_HighScoreTitle.text = Localization.Get("HighScoreTitle");
+		text_HighLevelTitle.text = Localization.Get("HighLevelTitle");
+		text_LastLevelTitle.text = Localization.Get("LastLevelTitle");
+		text_LastScoreTitle.text = Localization.Get("LastScoreTitle");
+	}
 
 	public void OnClickBack()
 	{

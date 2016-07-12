@@ -10,6 +10,8 @@ public class PickGameMainView : GameMainView {
 	[SerializeField]
 	Text text_PickTitle;
 	[SerializeField]
+	Text text_Perfect;
+	[SerializeField]
 	RectTransform group_Hint;
 	[SerializeField]
 	RectTransform group_Perfect;
@@ -24,6 +26,9 @@ public class PickGameMainView : GameMainView {
 		group_Perfect.gameObject.SetActive(false);
 
 		yield return StartCoroutine(base.Init());
+
+		text_PickTitle.text = Localization.Get("PickGameView/PickMe");
+		text_Perfect.text = Localization.Get("PickGameView/Perfect");
 	}
 	
 	public void LoadCard(BoolCardBase canFlipCardNow)
