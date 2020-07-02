@@ -8,6 +8,7 @@ public class ScreenEffectManager : SingletonMonoBehavior<ScreenEffectManager> {
 
     public void Init()
     {
+        Debug.Log("ScreenEffectManager Init");
         LoadScreenEffect(10, screenEffectPrefab);
         screenEffectPrefab = null;
     }

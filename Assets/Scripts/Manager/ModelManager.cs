@@ -15,6 +15,8 @@ public class ModelManager : SingletonMonoBehavior<ModelManager> {
 
 	public void Init()
 	{
+		Debug.Log("ModelManager Init");
+
 		string filePath = GetSaveFilePath(gameRecordFileName);
 		WriteFileTool.DeleteFile(filePath);
 		

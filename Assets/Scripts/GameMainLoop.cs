@@ -64,7 +64,8 @@ public class GameMainLoop : SingletonMonoBehavior<GameMainLoop> {
 		yield return StartCoroutine(InventoryManager.Instance.Init());
 		yield return new WaitForSeconds(0.5f);
 
-		if(controller != null)
+		Debug.LogFormat("GameMainLoop before controller Init, controller == null: {0}.", controller == null);
+		if (controller != null)
 			StartCoroutine(controller.Init());
 	}
 }

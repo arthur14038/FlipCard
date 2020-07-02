@@ -29,6 +29,7 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 
 	public IEnumerator Init()
 	{
+		Debug.Log("InventoryManager Init");
 		storeInitialized = false;
         StoreEvents.OnSoomlaStoreInitialized += OnSoomlaStoreInitialized;
 		StoreEvents.OnCurrencyBalanceChanged += onCurrencyBalanceChanged;
@@ -265,7 +266,8 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 
 	IEnumerator LoadInventoryTexture()
 	{
-		while(!storeInitialized)
+		Debug.Log("InventoryManager LoadInventoryTexture");
+		while (!storeInitialized)
 		{
 			yield return null;
 		}
@@ -308,6 +310,8 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 			yield return request;
 			spritesWithItemId.Add(request.asset.name, (Sprite)request.asset);
 		}
+
+		Debug.Log("InventoryManager LoadInventoryTexture complete");
 	}
 
 	void LoadThemeInfo()

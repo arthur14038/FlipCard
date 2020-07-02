@@ -16,6 +16,8 @@ public class GameSettingManager{
 
 	public static void LoadData()
 	{
+		Debug.Log("GameSettingManager LoadData");
+
 		string jsonString = ((TextAsset)Resources.Load("CardArraySetting")).text;
 		List<CardArraySetting> tmp = JsonConvert.DeserializeObject<List<CardArraySetting>>(jsonString);
 		foreach(CardArraySetting s in tmp)

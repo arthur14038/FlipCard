@@ -16,6 +16,7 @@ public class LoadingPageManager : MonoBehaviour {
 
 	public void Init()
 	{
+		Debug.Log("LoadingPageManager Init");
 		thisCanvasGroup = this.GetComponent<CanvasGroup>();
 	}
 
