@@ -64,9 +64,8 @@ namespace Soomla.Profile
 			#if UNITY_5
 			BuildTargetGroup.iOS,
 			#else
-			BuildTargetGroup.iPhone,
+			BuildTargetGroup.iOS,
 			#endif
-			BuildTargetGroup.WebPlayer,
 			BuildTargetGroup.Standalone
 		};
 		

@@ -39,7 +39,6 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 		StoreEvents.OnUnexpectedStoreError += OnUnexpectedStoreError;
 
 		LoadThemeInfo();
-		SoomlaStore.Initialize(new FlipCardStoreAsset());
 		yield return StartCoroutine(LoadInventoryTexture());
 	}
 

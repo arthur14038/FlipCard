@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-public class FlipCardStoreAsset : IStoreAssets
+public class FlipCardStoreAsset
 {
     public VirtualCategory[] GetCategories()
     {

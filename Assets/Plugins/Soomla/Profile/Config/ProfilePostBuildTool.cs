@@ -27,7 +27,7 @@ namespace Soomla.Profile
 			    #if UNITY_5
 			    BuildTarget.iOS
 			    #else
-			    BuildTarget.iPhone
+			    BuildTarget.iOS
 			    #endif
 			    )
 			{
@@ -50,7 +50,7 @@ namespace Soomla.Profile
 				Provider targetProvider = Provider.fromString(entry.Key);
 				if (entry.Value.HasValue && entry.Value.Value) {
 					if (targetProvider == Provider.GOOGLE) {
-						result += entry.Key + "^" + PlayerSettings.bundleIdentifier + ";";
+						result += entry.Key + "^" + PlayerSettings.applicationIdentifier + ";";
 					}
 					else if (targetProvider == Provider.TWITTER) {
 						result += entry.Key + "^" + ProfileSettings.TwitterConsumerKey + ";";
