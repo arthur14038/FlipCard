@@ -29,6 +29,7 @@ public class MainPageView : AbstractView {
 
 	public override IEnumerator Init ()
 	{
+		Debug.Log("MainPageView Init");
 		currentState = ViewState.Main;
 		image_Mask.gameObject.SetActive(false);
 		image_LeaveWindow.gameObject.SetActive(false);
@@ -56,6 +57,7 @@ public class MainPageView : AbstractView {
 		}
 
 		yield return 0;
+		Debug.Log("MainPageView Init complete");
 	}
 
 	public void OnClickClassicMode()

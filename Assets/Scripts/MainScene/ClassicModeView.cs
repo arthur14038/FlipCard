@@ -13,6 +13,7 @@ public class ClassicModeView : AbstractView
 
 	public override IEnumerator Init()
 	{
+		Debug.Log("ClassicModeView Init");
 		escapeEvent = OnClickBack;
 
 		List<SinglePlayerLevel> levelList = GameSettingManager.GetSinglePlayerLevel(GameMode.Classic);
@@ -22,6 +23,7 @@ public class ClassicModeView : AbstractView
 			levelUIList[i].Init(OnClickLevelPlay, GetLevelIcon, levelList[i]);
 		}
 		yield return null;
+		Debug.Log("ClassicModeView Init complete");
 	}
 
 	public void OnClickBack()

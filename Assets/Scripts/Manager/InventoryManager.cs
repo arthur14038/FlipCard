@@ -157,14 +157,12 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 
 	public Sprite GetCurrentCardBack()
 	{
-		EquippableVG equipCardBack = GetEquippedVirtualGood(FlipCardStoreAsset.CardBackCategory.Name);
-		return GetSpriteById(equipCardBack.ItemId);
+		return GetSpriteById("CardBack_000");
 	}
 
 	public Sprite GetCurrentCardFace()
 	{
-		EquippableVG equipCardFace = GetEquippedVirtualGood(FlipCardStoreAsset.CardFaceCategory.Name);
-		return GetSpriteById(equipCardFace.ItemId);
+		return GetSpriteById("CardFace_000");
 	}
 
 	public void EquipItem(string itemId)

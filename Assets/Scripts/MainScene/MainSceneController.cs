@@ -16,11 +16,16 @@ public class MainSceneController : AbstractController {
 	{
 		yield return StartCoroutine(mainPageView.Init());
 		yield return StartCoroutine(classicModeView.Init());
+		Debug.Log("twoPlayerView Init");
 		yield return StartCoroutine(twoPlayerView.Init());
+		Debug.Log("timeModeView Init");
 		yield return StartCoroutine(timeModeView.Init());
+		Debug.Log("shopView Init");
 		yield return StartCoroutine(shopView.Init());
+		Debug.Log("Init complete");
 
 		currentView = (MainSceneView)GameMainLoop.Instance.showView;
+		Debug.Log("currentView: " + currentView);
 
 		mainPageView.onClickClassicMode = ShowClassicMode;
 		mainPageView.onClick2P = ShowTwoPlayers;
