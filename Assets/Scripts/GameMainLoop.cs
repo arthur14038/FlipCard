@@ -61,7 +61,7 @@ public class GameMainLoop : SingletonMonoBehavior<GameMainLoop> {
 		
 		lastUnlockMode = PlayerPrefsManager.UnlockMode;
 
-		//yield return StartCoroutine(InventoryManager.Instance.Init());
+		yield return StartCoroutine(InventoryManager.Instance.Init());
 		yield return new WaitForSeconds(0.5f);
 
 		Debug.LogFormat("GameMainLoop before controller Init, controller == null: {0}.", controller == null);
