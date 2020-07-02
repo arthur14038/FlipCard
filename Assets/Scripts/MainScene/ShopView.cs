@@ -189,7 +189,7 @@ public class ShopView : AbstractView
 
 	void UpdateMoniCount()
 	{
-		text_CurrentMoni.text = StoreInventory.GetItemBalance(FlipCardStoreAsset.MONI_ITEM_ID).ToString();
+		text_CurrentMoni.text = "0";
 	}
 
 	void ShowMsgWindow(string title, string content, int group = 0)

@@ -161,8 +161,7 @@ public class InventoryManager : SingletonMonoBehavior<InventoryManager>
 
 	public Sprite GetCurrentThemeSprite()
 	{
-		EquippableVG equipTheme = GetEquippedVirtualGood(FlipCardStoreAsset.ThemeCategory.Name);
-		return GetSpriteById(equipTheme.ItemId);
+		return GetSpriteById("Theme_00");
 	}
 
 	public Sprite GetCurrentCardBack()
