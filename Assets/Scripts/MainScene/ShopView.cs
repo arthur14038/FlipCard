@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine.UI;
-using Soomla.Store;
 
 public class ShopView : AbstractView
 {
@@ -14,7 +13,6 @@ public class ShopView : AbstractView
 	public VoidNoneParameter onClickBack;
 	public VoidString onClickThemeInfo;
 	public VoidString onClickEquipTheme;
-	public VoidThemePack onClickThemePrice;
 	public VoidTwoString onClickEquipCard;
 	public VoidInt onClickBuyMoniPack;
 	public VoidNoneParameter onClickConfirmBuyTheme;
@@ -56,12 +54,6 @@ public class ShopView : AbstractView
 		InventoryManager.Instance.updateCurrency += UpdateMoniCount;
 		UpdateMoniCount();
 
-		List<ThemePack> themePackList = InventoryManager.Instance.GetAllThemePack();
-
-		for(int i = 0 ; i < themePackList.Count ; ++i)
-		{
-			themePackUIList[i].Init(themePackList[i], OnClickEquipTheme, OnClickEquipCard, OnClickThemePrice, OnClickThemeInfo);
-		}
 		//for(int i = 0 ; i < themePackList.Count ; ++i)
 		//{
 		//	GameObject tmp = Instantiate(themePackUIPrefab) as GameObject;
@@ -133,11 +125,11 @@ public class ShopView : AbstractView
 		ShowMsgWindow("Your Moni is not enough", "You don't have enough \nMoni to buy this theme.\nDo you want to buy some Moni?");
 	}
 
-	public void ShowConfirmBuy(VirtualGood good)
+	public void ShowConfirmBuy()
 	{
 		currentMsgWindowState = MsgWindowState.ConfirmBuy;
-		string content = string.Format("Buying this theme will cost \n{0} Moni.\nAre you sure?", good.PurchaseType.GetPrice());
-		ShowMsgWindow("Confirm Buy", content);
+		//string content = string.Format("Buying this theme will cost \n{0} Moni.\nAre you sure?", good.PurchaseType.GetPrice());
+		//ShowMsgWindow("Confirm Buy", content);
 	}
 
 	public void ShowThemeInfo(string themeName, string themeContent)
@@ -383,13 +375,6 @@ public class ShopView : AbstractView
 		if(onClickEquipCard != null)
 			onClickEquipCard(cardFaceItemId, cardBackItemId);
 	}
-
-	void OnClickThemePrice(ThemePack themePack)
-	{
-		AudioManager.Instance.PlayOneShot("Button_Click");
-		if(onClickThemePrice != null)
-			onClickThemePrice(themePack);
-    }
 
 	void OnClickThemeInfo(string themeItemId)
 	{

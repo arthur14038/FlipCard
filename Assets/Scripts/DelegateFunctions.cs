@@ -17,7 +17,6 @@ public delegate void VoidParticleListener(ParticleListener pl);
 public delegate void VoidScoreText(ScoreText st);
 public delegate void VoidBoolAndCards(bool value, params CardBase[] cards);
 public delegate void VoidPressButtonTool(PressButtonTool pressButton);
-public delegate void VoidThemePack(ThemePack themePack);
 public delegate void VoidGameRecord(GameRecord record);
 public delegate bool BoolNoneParameter();
 public delegate bool BoolCardBase(CardBase card);

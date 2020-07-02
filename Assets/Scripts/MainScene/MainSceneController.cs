@@ -10,7 +10,6 @@ public class MainSceneController : AbstractController {
 	public TimeModeView timeModeView;
 	public ShopView shopView;
 	string notifyMessage;
-	ThemePack wantedThemePack;
 		
 	public override IEnumerator Init ()
 	{
@@ -43,11 +42,9 @@ public class MainSceneController : AbstractController {
 		timeModeView.onClickBack = ShowMainPage;
 		timeModeView.onClickPlay = GoToGameScene;
 		shopView.onClickBack = ShowMainPage;
-		shopView.onClickThemePrice = CheckCanAfford;
 		shopView.onClickEquipCard = EquipCard;
 		shopView.onClickEquipTheme = EquipTheme;
 		shopView.onClickBuyMoniPack = BuyMoniPack;
-		shopView.onClickConfirmBuyTheme = BuyThemePack;
 		shopView.onClickThemeInfo = ShowThemeInfo;
 
 		shopView.HideUI(false);
@@ -187,36 +184,6 @@ public class MainSceneController : AbstractController {
 		shopView.UpdateThemePackList();
 	}
 
-	void CheckCanAfford(ThemePack themePack)
-	{
-		wantedThemePack = themePack;
-		if(wantedThemePack.theme.CanAfford())
-			shopView.ShowConfirmBuy(wantedThemePack.theme);
-		else
-			shopView.ShowMoniNotEnough();
-	}
-
-	void BuyThemePack()
-	{
-		InventoryManager.Instance.BuyThemePack(wantedThemePack, BuyThemePackCallback);
-		shopView.ShowLoadingWindow();
-	}
-
-	void BuyThemePackCallback(bool success)
-	{
-		string message = "";
-		ThemeInfo info = InventoryManager.Instance.GetThemeInfo(wantedThemePack.theme.ItemId);
-		if(success)
-		{
-			shopView.UpdateThemePackList();
-			message = string.Format("Buying Success!\n<color=#007A80FF>{0}</color>\nnow in the theme list.", info.themeName);
-		} else
-		{
-			message = string.Format("<i>{0}</i>\nBuying Failed", info.themeName);
-		}
-		shopView.ShowBuyMsg(message);
-	}
-	
 	void BuyMoniPack(int tier)
 	{
 		string moniPackItemId = "";
